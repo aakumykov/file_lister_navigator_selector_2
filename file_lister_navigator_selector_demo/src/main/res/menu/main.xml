@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/actionCloseApp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/baseline_close_24"
+        android:title="@string/MENU_close_app"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/actionAppProperties"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/outline_info_24"
+        android:title="@string/MENU_app_properties"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/actionStorageAccess"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/ic_storage"
+        android:title="@string/MENU_storage_access"
+        app:showAsAction="always" />
+</menu>

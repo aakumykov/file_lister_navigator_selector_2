@@ -1,17 +1,22 @@
 plugins {
-    alias(libs.plugins.android.library)
+    alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
 }
 
 android {
-    namespace 'com.github.aakumykov.file_lister_navigator_selector'
+    namespace 'com.github.aakumykov.file_lister_navigator_selector_demo'
     compileSdk 34
 
     defaultConfig {
+        applicationId "com.github.aakumykov.file_lister_navigator_selector_demo"
         minSdk 21
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles "consumer-rules.pro"
+
+        manifestPlaceholders = [YANDEX_CLIENT_ID: "bd3713311fde47fe9ff479c7cb66ecae"]
     }
     buildFeatures {
         viewBinding true
@@ -36,15 +41,15 @@ dependencies {
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
     implementation libs.material
+    implementation project(':yandex_disk')
+    implementation project(':local')
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
 
-    implementation 'androidx.fragment:fragment-ktx:1.7.0'
+    implementation 'com.github.aakumykov:storage_access_helper:2.0.0-alpha'
 
-    implementation 'com.github.aakumykov:exception_utils:0.4'
+    implementation 'androidx.preference:preference:1.2.1'
 
-    implementation 'com.google.code.gson:gson:2.10.1'
-
-    api 'com.github.aakumykov:extensible_sorting_comparator:0.0.2'
+    implementation 'com.yandex.android:authsdk:3.0.0'
 }

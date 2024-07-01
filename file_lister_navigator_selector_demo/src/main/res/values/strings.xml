@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">file_lister_navigator_selector_demo</string>
+    <string name="MENU_app_properties">Свойства приложения</string>
+    <string name="list_of_files_in">Список файлов в %1$s</string>
+    <string name="it_is_not_a_dir">Это не каталог</string>
+    <string name="MENU_close_app">Закрыть программу</string>
+    <string name="login_to_yandex">Авторизоваться в Яндекс</string>
+    <string name="logout_from_yandex">Выйти из Яндекса</string>
+    <string name="multiple_mode_toggle_single">Один</string>
+    <string name="multiple_mode_toggle_multiple">Несколько</string>
+    <string name="selection_mode_dir">Каталог</string>
+    <string name="selection_mode_file">Файл</string>
+    <string name="MENU_storage_access">Доступ к хранилищу</string>
+    <string name="only_dirs">Только каталоги</string>
+    <string name="multiple_selection_mode">Множественный выбор</string>
+    <string name="BUTTON_select_local">Выбрать локально</string>
+    <string name="BUTTON_select_yandex">Выбрать в Яндекс.Диск-е</string>
+    <string name="DIALOG_title_logout_from_yandex">Выйти из Яндекса?</string>
+    <string name="DIALOG_message_yandex_auth_token_will_be_cleared">Токен авторизации в Яндекс будет забыт.</string>
+    <string name="DIALOG_button_yes">Да</string>
+    <string name="DIALOG_button_no">Нет</string>
+    <string name="selection_result">Выбрано:\n%1$s</string>
+    <string name="there_is_no_reading_access">Нет доступа не чтение</string>
+</resources>

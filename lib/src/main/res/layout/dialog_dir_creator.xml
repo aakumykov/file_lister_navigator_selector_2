@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/pathView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@id/dialogCloseButton"
+        android:background="@color/design_default_color_primary"
+        android:padding="12dp"
+        android:text="@string/dir_creator_dialog_title"
+        android:singleLine="true"
+        android:ellipsize="start"
+        android:gravity="center_horizontal"
+        android:textColor="@color/design_default_color_on_primary"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/dialogCloseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/design_default_color_primary"
+        android:padding="8dp"
+        android:src="@drawable/ic_close"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@id/pathView"
+        android:contentDescription="@string/description_dialog_close_button"/>
+
+    <EditText
+        android:id="@+id/dirNameInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pathView"
+        android:hint="@string/dir_creator_dialog_text_input_hint"
+        android:singleLine="true"
+        android:gravity="center"
+        android:inputType="text" />
+
+    <TextView
+        android:id="@+id/errorView"
+        style="@style/flns_error_view"
+        android:layout_below="@id/dirNameInput"
+        tools:text="Сообщение об ошибке"
+        tools:visibility="visible" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/errorView"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:indeterminate="true"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+    
+    <Button
+        android:id="@+id/confirmButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/progressBar"
+        android:text="@string/dir_creator_dialog_create_button" />
+
+</RelativeLayout>

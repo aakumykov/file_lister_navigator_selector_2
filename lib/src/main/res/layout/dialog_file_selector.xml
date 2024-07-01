@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/backButton"
+        style="@style/flns_dialog_header_button"
+        android:src="@drawable/ic_back"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignBottom="@id/toolbarSpacer"
+        android:contentDescription="@string/description_back_button"/>
+
+    <ImageView
+        android:id="@+id/createDirButton"
+        style="@style/flns_dialog_header_button"
+        android:src="@drawable/ic_mkdir"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@id/backButton"
+        android:layout_alignBottom="@id/toolbarSpacer"
+        android:contentDescription="@string/description_create_dir_button"/>
+
+    <ImageView
+        android:id="@+id/sortButton"
+        style="@style/flns_dialog_header_button"
+        android:src="@drawable/ic_sort"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@id/createDirButton"
+        android:layout_alignBottom="@id/toolbarSpacer"
+        android:contentDescription="@string/description_sort_button"/>
+
+    <ImageView
+        android:id="@+id/refreshButton"
+        style="@style/flns_dialog_header_button"
+        android:src="@drawable/ic_refresh"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@id/sortButton"
+        android:layout_alignBottom="@id/toolbarSpacer"
+        android:contentDescription="@string/description_sort_button"/>
+
+    <TextView
+        android:id="@+id/toolbarSpacer"
+        style="@style/flns_dialog_header_button"
+        android:padding="12dp"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@id/refreshButton"
+        android:layout_toStartOf="@id/dialogCloseButton"
+        android:text="@string/DIALOG_title_common_mode"
+        android:gravity="center_horizontal"
+        android:textColor="@color/design_default_color_on_primary"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/dialogCloseButton"
+        style="@style/flns_dialog_header_button"
+        android:src="@drawable/ic_close"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@id/toolbarSpacer"
+        android:contentDescription="@string/description_dialog_close_button"/>
+
+    <TextView
+        android:id="@+id/pathView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbarSpacer"
+        android:background="@color/design_default_color_primary_dark"
+        android:textColor="@color/design_default_color_on_primary"
+        android:gravity="center_horizontal"
+        android:padding="4dp"
+        android:textStyle="italic"
+        android:singleLine="true"
+        android:ellipsize="start"
+        tools:text="Путь к открытому каталогу" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:layout_below="@id/pathView"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"/>
+
+    <TextView
+        android:id="@+id/errorView"
+        style="@style/flns_error_view"
+        android:layout_below="@id/progressBar"
+        tools:visibility="visible"
+        tools:text="Сообщение об ошибке"/>
+
+    <TextView
+        android:id="@+id/emptyListLabel"
+        style="@style/flns_info_text_bar"
+        android:layout_below="@id/errorView"
+        tools:visibility="visible"
+        android:text="@string/dir_is_empty" />
+
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/emptyListLabel"
+        android:layout_above="@id/confirmSelectionButton"
+        android:divider="@color/list_divider"
+        android:dividerHeight="1dp"/>
+
+    <Button
+        android:id="@+id/confirmSelectionButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginHorizontal="4dp"
+        android:enabled="false"
+        android:text="@string/BUTTON_confirm_selection" />
+
+</RelativeLayout>
