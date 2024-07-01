@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="item_title_padding_vertical_simple_mode">12dp</dimen>
+    <dimen name="item_title_padding_vertical_sorting_info_mode">0dp</dimen>
+    <dimen name="item_title_padding_horizontal">8dp</dimen>
+</resources>

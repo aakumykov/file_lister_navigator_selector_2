@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="DIALOG_title_common_mode"> </string>
+    <string name="DIALOG_title_dir_mode">Выбор каталога</string>
+    <string name="BUTTON_confirm_selection">Выбрать отмеченное</string>
+    <string name="description_dialog_close_button">Закрыть диалог выбора файлов</string>
+    <string name="description_sort_button">Сортировка списка</string>
+    <string name="description_create_dir_button">Создать каталог</string>
+    <string name="description_back_button">Назад</string>
+    <string name="not_implemented_yet">Ещё не реализовано</string>
+    <string name="dir_creator_dialog_create_button">Создать</string>
+    <string name="dir_creator_dialog_text_input_hint">Имя каталога</string>
+    <string name="dir_creator_dialog_title">Новый каталог</string>
+    <string name="dir_was_created">Каталог «%1$s» создан</string>
+
+    <string name="dir_is_empty">Пустой каталог</string>
+
+    <string name="sorting_mode_name">Имени</string>
+    <string name="sorting_mode_c_time">Дате создания</string>
+    <string name="sorting_mode_m_time">Дате изменения</string>
+    <string name="sorting_mode_size">Размеру</string>
+
+    <string name="SORTING_MODE_DIALOG_title">Сортировать по</string>
+
+    <string name="sorting_flags_direct_order">Прямой порядок</string>
+    <string name="sorting_flags_reverse_order">Обратный порядок</string>
+    <string name="sorting_flags_folders_first">Сначала каталоги</string>
+    <string name="error">Ошибка: %1$s</string>
+    <string name="write_access_denied">Запись запрещена</string>
+</resources>
+
+    <!-- «» -->

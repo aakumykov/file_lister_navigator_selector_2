@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="DIALOG_title_common_mode"> </string>
+    <string name="DIALOG_title_dir_mode">Dir selection</string>
+    <string name="BUTTON_confirm_selection">Confirm selection</string>
+    <string name="description_dialog_close_button">Close file selection dialog</string>
+    <string name="description_sort_button">List sorting</string>
+    <string name="description_create_dir_button">Create dir</string>
+    <string name="description_back_button">Назад</string>
+    <string name="not_implemented_yet">Not implemented yet</string>
+    <string name="dir_creator_dialog_create_button">Create</string>
+    <string name="dir_creator_dialog_text_input_hint">Dir name</string>
+    <string name="dir_creator_dialog_title">New dir</string>
+    <string name="dir_was_created">Dir «%1$s» was created</string>
+
+    <string name="dir_is_empty">Пустой каталог</string>
+
+    <string name="sorting_mode_name">Name</string>
+    <string name="sorting_mode_c_time">Crated</string>
+    <string name="sorting_mode_m_time">Modified</string>
+    <string name="sorting_mode_size">Size</string>
+
+    <string name="SORTING_MODE_DIALOG_title">Sort by</string>
+
+    <string name="sorting_flags_direct_order">Direct order</string>
+    <string name="sorting_flags_reverse_order">Reverse order</string>
+    <string name="sorting_flags_folders_first">Folders first</string>
+    <string name="error">Error: %1$s</string>
+    <string name="write_access_denied">Write access denied</string>
+</resources>
+
+<!-- «» -->

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="error_view_fg">#C62828</color>
+    <color name="error_view_bg">#FFEBEE</color>
+    <color name="list_divider">#E1E1E1</color>
+    <color name="file_info">#636363</color>
+</resources>
