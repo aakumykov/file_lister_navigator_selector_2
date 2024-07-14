@@ -7,16 +7,12 @@
 
     <Button
         android:id="@+id/localSelectButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
+        style="@style/full_width_button"
         android:text="@string/BUTTON_select_local"/>
 
     <Button
         android:id="@+id/yandexSelectButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
+        style="@style/full_width_button"
         android:backgroundTint="@color/yandex"
         android:text="@string/BUTTON_select_yandex"/>
 
@@ -43,16 +39,11 @@
         android:layout_gravity="center_horizontal"
         tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-    <TextView
-        android:id="@+id/selectionResultView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textColor="@color/design_default_color_primary_dark"
-        android:textAlignment="center"
-        android:padding="8dp"
-        android:layout_marginTop="8dp"
-        tools:text="Выбранные элементы" />
+    <Button
+        android:id="@+id/listDirRecursivelyButton"
+        style="@style/full_width_button"
+        android:backgroundTint="#00BCD4"
+        android:text="@string/BUTTON_list_dir_recursively"/>
 
     <TextView
         android:id="@+id/errorView"
@@ -67,5 +58,23 @@
         android:visibility="gone"
         tools:text="Сообщение об ошибке"
         tools:visibility="visible" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/selectionResultView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/design_default_color_primary_dark"
+            android:padding="8dp"
+            android:layout_marginTop="8dp"
+            tools:text="Выбранные элементы" />
+
+        <!--android:text="Очень длинная строка, не помещающаяся на экране. Действительно не помещающаяся?"-->
+
+    </ScrollView>
 
 </LinearLayout>

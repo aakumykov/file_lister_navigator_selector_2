@@ -1,4 +1,4 @@
-package com.github.aakumykov.file_lister_navigator_selector_demo.fragments.demo
+package com.github.aakumykov.file_lister_navigator_selector_demo.fragments
 
 import android.os.Bundle
 import android.view.View
@@ -6,24 +6,31 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentResultListener
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import com.github.aakumykov.file_lister_navigator_selector.extensions.listenForFragmentResult
+import com.github.aakumykov.file_lister_navigator_selector.file_lister.FileLister
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
 import com.github.aakumykov.file_lister_navigator_selector.file_selector.FileSelectorFragment
-//import com.github.aakumykov.file_lister_navigator_selector.extensions.listenForFragmentResult
-//import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
-//import com.github.aakumykov.file_lister_navigator_selector.file_selector.FileSelectorFragment
-//import com.github.aakumykov.file_lister_navigator_selector.local_file_selector.LocalFileSelectorFragment
+import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
+import com.github.aakumykov.file_lister_navigator_selector.recursive_dir_reader.RecursiveDirReader
 import com.github.aakumykov.file_lister_navigator_selector_demo.R
+import com.github.aakumykov.file_lister_navigator_selector_demo.common.StorageType
 import com.github.aakumykov.file_lister_navigator_selector_demo.databinding.FragmentDemoBinding
 import com.github.aakumykov.file_lister_navigator_selector_demo.extensions.showToast
+import com.github.aakumykov.local_file_lister_navigator_selector.local_file_lister.LocalFileLister
 import com.github.aakumykov.local_file_lister_navigator_selector.local_file_selector.LocalFileSelectorFragment
 import com.github.aakumykov.storage_access_helper.StorageAccessHelper
+import com.github.aakumykov.yandex_disk_cloud_reader.YandexDiskCloudReader
+import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_file_lister.YandexDiskFileLister
 import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_file_selector.YandexDiskFileSelectorFragment
 import com.yandex.authsdk.YandexAuthLoginOptions
 import com.yandex.authsdk.YandexAuthOptions
 import com.yandex.authsdk.YandexAuthSdkContract
 import com.yandex.authsdk.internal.strategy.LoginType
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class DemoFragment : Fragment(R.layout.fragment_demo), FragmentResultListener {
 
@@ -36,6 +43,11 @@ class DemoFragment : Fragment(R.layout.fragment_demo), FragmentResultListener {
     private lateinit var yandexAuthLauncher: ActivityResultLauncher<YandexAuthLoginOptions>
 
     private lateinit var storageAccessHelper: StorageAccessHelper
+
+    private val mSelectedItemsList: MutableList<FSItem> = mutableListOf()
+
+    private var storageType: StorageType? = null
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -56,6 +68,12 @@ class DemoFragment : Fragment(R.layout.fragment_demo), FragmentResultListener {
 
     override fun onFragmentResult(requestKey: String, result: Bundle) {
         FileSelectorFragment.extractSelectionResult(result)?.also { list ->
+
+            mSelectedItemsList.apply {
+                clear()
+                addAll(list)
+            }
+
             binding.selectionResultView.text = getString(
                 R.string.selection_result, list.joinToString("\n") {
 //                    (if (it.isDir) "dir: " else "file: ") + it.name
@@ -85,7 +103,58 @@ class DemoFragment : Fragment(R.layout.fragment_demo), FragmentResultListener {
         binding.localSelectButton.setOnClickListener { onLocalSelectButtonClicked() }
         binding.yandexSelectButton.setOnClickListener { onYandexSelectButtonClicked() }
         binding.yandexSelectButton.setOnLongClickListener { return@setOnLongClickListener onYandexSelectButtonLongClicked() }
+        binding.listDirRecursivelyButton.setOnClickListener { onListDirRecursivelyClicked() }
     }
+
+    private fun onListDirRecursivelyClicked() {
+        if (1 == mSelectedItemsList.size && mSelectedItemsList.first().isDir) {
+            listDirRecursively(mSelectedItemsList.first())
+        } else {
+            showToast(R.string.ERROR_single_dir_must_be_selected)
+        }
+    }
+
+    private fun listDirRecursively(dirItem: FSItem) {
+        lifecycleScope.launch (Dispatchers.IO) {
+            RecursiveDirReader(fileLister())
+                .listDirRecursively(dirItem.absolutePath)
+                .joinToString("\n") { it.absolutePath }
+                .also {
+                    withContext(Dispatchers.Main) {
+                        binding.selectionResultView.text = "Рекурсивный список каталога ${dirItem.absolutePath}:\n\n${it}"
+                    }
+                }
+        }
+    }
+
+    private fun fileLister(): FileLister<SimpleSortingMode> {
+        return when(storageType) {
+            StorageType.LOCAL -> localFileLister()
+            StorageType.YANDEX_DISK -> yandexDiskFileLister()
+            else -> throw IllegalStateException("Неизвестное значение storageType: ${storageType}")
+        }
+    }
+
+    private fun localFileLister(): LocalFileLister {
+        return LocalFileLister("")
+    }
+
+    private fun yandexDiskFileLister(): YandexDiskFileLister {
+        return YandexDiskFileLister(
+            authToken = yandexAuthToken!!,
+            YandexDiskCloudReader(yandexAuthToken!!)
+        )
+    }
+
+    /*private fun showError(@StringRes errorMsgRes: Int) {
+        binding.errorView.setText(errorMsgRes)
+    }
+
+    private fun hideError() {
+        binding.errorView.apply {
+            text = null
+        }
+    }*/
 
     private fun onYandexSelectButtonLongClicked(): Boolean {
 
@@ -104,7 +173,9 @@ class DemoFragment : Fragment(R.layout.fragment_demo), FragmentResultListener {
     }
 
     private fun onLocalSelectButtonClicked() {
+        storageType = StorageType.LOCAL
         fileSelector = localFileSelector()
+
         storageAccessHelper.requestFullAccess { isGranted ->
             if (isGranted) showFileSelector()
             else showToast(R.string.there_is_no_reading_access)
@@ -118,17 +189,23 @@ class DemoFragment : Fragment(R.layout.fragment_demo), FragmentResultListener {
             return
         }
 
-        prepareYandexFileSelector()
-        showFileSelector()
-    }
-
-    private fun prepareYandexFileSelector() {
+        storageType = StorageType.YANDEX_DISK
         fileSelector = yandexFileSelector()
+        showFileSelector()
     }
 
     private fun showFileSelector() {
         fileSelector?.show(childFragmentManager, FileSelectorFragment.TAG)
+            ?: showToast(getString(R.string.ERROR_unknown_storage_type, storageType))
     }
+
+    /*private fun fileSelector(): FileSelectorFragment<SimpleSortingMode>? {
+        return when(storageType) {
+            StorageType.LOCAL -> localFileSelector()
+            StorageType.YANDEX_DISK -> yandexFileSelector()
+            else -> null
+        }
+    }*/
 
     private fun startYandexAuth() {
         yandexAuthLauncher.launch(YandexAuthLoginOptions(LoginType.WEBVIEW))
@@ -192,7 +269,7 @@ class DemoFragment : Fragment(R.layout.fragment_demo), FragmentResultListener {
             result.getOrNull()?.value?.also { token ->
                 yandexAuthToken = token
                 storeYandexAuthToken()
-                prepareYandexFileSelector()
+//                prepareYandexFileSelector()
                 showFileSelector()
             }
         }
