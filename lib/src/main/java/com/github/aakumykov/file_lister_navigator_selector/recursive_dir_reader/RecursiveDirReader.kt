@@ -5,6 +5,7 @@ import com.github.aakumykov.file_lister_navigator_selector.file_lister.FileListe
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
 import java.util.Date
+import java.util.function.Predicate
 
 class RecursiveDirReader(private val fileLister: FileLister<SimpleSortingMode>) {
 
@@ -20,6 +21,7 @@ class RecursiveDirReader(private val fileLister: FileLister<SimpleSortingMode>) 
     ): List<FileListItem> {
         list.add(
             FileListItem(
+                isInitialItem = true,
                 uri = Uri.parse(path),
                 parentPath = "",
                 isDir = true,
@@ -41,6 +43,7 @@ class RecursiveDirReader(private val fileLister: FileLister<SimpleSortingMode>) 
                 ).forEach { fsItem ->
 
                     val childItem = FileListItem(
+                        isInitialItem = false,
                         name = fsItem.name,
                         absolutePath = fsItem.absolutePath,
                         parentPath = currentlyListedDir.absolutePath,
@@ -57,6 +60,10 @@ class RecursiveDirReader(private val fileLister: FileLister<SimpleSortingMode>) 
                 currentlyListedDir.isListed = true
             }
         }
+
+        list.remove(
+            list.first { it.isInitialItem }
+        )
 
         return list
     }
@@ -93,6 +100,10 @@ class RecursiveDirReader(private val fileLister: FileLister<SimpleSortingMode>) 
 
 
     class FileListItem (
+        /**
+         * Для внутреннего использования. Служит цели удалить начальный элемент после составления списка.
+         */
+        val isInitialItem: Boolean,
         override val name: String,
         override val absolutePath: String,
         override val isDir: Boolean,
@@ -104,7 +115,15 @@ class RecursiveDirReader(private val fileLister: FileLister<SimpleSortingMode>) 
     )
         : FSItem
     {
-        constructor(uri: Uri, parentPath: String, isDir: Boolean, mTime: Long, size: Long) : this(
+        constructor(
+            isInitialItem: Boolean,
+            uri: Uri,
+            parentPath: String,
+            isDir: Boolean,
+            mTime: Long,
+            size: Long
+        ) : this(
+            isInitialItem = isInitialItem,
             name = uri.lastPathSegment!!,
             absolutePath = uri.path!!,
             parentPath = parentPath,
