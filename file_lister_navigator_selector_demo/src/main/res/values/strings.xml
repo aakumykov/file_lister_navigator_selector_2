@@ -19,9 +19,11 @@
     <string name="DIALOG_message_yandex_auth_token_will_be_cleared">Токен авторизации в Яндекс будет забыт.</string>
     <string name="DIALOG_button_yes">Да</string>
     <string name="DIALOG_button_no">Нет</string>
-    <string name="selection_result">Выбрано:\n%1$s</string>
+    <string name="selection_result">Выбрано: %1$s</string>
     <string name="there_is_no_reading_access">Нет доступа не чтение</string>
     <string name="BUTTON_list_dir_recursively">Прочитать выбранный каталог рекурсивно</string>
     <string name="ERROR_single_dir_must_be_selected">Выберите один каталог</string>
     <string name="ERROR_unknown_storage_type">Неизвестный тип хранилища: %1$s</string>
+    <string name="listing_dir_recursively">Рекурсивно читаю каталог «%1$s»...</string>
+    <string name="recursive_dir_listing_result">Каталог: %1$s\n\nСодержимое:\n%2$s</string>
 </resources>

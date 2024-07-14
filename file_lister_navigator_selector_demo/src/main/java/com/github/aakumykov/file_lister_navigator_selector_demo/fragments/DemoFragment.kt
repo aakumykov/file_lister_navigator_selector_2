@@ -2,12 +2,14 @@ package com.github.aakumykov.file_lister_navigator_selector_demo.fragments
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ProgressBar
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentResultListener
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
+import com.github.aakumykov.file_lister_navigator_selector.extensions.hide
 import com.github.aakumykov.file_lister_navigator_selector.extensions.listenForFragmentResult
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.FileLister
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
@@ -115,13 +117,16 @@ class DemoFragment : Fragment(R.layout.fragment_demo), FragmentResultListener {
     }
 
     private fun listDirRecursively(dirItem: FSItem) {
+        binding.selectionResultView.text = getString(R.string.listing_dir_recursively, dirItem.absolutePath)
+        binding.progressBar.visible()
         lifecycleScope.launch (Dispatchers.IO) {
             RecursiveDirReader(fileLister())
                 .listDirRecursively(dirItem.absolutePath)
                 .joinToString("\n") { it.absolutePath }
                 .also {
                     withContext(Dispatchers.Main) {
-                        binding.selectionResultView.text = "Рекурсивный список каталога ${dirItem.absolutePath}:\n\n${it}"
+                        binding.progressBar.gone()
+                        binding.selectionResultView.text = getString(R.string.recursive_dir_listing_result, dirItem.name, it)
                     }
                 }
         }
@@ -285,4 +290,12 @@ class DemoFragment : Fragment(R.layout.fragment_demo), FragmentResultListener {
         const val LOCAL_SELECTION_REQUEST_KEY = "LOCAL_SELECTION_REQUEST_CODE"
         const val YANDEX_DISK_SELECTION_REQUEST_KEY = "YANDEX_DISK_SELECTION_REQUEST_CODE"
     }
+}
+
+private fun ProgressBar.visible() {
+    visibility = View.VISIBLE
+}
+
+private fun ProgressBar.gone() {
+    visibility = View.GONE
 }

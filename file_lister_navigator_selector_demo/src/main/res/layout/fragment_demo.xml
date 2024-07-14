@@ -45,6 +45,16 @@
         android:backgroundTint="#00BCD4"
         android:text="@string/BUTTON_list_dir_recursively"/>
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:layout_weight="0" />
+
     <TextView
         android:id="@+id/errorView"
         android:layout_width="match_parent"
