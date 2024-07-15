@@ -118,11 +118,14 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
         listAdapter = FileListAdapter(
             requireContext(),
             R.layout.file_list_item,
+            R.id.checkBox,
             R.id.titleView,
             R.id.infoView,
             R.id.iconView,
             createSortingInfoSupplier(),
-            viewModel.currentSortingMode)
+            viewModel.currentSortingMode,
+            isMultipleSelectionMode()
+        )
 
         binding.listView.adapter = listAdapter
 

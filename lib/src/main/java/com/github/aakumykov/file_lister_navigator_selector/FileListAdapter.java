@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.DimenRes;
@@ -32,6 +33,7 @@ public class FileListAdapter<SortingModeType> extends ArrayAdapter<FSItem> {
     private final LayoutInflater inflater;
     private final int layoutResource;
     private final int titleViewId;
+    private final int checkBoxId;
     private final int infoViewId;
     private final int fileIconViewId;
     private final List<FSItem> selectionsList = new ArrayList<>();
@@ -41,38 +43,48 @@ public class FileListAdapter<SortingModeType> extends ArrayAdapter<FSItem> {
 
     private SortingModeType sortingMode;
 
+    private final boolean isMultipleChoice;
+
     public FileListAdapter(Context context,
                            @LayoutRes int layoutResource,
+                           @IdRes int checkBoxId,
                            @IdRes int titleViewId,
                            @IdRes int infoViewId,
                            @IdRes int fileIconViewId,
                            SortingInfoSupplier<SortingModeType> sortingInfoSupplier,
-                           SortingModeType initialSortingMode
+                           SortingModeType initialSortingMode,
+                           boolean isMultipleChoice
     ) {
         this(context,
                 layoutResource,
+                checkBoxId,
                 titleViewId,
                 infoViewId,
                 fileIconViewId,
                 defaultFolderGraphicalCharacter,
                 defaultFileGraphicalCharacter,
                 sortingInfoSupplier,
-                initialSortingMode);
+                initialSortingMode,
+                isMultipleChoice
+        );
     }
 
     public FileListAdapter(Context context,
                            @LayoutRes int layoutResource,
+                           @IdRes int checkBoxId,
                            @IdRes int titleViewId,
                            @IdRes int infoViewId,
                            @IdRes int fileIconViewId,
                            String folderGraphicalCharacter,
                            String fileGraphicalCharacter,
                            SortingInfoSupplier<SortingModeType> sortingInfoSupplier,
-                           SortingModeType initialSortingMode
+                           SortingModeType initialSortingMode,
+                           boolean isMultipleChoice
     ) {
         super(context, layoutResource, new ArrayList<>());
         this.context = context;
         this.layoutResource = layoutResource;
+        this.checkBoxId = checkBoxId;
         this.titleViewId = titleViewId;
         this.infoViewId = infoViewId;
         this.fileIconViewId = fileIconViewId;
@@ -81,6 +93,7 @@ public class FileListAdapter<SortingModeType> extends ArrayAdapter<FSItem> {
         this.fileGraphicalCharacter = fileGraphicalCharacter;
         this.sortingInfoSupplier = sortingInfoSupplier;
         this.sortingMode = initialSortingMode;
+        this.isMultipleChoice = isMultipleChoice;
     }
 
 
@@ -101,6 +114,13 @@ public class FileListAdapter<SortingModeType> extends ArrayAdapter<FSItem> {
 
         if (null == fsItem)
             throw new IllegalStateException("FSItem is null");
+
+        fillViewHolder(viewHolder, fsItem);
+
+        return convertView;
+    }
+
+    private void fillViewHolder(ViewHolder viewHolder, FSItem fsItem) {
 
         String title = fsItem.getName();
 
@@ -137,7 +157,17 @@ public class FileListAdapter<SortingModeType> extends ArrayAdapter<FSItem> {
             );
         }
 
-        return convertView;
+        viewHolder.checkBox.setVisibility(checkBoxVisibility());
+    }
+
+    private int checkBoxVisibility() {
+        if (isMultipleChoice) return View.VISIBLE;
+        else return View.GONE;
+    }
+
+    private int radioButtonVisibility() {
+        if (isMultipleChoice) return View.GONE;
+        else return View.VISIBLE;
     }
 
     private int getDimension(@DimenRes int dimenResource) {
@@ -162,11 +192,14 @@ public class FileListAdapter<SortingModeType> extends ArrayAdapter<FSItem> {
     }
 
     private class ViewHolder {
+
+        final CheckBox checkBox;
         final TextView titleView;
         final TextView infoView;
         final TextView iconView;
 
         ViewHolder(View view){
+            checkBox = view.findViewById(checkBoxId);
             titleView = view.findViewById(titleViewId);
             infoView = view.findViewById(infoViewId);
             iconView = view.findViewById(fileIconViewId);
