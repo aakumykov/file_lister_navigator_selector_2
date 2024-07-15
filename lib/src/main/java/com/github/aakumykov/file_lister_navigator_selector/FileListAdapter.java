@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.DimenRes;
@@ -33,7 +33,7 @@ public class FileListAdapter<SortingModeType> extends ArrayAdapter<FSItem> {
     private final LayoutInflater inflater;
     private final int layoutResource;
     private final int titleViewId;
-    private final int checkBoxId;
+    private final int checkBoxViewId;
     private final int infoViewId;
     private final int fileIconViewId;
     private final List<FSItem> selectionsList = new ArrayList<>();
@@ -47,7 +47,7 @@ public class FileListAdapter<SortingModeType> extends ArrayAdapter<FSItem> {
 
     public FileListAdapter(Context context,
                            @LayoutRes int layoutResource,
-                           @IdRes int checkBoxId,
+                           @IdRes int checkBoxViewId,
                            @IdRes int titleViewId,
                            @IdRes int infoViewId,
                            @IdRes int fileIconViewId,
@@ -57,7 +57,7 @@ public class FileListAdapter<SortingModeType> extends ArrayAdapter<FSItem> {
     ) {
         this(context,
                 layoutResource,
-                checkBoxId,
+                checkBoxViewId,
                 titleViewId,
                 infoViewId,
                 fileIconViewId,
@@ -71,7 +71,7 @@ public class FileListAdapter<SortingModeType> extends ArrayAdapter<FSItem> {
 
     public FileListAdapter(Context context,
                            @LayoutRes int layoutResource,
-                           @IdRes int checkBoxId,
+                           @IdRes int checkBoxViewId,
                            @IdRes int titleViewId,
                            @IdRes int infoViewId,
                            @IdRes int fileIconViewId,
@@ -84,7 +84,7 @@ public class FileListAdapter<SortingModeType> extends ArrayAdapter<FSItem> {
         super(context, layoutResource, new ArrayList<>());
         this.context = context;
         this.layoutResource = layoutResource;
-        this.checkBoxId = checkBoxId;
+        this.checkBoxViewId = checkBoxViewId;
         this.titleViewId = titleViewId;
         this.infoViewId = infoViewId;
         this.fileIconViewId = fileIconViewId;
@@ -128,8 +128,8 @@ public class FileListAdapter<SortingModeType> extends ArrayAdapter<FSItem> {
         if (!fsItem.isDir())
             fileInfo = sortingInfoSupplier.getSortingInfo(context, fsItem, sortingMode, "", "");
 
-        if (selectionsList.contains(fsItem))
-            title = "*" + " " + title;
+        /*if (selectionsList.contains(fsItem))
+            title = "*" + " " + title;*/
 
         String icon = fileGraphicalCharacter;
         if (fsItem.isDir())
@@ -157,7 +157,12 @@ public class FileListAdapter<SortingModeType> extends ArrayAdapter<FSItem> {
             );
         }
 
-        viewHolder.checkBox.setVisibility(checkBoxVisibility());
+        viewHolder.checkBoxView.setVisibility(checkBoxVisibility());
+
+        if (selectionsList.contains(fsItem))
+            viewHolder.checkBoxView.setImageResource(R.drawable.ic_checkbox_checked);
+        else
+            viewHolder.checkBoxView.setImageResource(R.drawable.ic_checkbox_unchecked);
     }
 
     private int checkBoxVisibility() {
@@ -193,13 +198,13 @@ public class FileListAdapter<SortingModeType> extends ArrayAdapter<FSItem> {
 
     private class ViewHolder {
 
-        final CheckBox checkBox;
+        final ImageView checkBoxView;
         final TextView titleView;
         final TextView infoView;
         final TextView iconView;
 
         ViewHolder(View view){
-            checkBox = view.findViewById(checkBoxId);
+            checkBoxView = view.findViewById(checkBoxViewId);
             titleView = view.findViewById(titleViewId);
             infoView = view.findViewById(infoViewId);
             iconView = view.findViewById(fileIconViewId);

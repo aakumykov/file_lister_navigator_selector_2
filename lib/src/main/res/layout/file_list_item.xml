@@ -6,8 +6,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <CheckBox
-        android:id="@+id/checkBox"
+    <ImageView
+        android:id="@+id/isCheckedView"
+        android:src="@drawable/ic_checkbox_unchecked"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
@@ -26,7 +27,7 @@
         tools:text="📁"
         android:paddingVertical="8dp"
         android:paddingEnd="0dp"
-        app:layout_constraintStart_toEndOf="@id/checkBox"
+        app:layout_constraintStart_toEndOf="@id/isCheckedView"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
