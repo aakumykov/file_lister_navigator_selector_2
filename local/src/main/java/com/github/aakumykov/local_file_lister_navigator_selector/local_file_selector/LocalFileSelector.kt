@@ -7,7 +7,7 @@ import androidx.core.os.bundleOf
 import com.github.aakumykov.file_lister_navigator_selector.dir_creator_dialog.DirCreatorDialog
 import com.github.aakumykov.file_lister_navigator_selector.file_explorer.FileExplorer
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
-import com.github.aakumykov.file_lister_navigator_selector.file_selector.FileSelectorFragment
+import com.github.aakumykov.file_lister_navigator_selector.file_selector.FileSelector
 import com.github.aakumykov.local_file_lister_navigator_selector.local_dir_creator.LocalDirCreator
 import com.github.aakumykov.local_file_lister_navigator_selector.local_dir_creator_dialog.LocalDirCreatorDialog
 import com.github.aakumykov.local_file_lister_navigator_selector.local_file_lister.LocalFileLister
@@ -18,7 +18,7 @@ import com.github.aakumykov.file_lister_navigator_selector.sorting_mode_translat
 import com.github.aakumykov.file_lister_navigator_selector.sorting_mode_translator.SortingModeTranslator
 import com.github.aakumykov.storage_access_helper.StorageAccessHelper
 
-class LocalFileSelectorFragment : FileSelectorFragment<SimpleSortingMode>() {
+class LocalFileSelector : FileSelector<SimpleSortingMode>() {
 
     private lateinit var storageAccessHelper: StorageAccessHelper
 
@@ -81,8 +81,8 @@ class LocalFileSelectorFragment : FileSelectorFragment<SimpleSortingMode>() {
             initialPath: String? = null,
             isDirSelectionMode: Boolean = false,
             isMultipleSelectionMode: Boolean = false
-        ) : LocalFileSelectorFragment {
-            return LocalFileSelectorFragment().apply {
+        ) : LocalFileSelector {
+            return LocalFileSelector().apply {
                 arguments = bundleOf(
                     FRAGMENT_RESULT_KEY to fragmentResultKey,
                     INITIAL_PATH to initialPath,

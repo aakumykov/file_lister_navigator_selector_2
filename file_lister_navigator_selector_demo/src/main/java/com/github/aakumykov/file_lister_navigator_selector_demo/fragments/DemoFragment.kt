@@ -9,11 +9,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentResultListener
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
-import com.github.aakumykov.file_lister_navigator_selector.extensions.hide
 import com.github.aakumykov.file_lister_navigator_selector.extensions.listenForFragmentResult
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.FileLister
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
-import com.github.aakumykov.file_lister_navigator_selector.file_selector.FileSelectorFragment
+import com.github.aakumykov.file_lister_navigator_selector.file_selector.FileSelector
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
 import com.github.aakumykov.file_lister_navigator_selector.recursive_dir_reader.RecursiveDirReader
 import com.github.aakumykov.file_lister_navigator_selector_demo.R
@@ -21,11 +20,11 @@ import com.github.aakumykov.file_lister_navigator_selector_demo.common.StorageTy
 import com.github.aakumykov.file_lister_navigator_selector_demo.databinding.FragmentDemoBinding
 import com.github.aakumykov.file_lister_navigator_selector_demo.extensions.showToast
 import com.github.aakumykov.local_file_lister_navigator_selector.local_file_lister.LocalFileLister
-import com.github.aakumykov.local_file_lister_navigator_selector.local_file_selector.LocalFileSelectorFragment
+import com.github.aakumykov.local_file_lister_navigator_selector.local_file_selector.LocalFileSelector
 import com.github.aakumykov.storage_access_helper.StorageAccessHelper
 import com.github.aakumykov.yandex_disk_cloud_reader.YandexDiskCloudReader
 import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_file_lister.YandexDiskFileLister
-import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_file_selector.YandexDiskFileSelectorFragment
+import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_file_selector.YandexDiskFileSelector
 import com.yandex.authsdk.YandexAuthLoginOptions
 import com.yandex.authsdk.YandexAuthOptions
 import com.yandex.authsdk.YandexAuthSdkContract
@@ -39,7 +38,7 @@ class DemoFragment : Fragment(R.layout.fragment_demo), FragmentResultListener {
     private var _binding: FragmentDemoBinding? = null
     private val binding get()= _binding!!
 
-    private var fileSelector: FileSelectorFragment<SimpleSortingMode>? = null
+    private var fileSelector: FileSelector<SimpleSortingMode>? = null
 
     private var yandexAuthToken: String? = null
     private lateinit var yandexAuthLauncher: ActivityResultLauncher<YandexAuthLoginOptions>
@@ -69,7 +68,7 @@ class DemoFragment : Fragment(R.layout.fragment_demo), FragmentResultListener {
     }
 
     override fun onFragmentResult(requestKey: String, result: Bundle) {
-        FileSelectorFragment.extractSelectionResult(result)?.also { list ->
+        FileSelector.extractSelectionResult(result)?.also { list ->
 
             mSelectedItemsList.apply {
                 clear()
@@ -200,7 +199,7 @@ class DemoFragment : Fragment(R.layout.fragment_demo), FragmentResultListener {
     }
 
     private fun showFileSelector() {
-        fileSelector?.show(childFragmentManager, FileSelectorFragment.TAG)
+        fileSelector?.show(childFragmentManager, FileSelector.TAG)
             ?: showToast(getString(R.string.ERROR_unknown_storage_type, storageType))
     }
 
@@ -216,8 +215,8 @@ class DemoFragment : Fragment(R.layout.fragment_demo), FragmentResultListener {
         yandexAuthLauncher.launch(YandexAuthLoginOptions(LoginType.WEBVIEW))
     }
 
-    private fun yandexFileSelector(): FileSelectorFragment<SimpleSortingMode> {
-        return YandexDiskFileSelectorFragment.create(
+    private fun yandexFileSelector(): FileSelector<SimpleSortingMode> {
+        return YandexDiskFileSelector.create(
             fragmentResultKey = YANDEX_DISK_SELECTION_REQUEST_KEY,
             authToken = yandexAuthToken!!,
             isDirSelectionMode = isDirSelectionMode(),
@@ -225,8 +224,8 @@ class DemoFragment : Fragment(R.layout.fragment_demo), FragmentResultListener {
         )
     }
 
-    private fun localFileSelector(): FileSelectorFragment<SimpleSortingMode> {
-        return LocalFileSelectorFragment.create(
+    private fun localFileSelector(): FileSelector<SimpleSortingMode> {
+        return LocalFileSelector.create(
             fragmentResultKey = LOCAL_SELECTION_REQUEST_KEY,
             isDirSelectionMode = isDirSelectionMode(),
             isMultipleSelectionMode = isMultipleSelectionMode(),

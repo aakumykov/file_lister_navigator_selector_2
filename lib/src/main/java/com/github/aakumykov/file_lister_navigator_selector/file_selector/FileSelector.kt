@@ -26,7 +26,7 @@ import com.google.gson.Gson
 
 // TODO: Сделать интерфейс "FileSelectorFragment" ?
 
-abstract class FileSelectorFragment<SortingModeType> : DialogFragment(R.layout.dialog_file_selector),
+abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_file_selector),
     AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     private var _binding: DialogFileSelectorBinding? = null
@@ -286,7 +286,7 @@ abstract class FileSelectorFragment<SortingModeType> : DialogFragment(R.layout.d
 
 
     companion object {
-        val TAG: String = FileSelectorFragment::class.java.simpleName
+        val TAG: String = FileSelector::class.java.simpleName
 
         //
         // Ключ для передачи фрагменту ключа же, по которому он вернёт результат (через FragmentResultAPI).

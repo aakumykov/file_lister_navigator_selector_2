@@ -4,7 +4,7 @@ import androidx.core.os.bundleOf
 import com.github.aakumykov.file_lister_navigator_selector.dir_creator_dialog.DirCreatorDialog
 import com.github.aakumykov.file_lister_navigator_selector.file_explorer.FileExplorer
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
-import com.github.aakumykov.file_lister_navigator_selector.file_selector.FileSelectorFragment
+import com.github.aakumykov.file_lister_navigator_selector.file_selector.FileSelector
 import com.github.aakumykov.file_lister_navigator_selector.sorting_info_supplier.SimpleSortingInfoSupplier
 import com.github.aakumykov.file_lister_navigator_selector.sorting_info_supplier.SortingInfoSupplier
 import com.github.aakumykov.file_lister_navigator_selector.sorting_mode_translator.SimpleSortingModeTranslator
@@ -17,7 +17,7 @@ import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_di
 
 // TODO: внедрять зависимости
 
-class YandexDiskFileSelectorFragment : FileSelectorFragment<SimpleSortingMode>() {
+class YandexDiskFileSelector : FileSelector<SimpleSortingMode>() {
 
     private var _fileExplorer: FileExplorer<SimpleSortingMode>? = null
 
@@ -86,8 +86,8 @@ class YandexDiskFileSelectorFragment : FileSelectorFragment<SimpleSortingMode>()
             initialPath: String? = "/",
             isDirSelectionMode: Boolean = false,
             isMultipleSelectionMode: Boolean = false
-        ) : YandexDiskFileSelectorFragment {
-            return YandexDiskFileSelectorFragment().apply {
+        ) : YandexDiskFileSelector {
+            return YandexDiskFileSelector().apply {
                 arguments = bundleOf(
                     FRAGMENT_RESULT_KEY to fragmentResultKey,
                     AUTH_TOKEN to authToken,
