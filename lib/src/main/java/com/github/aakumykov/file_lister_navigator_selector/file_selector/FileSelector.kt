@@ -22,6 +22,7 @@ import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.SimpleFSItem
 import com.github.aakumykov.file_lister_navigator_selector.sorting_info_supplier.SortingInfoSupplier
 import com.github.aakumykov.file_lister_navigator_selector.sorting_mode_translator.SortingModeTranslator
+import com.github.aakumykov.file_lister_navigator_selector.utils.ListAdapter
 import com.gitlab.aakumykov.exception_utils_module.ExceptionUtils
 import com.google.gson.Gson
 
@@ -32,6 +33,8 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
     AdapterView.OnItemLongClickListener,
     AdapterView.OnItemSelectedListener
 {
+    private val storageList: MutableList<Storage> = mutableListOf()
+
     private var _binding: DialogFileSelectorBinding? = null
     private val binding get() = _binding!!
 
@@ -39,7 +42,7 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
 
     private lateinit var listAdapter: FileListAdapter<SortingModeType>
 
-    private lateinit var storageSpinnerAdapter: StorageListAdapter
+    private lateinit var storageSpinnerAdapter: ListAdapter
 
     private val viewModel: FileSelectorViewModel<SortingModeType> by viewModels {
         FileSelectorViewModel.Factory(
@@ -98,12 +101,12 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
 
         storageSpinnerAdapter = StorageListAdapter(
             context = requireContext(),
-            itemLayout = android.R.layout.simple_spinner_item,
+            list = storageList
         )
 
         binding.storageSelectorSpinner.apply {
-            onItemSelectedListener = this@FileSelector
-            adapter = storageSpinnerAdapter
+//            onItemSelectedListener = this@FileSelector
+//            adapter = storageSpinnerAdapter
         }
     }
 
@@ -155,17 +158,20 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
     }
 
 
-    private fun onStorageListChanged(storageList: List<Storage>?) {
-        storageList?.also {
-            storageSpinnerAdapter.setNewList(storageList)
-        }
+    private fun onStorageListChanged(list: List<Storage>?) {
+        /*list?.also {
+            storageList.apply {
+                clear()
+                addAll(list)
+            }
+        }*/
     }
 
 
     private fun onSelectedStorageChanged(storage: Storage?) {
-        storage?.also {
+        /*storage?.also {
             viewModel.changeSelectedStorage(storage)
-        }
+        }*/
     }
 
 
@@ -301,13 +307,13 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
 
     // Для выпадающего списка выборщика хранилища
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        viewModel.storageList.value?.get(position)?.also { storage ->
-            viewModel.changeSelectedStorage(storage)
-        }
+//        viewModel.storageList.value?.get(position)?.also { storage ->
+//            viewModel.changeSelectedStorage(storage)
+//        }
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
-        binding.storageSelectorSpinner.prompt = getString(R.string.storage_selector_spinner_prompt)
+//        binding.storageSelectorSpinner.prompt = getString(R.string.storage_selector_spinner_prompt)
     }
 
 

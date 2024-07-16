@@ -7,40 +7,21 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.annotation.LayoutRes
 import com.github.aakumykov.file_lister_navigator_selector.entities.Storage
+import com.github.aakumykov.file_lister_navigator_selector.utils.ListAdapter
 
 class StorageListAdapter(
     context: Context,
-    @LayoutRes private val itemLayout: Int,
-    @LayoutRes private val dropdownItemLayout: Int? = null,
+    list: List<Storage>,
+//    @LayoutRes private val itemLayout: Int,
+//    @LayoutRes private val dropdownItemLayout: Int? = null,
 )
-    : ArrayAdapter<Storage>(context, itemLayout)
+    : ListAdapter(
+        context = context,
+        resourceWithTitleView = android.R.layout.simple_spinner_item,
+        list = list
+    )
 {
-    init {
-        dropdownItemLayout?.also { setDropDownViewResource(dropdownItemLayout) }
+    override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+        return getView(position, convertView, parent)
     }
-
-    private var list: MutableList<Storage> = mutableListOf()
-
-    override fun getCount(): Int = list.size
-
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        return LayoutInflater.from(parent.context).inflate(itemLayout, parent, false)
-    }
-
-    fun setNewList(storageList: List<Storage>) {
-        this.list.clear()
-        this.list.addAll(storageList)
-    }
-
-    /*override fun getPosition(item: Storage?): Int {
-        return super.getPosition(item)
-    }*/
-
-    /*override fun getItemId(position: Int): Long {
-        return super.getItemId(position)
-    }*/
-
-    /*override fun getItem(position: Int): Storage? {
-        return super.getItem(position)
-    }*/
 }
