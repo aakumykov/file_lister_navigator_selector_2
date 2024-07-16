@@ -3,6 +3,7 @@ package com.github.aakumykov.file_lister_navigator_selector.file_selector
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.CheckBox
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -28,14 +29,18 @@ import com.google.gson.Gson
 // TODO: Сделать интерфейс "FileSelectorFragment" ?
 
 abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_file_selector),
-    AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
-
+    AdapterView.OnItemClickListener,
+    AdapterView.OnItemLongClickListener,
+    AdapterView.OnItemSelectedListener
+{
     private var _binding: DialogFileSelectorBinding? = null
     private val binding get() = _binding!!
 
     private var sortingDialog: AlertDialog? = null
 
     private lateinit var listAdapter: FileListAdapter<SortingModeType>
+
+    private lateinit var storageSpinnerAdapter: ArrayAdapter<String>
 
     private val viewModel: FileSelectorViewModel<SortingModeType> by viewModels {
         FileSelectorViewModel.Factory(
@@ -82,6 +87,7 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
         childFragmentManager.setFragmentResultListener(DirCreatorDialog.DIR_NAME, viewLifecycleOwner, ::onDirCreationResult)
 
         prepareListAdapter()
+        prepareStorageSelector()
         prepareButtons()
         subscribeToViewModel()
 
@@ -89,9 +95,20 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
             viewModel.startWork(requireContext())
     }
 
+    private fun prepareStorageSelector() {
+        storageSpinnerAdapter = ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item, emptyList())
+        binding.storageSelectorSpinner.apply {
+            onItemSelectedListener = this@FileSelector
+            adapter = storageSpinnerAdapter
+        }
+    }
+
+
+
     private fun subscribeToViewModel() {
         viewModel.storageList.observe(viewLifecycleOwner, ::onStorageListCahnged)
         viewModel.selectedStorage.observe(viewLifecycleOwner, ::onSelectedStorageChanged)
+
         viewModel.path.observe(viewLifecycleOwner, ::onPathChanged)
         viewModel.list.observe(viewLifecycleOwner, ::onListChanged)
         viewModel.selectedList.observe(viewLifecycleOwner, ::onSelectedListChanged)
@@ -135,12 +152,19 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
 
 
     private fun onStorageListCahnged(storages: List<Storage>?) {
-
+        storages
+            ?.map { it.name }
+            ?.also { storageNames ->
+//                storageSpinnerAdapter.clear()
+                storageSpinnerAdapter.addAll(storageNames)
+            }
     }
 
 
     private fun onSelectedStorageChanged(storage: Storage?) {
-
+        storage?.also {
+            viewModel.changeSelectedStorage(storage)
+        }
     }
 
 
@@ -272,6 +296,19 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
         viewModel.onItemLongClick(position)
         return true
     }
+
+
+    // Для выпадающего списка выборщика хранилища
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        viewModel.storageList.value?.get(position)?.also { storage ->
+            viewModel.changeSelectedStorage(storage)
+        }
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {
+        binding.storageSelectorSpinner.prompt = getString(R.string.storage_selector_spinner_prompt)
+    }
+
 
     private fun onDirCreationResult(requestKey: String, resultBundle: Bundle) {
         resultBundle.getString(DirCreatorDialog.DIR_NAME)?.also {

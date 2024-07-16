@@ -10,7 +10,7 @@
         android:src="@drawable/ic_back"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:layout_alignBottom="@id/toolbarSpacer"
+        android:layout_alignBottom="@id/storageSelectorSpinner"
         android:contentDescription="@string/description_back_button"/>
 
     <ImageView
@@ -19,7 +19,7 @@
         android:src="@drawable/ic_mkdir"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@id/backButton"
-        android:layout_alignBottom="@id/toolbarSpacer"
+        android:layout_alignBottom="@id/storageSelectorSpinner"
         android:contentDescription="@string/description_create_dir_button"/>
 
     <ImageView
@@ -28,7 +28,7 @@
         android:src="@drawable/ic_sort"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@id/createDirButton"
-        android:layout_alignBottom="@id/toolbarSpacer"
+        android:layout_alignBottom="@id/storageSelectorSpinner"
         android:contentDescription="@string/description_sort_button"/>
 
     <ImageView
@@ -37,11 +37,11 @@
         android:src="@drawable/ic_refresh"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@id/sortButton"
-        android:layout_alignBottom="@id/toolbarSpacer"
+        android:layout_alignBottom="@id/storageSelectorSpinner"
         android:contentDescription="@string/description_sort_button"/>
 
-    <TextView
-        android:id="@+id/toolbarSpacer"
+    <!--<TextView
+        android:id="@+id/storageSelectorSpinner"
         style="@style/flns_dialog_header_button"
         android:padding="12dp"
         android:layout_alignParentTop="true"
@@ -50,7 +50,18 @@
         android:text="@string/DIALOG_title_common_mode"
         android:gravity="center_horizontal"
         android:textColor="@color/design_default_color_on_primary"
-        android:textStyle="bold" />
+        android:textStyle="bold" />-->
+
+    <Spinner
+        android:id="@+id/storageSelectorSpinner"
+        style="@style/flns_dialog_header_button"
+        android:padding="12dp"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@id/refreshButton"
+        android:layout_toStartOf="@id/dialogCloseButton"
+        android:gravity="center_horizontal"
+        android:textColor="@color/design_default_color_on_primary"
+        />
 
     <ImageView
         android:id="@+id/dialogCloseButton"
@@ -58,14 +69,14 @@
         android:src="@drawable/ic_close"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignBottom="@id/toolbarSpacer"
+        android:layout_alignBottom="@id/storageSelectorSpinner"
         android:contentDescription="@string/description_dialog_close_button"/>
 
     <TextView
         android:id="@+id/pathView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/toolbarSpacer"
+        android:layout_below="@id/storageSelectorSpinner"
         android:background="@color/design_default_color_primary_dark"
         android:textColor="@color/design_default_color_on_primary"
         android:gravity="center_horizontal"

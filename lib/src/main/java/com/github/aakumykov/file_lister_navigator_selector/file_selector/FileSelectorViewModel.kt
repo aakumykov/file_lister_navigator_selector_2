@@ -15,6 +15,7 @@ import com.github.aakumykov.file_lister_navigator_selector.utils.StorageDetector
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 
 class FileSelectorViewModel<SortingModeType> (
     val fileExplorer: FileExplorer<SortingModeType>,
@@ -142,6 +143,12 @@ class FileSelectorViewModel<SortingModeType> (
     fun changeFoldersFist(foldersFirst: Boolean) {
         fileExplorer.setFoldersFirst(foldersFirst)
         listCurrentPath()
+    }
+
+
+    fun changeSelectedStorage(storage: Storage) {
+        _selectedStorage.value = storage
+        fileExplorer.changeDir(DirItem.fromPath(storage.absolutePath))
     }
 
 
