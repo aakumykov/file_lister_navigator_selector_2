@@ -13,6 +13,7 @@ import com.github.aakumykov.file_lister_navigator_selector.FileListAdapter
 import com.github.aakumykov.file_lister_navigator_selector.R
 import com.github.aakumykov.file_lister_navigator_selector.databinding.DialogFileSelectorBinding
 import com.github.aakumykov.file_lister_navigator_selector.dir_creator_dialog.DirCreatorDialog
+import com.github.aakumykov.file_lister_navigator_selector.entities.Storage
 import com.github.aakumykov.file_lister_navigator_selector.extensions.hide
 import com.github.aakumykov.file_lister_navigator_selector.extensions.show
 import com.github.aakumykov.file_lister_navigator_selector.extensions.showIf
@@ -85,10 +86,12 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
         subscribeToViewModel()
 
         if (null == savedInstanceState)
-            viewModel.startWork()
+            viewModel.startWork(requireContext())
     }
 
     private fun subscribeToViewModel() {
+        viewModel.storageList.observe(viewLifecycleOwner, ::onStorageListCahnged)
+        viewModel.selectedStorage.observe(viewLifecycleOwner, ::onSelectedStorageChanged)
         viewModel.path.observe(viewLifecycleOwner, ::onPathChanged)
         viewModel.list.observe(viewLifecycleOwner, ::onListChanged)
         viewModel.selectedList.observe(viewLifecycleOwner, ::onSelectedListChanged)
@@ -128,6 +131,16 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
 
         binding.listView.onItemClickListener = this
         binding.listView.onItemLongClickListener = this
+    }
+
+
+    private fun onStorageListCahnged(storages: List<Storage>?) {
+
+    }
+
+
+    private fun onSelectedStorageChanged(storage: Storage?) {
+
     }
 
 
