@@ -3,7 +3,6 @@ package com.github.aakumykov.file_lister_navigator_selector.file_selector
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.CheckBox
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -40,7 +39,7 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
 
     private lateinit var listAdapter: FileListAdapter<SortingModeType>
 
-    private lateinit var storageSpinnerAdapter: ArrayAdapter<String>
+    private lateinit var storageSpinnerAdapter: StorageListAdapter
 
     private val viewModel: FileSelectorViewModel<SortingModeType> by viewModels {
         FileSelectorViewModel.Factory(
@@ -96,7 +95,12 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
     }
 
     private fun prepareStorageSelector() {
-        storageSpinnerAdapter = ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item, emptyList())
+
+        storageSpinnerAdapter = StorageListAdapter(
+            context = requireContext(),
+            itemLayout = android.R.layout.simple_spinner_item,
+        )
+
         binding.storageSelectorSpinner.apply {
             onItemSelectedListener = this@FileSelector
             adapter = storageSpinnerAdapter
@@ -106,7 +110,7 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
 
 
     private fun subscribeToViewModel() {
-        viewModel.storageList.observe(viewLifecycleOwner, ::onStorageListCahnged)
+        viewModel.storageList.observe(viewLifecycleOwner, ::onStorageListChanged)
         viewModel.selectedStorage.observe(viewLifecycleOwner, ::onSelectedStorageChanged)
 
         viewModel.path.observe(viewLifecycleOwner, ::onPathChanged)
@@ -151,13 +155,10 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
     }
 
 
-    private fun onStorageListCahnged(storages: List<Storage>?) {
-        storages
-            ?.map { it.name }
-            ?.also { storageNames ->
-//                storageSpinnerAdapter.clear()
-                storageSpinnerAdapter.addAll(storageNames)
-            }
+    private fun onStorageListChanged(storageList: List<Storage>?) {
+        storageList?.also {
+            storageSpinnerAdapter.setNewList(storageList)
+        }
     }
 
 
