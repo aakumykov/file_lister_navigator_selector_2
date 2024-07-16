@@ -1,11 +1,11 @@
 package com.github.aakumykov.file_lister_navigator_selector.file_selector
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.github.aakumykov.file_lister_navigator_selector.StorageLister
 import com.github.aakumykov.file_lister_navigator_selector.entities.Storage
 import com.github.aakumykov.file_lister_navigator_selector.file_explorer.FileExplorer
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.DirItem
@@ -15,12 +15,11 @@ import com.github.aakumykov.file_lister_navigator_selector.utils.StorageDetector
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.File
 
 class FileSelectorViewModel<SortingModeType> (
     val fileExplorer: FileExplorer<SortingModeType>,
+    private val storageLister: StorageLister,
     private var isMultipleSelectionMode: Boolean,
-    private val storageDetector: StorageDetector,
 )
     : ViewModel()
 {
@@ -52,15 +51,17 @@ class FileSelectorViewModel<SortingModeType> (
 
     private val isSingleSelectionMode get() = !isMultipleSelectionMode
 
-    fun startWork(context: Context) {
-        detectStorages(context)
+    fun startWork() {
+        detectStorages()
         listCurrentPath()
     }
 
-    private fun detectStorages(context: Context) {
-        storageDetector.listDeviceStorages(context).also {
-            _storageList.value = it
-            _selectedStorage.value = it.first()
+    private fun detectStorages() {
+        storageLister.listStorages().also { list ->
+            if (list.size > 0) {
+                _storageList.value = list
+                _selectedStorage.value = list.first()
+            }
         }
     }
 
@@ -154,6 +155,7 @@ class FileSelectorViewModel<SortingModeType> (
 
     class Factory<SortingModeType>(
         private val fileExplorer: FileExplorer<SortingModeType>,
+        private val storageLister: StorageLister,
         private val isMultipleSelectionMode: Boolean
     )
         : ViewModelProvider.Factory
@@ -162,8 +164,8 @@ class FileSelectorViewModel<SortingModeType> (
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return FileSelectorViewModel(
                 fileExplorer,
+                storageLister,
                 isMultipleSelectionMode,
-                StorageDetector()
             ) as T
         }
     }
