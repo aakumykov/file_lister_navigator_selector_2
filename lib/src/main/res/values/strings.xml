@@ -27,6 +27,8 @@
     <string name="sorting_flags_folders_first">Folders first</string>
     <string name="error">Error: %1$s</string>
     <string name="write_access_denied">Write access denied</string>
+    <string name="internal_storage_title">Внутренняя память</string>
+    <string name="external_storage_title">SD-карта</string>
 </resources>
 
 <!-- «» -->
