@@ -116,8 +116,8 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
         )
 
         binding.storageSelectorSpinner.apply {
-//            onItemSelectedListener = this@FileSelector
-//            adapter = storageSpinnerAdapter
+            onItemSelectedListener = this@FileSelector
+            adapter = storageSpinnerAdapter
         }
     }
 
@@ -171,12 +171,12 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
 
     private fun onStorageListChanged(list: List<Storage>?) {
         Log.d(TAG, "onStorageListChanged() called with: list = $list")
-        /*list?.also {
+        list?.also {
             storageList.apply {
                 clear()
                 addAll(list)
             }
-        }*/
+        }
     }
 
 
