@@ -24,7 +24,7 @@ import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.SimpleFSItem
 import com.github.aakumykov.file_lister_navigator_selector.sorting_info_supplier.SortingInfoSupplier
 import com.github.aakumykov.file_lister_navigator_selector.sorting_mode_translator.SortingModeTranslator
-import com.github.aakumykov.file_lister_navigator_selector.utils.ListAdapter
+import com.github.aakumykov.file_lister_navigator_selector.utils.ListHoldingListAdapter
 import com.gitlab.aakumykov.exception_utils_module.ExceptionUtils
 import com.google.gson.Gson
 
@@ -35,16 +35,13 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
     AdapterView.OnItemLongClickListener,
     AdapterView.OnItemSelectedListener
 {
-    private val storageList: MutableList<Storage> = mutableListOf()
-
     private var _binding: DialogFileSelectorBinding? = null
     private val binding get() = _binding!!
 
     private var sortingDialog: AlertDialog? = null
 
-    private lateinit var listAdapter: FileListAdapter<SortingModeType>
-
-    private lateinit var storageSpinnerAdapter: ListAdapter
+    private lateinit var storageSpinnerAdapter: StorageListAdapter
+    private lateinit var filesListAdapter: FileListAdapter<SortingModeType>
 
     private val viewModel: FileSelectorViewModel<SortingModeType> by viewModels {
         FileSelectorViewModel.Factory(
@@ -110,10 +107,7 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
 
     private fun prepareStorageSelector() {
 
-        storageSpinnerAdapter = StorageListAdapter(
-            context = requireContext(),
-            list = storageList
-        )
+        storageSpinnerAdapter = StorageListAdapter()
 
         binding.storageSelectorSpinner.apply {
             onItemSelectedListener = this@FileSelector
@@ -153,7 +147,7 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
 
     private fun prepareListAdapter() {
 
-        listAdapter = FileListAdapter(
+        filesListAdapter = FileListAdapter(
             requireContext(),
             R.layout.file_list_item,
             R.id.titleView,
@@ -162,7 +156,7 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
             createSortingInfoSupplier(),
             viewModel.currentSortingMode)
 
-        binding.listView.adapter = listAdapter
+        binding.listView.adapter = filesListAdapter
 
         binding.listView.onItemClickListener = this
         binding.listView.onItemLongClickListener = this
@@ -172,10 +166,7 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
     private fun onStorageListChanged(list: List<Storage>?) {
         Log.d(TAG, "onStorageListChanged() called with: list = $list")
         list?.also {
-            storageList.apply {
-                clear()
-                addAll(list)
-            }
+            storageSpinnerAdapter.setList(list)
         }
     }
 
@@ -194,7 +185,7 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
 
     private fun onListChanged(list: List<FSItem>?) {
         list?.also {
-            listAdapter.setList(it)
+            filesListAdapter.setList(it)
         }.also {
             if (0 == list?.size)
                 binding.emptyListLabel.visibility = View.VISIBLE
@@ -205,7 +196,7 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
 
     private fun onSelectedListChanged(selectedItemsList: List<FSItem>?) {
         selectedItemsList?.also {
-            listAdapter.updateSelections(selectedItemsList)
+            filesListAdapter.updateSelections(selectedItemsList)
             binding.confirmSelectionButton.isEnabled = (selectedItemsList.size > 0)
         }
     }
@@ -278,7 +269,7 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
 
     private fun onSortingModeChanged(sortingMode: SortingModeType) {
         viewModel.changeSortingMode(sortingMode)
-        listAdapter.changeSortingMode(sortingMode)
+        filesListAdapter.changeSortingMode(sortingMode)
     }
 
     private fun onConfirmSelectionClicked() {

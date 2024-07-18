@@ -6,22 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.annotation.LayoutRes
+import com.github.aakumykov.file_lister_navigator_selector.R
 import com.github.aakumykov.file_lister_navigator_selector.entities.Storage
 import com.github.aakumykov.file_lister_navigator_selector.utils.ListAdapter
+import com.github.aakumykov.file_lister_navigator_selector.utils.ListHoldingListAdapter
 
-class StorageListAdapter(
-    context: Context,
-    list: List<Storage>,
-//    @LayoutRes private val itemLayout: Int,
-//    @LayoutRes private val dropdownItemLayout: Int? = null,
-)
-    : ListAdapter(
-        context = context,
-        resourceWithTitleView = android.R.layout.simple_spinner_item,
-        list = list
-    )
+class StorageListAdapter
+    : ListHoldingListAdapter<Storage, StorageListItemViewHolder>(R.layout.storage_list_item)
 {
-    override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
-        return getView(position, convertView, parent)
+    override fun createViewHolder(itemView: View): ViewHolder<Storage> {
+        return StorageListItemViewHolder()
     }
 }
