@@ -16,6 +16,7 @@ class StorageDetector(
 
             // Внутреннее хранилище
             add(Storage(
+                R.drawable.ic_storage_phone,
                 context.getString(internalStorageTitle),
                 Environment.getExternalStorageDirectory().absolutePath
             ))
@@ -23,6 +24,7 @@ class StorageDetector(
             // SD-карта (если есть)
             ExternalSDCardDetector.getExternalCardDirectory(context)?.also { sdCardPath ->
                 add(Storage(
+                    R.drawable.ic_storage_sd_card,
                     context.getString(externalStorageTitle),
                     sdCardPath
                 ))

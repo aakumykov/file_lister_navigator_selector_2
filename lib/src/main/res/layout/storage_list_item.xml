@@ -9,4 +9,6 @@
     android:id="@+id/storageLabelView"
     android:singleLine="true"
     android:ellipsize="end"
+    android:gravity="center_vertical"
+    android:drawableStart="@drawable/ic_storage_sd_card"
 />

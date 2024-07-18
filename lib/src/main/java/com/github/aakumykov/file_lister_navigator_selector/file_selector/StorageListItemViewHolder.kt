@@ -1,6 +1,7 @@
 package com.github.aakumykov.file_lister_navigator_selector.file_selector
 
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import com.github.aakumykov.file_lister_navigator_selector.R
 import com.github.aakumykov.file_lister_navigator_selector.entities.Storage
@@ -15,6 +16,9 @@ class StorageListItemViewHolder : ListHoldingListAdapter.ViewHolder<Storage>() {
     }
 
     override fun fill(item: Storage) {
-        storageLabelView.text = item.label
+        storageLabelView.apply {
+            text = item.label
+            setCompoundDrawablesWithIntrinsicBounds(item.iconId, 0, 0, 0);
+        }
     }
 }
