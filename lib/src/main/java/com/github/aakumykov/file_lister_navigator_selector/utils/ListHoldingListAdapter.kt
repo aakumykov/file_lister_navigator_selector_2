@@ -63,10 +63,24 @@ abstract class ListHoldingListAdapter<T, V: ListHoldingListAdapter.ViewHolder<T>
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        return getViewFromResource(itemLayoutResourceId, position, convertView, parent)
+        return getViewFromResource(itemLayoutResourceId, position, convertView, parent) { viewHolder, item ->
+            viewHolder.fill(item)
+        }
     }
 
-    protected fun getViewFromResource(layoutResId: Int, position: Int, convertView: View?, parent: ViewGroup?): View {
+    override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup?): View {
+        return getViewFromResource(itemLayoutResourceId, position, convertView, parent) { viewHolder, item ->
+            viewHolder.fillAsDropDown(item)
+        }
+    }
+
+    protected fun getViewFromResource(
+        layoutResId: Int,
+        position: Int,
+        convertView: View?,
+        parent: ViewGroup?,
+        fillViewHolder: (viewHolder: ViewHolder<T>, item: T) -> Unit
+    ): View {
 
         val viewHolder: ViewHolder<T>
 
@@ -82,7 +96,7 @@ abstract class ListHoldingListAdapter<T, V: ListHoldingListAdapter.ViewHolder<T>
                 convertView
             }
 
-        viewHolder.fill(list[position])
+        fillViewHolder(viewHolder, list[position])
 
         return itemView
     }
@@ -91,5 +105,6 @@ abstract class ListHoldingListAdapter<T, V: ListHoldingListAdapter.ViewHolder<T>
     abstract class ViewHolder<ItemType> {
         abstract fun init(itemView: View)
         abstract fun fill(item: ItemType)
+        abstract fun fillAsDropDown(item: ItemType)
     }
 }
