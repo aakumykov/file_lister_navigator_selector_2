@@ -173,9 +173,6 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
 
     private fun onSelectedStorageChanged(storage: Storage?) {
         Log.d(TAG, "onSelectedStorageChanged() called with: storage = $storage")
-        /*storage?.also {
-            viewModel.changeSelectedStorage(storage)
-        }*/
     }
 
 
@@ -311,9 +308,9 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
 
     // Для выпадающего списка выборщика хранилища
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-//        viewModel.storageList.value?.get(position)?.also { storage ->
-//            viewModel.changeSelectedStorage(storage)
-//        }
+        viewModel.storageList.value?.get(position)?.also { storage ->
+            viewModel.changeSelectedStorage(storage)
+        }
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
