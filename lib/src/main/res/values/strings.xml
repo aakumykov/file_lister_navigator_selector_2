@@ -29,7 +29,7 @@
     <string name="write_access_denied">Write access denied</string>
     <string name="internal_storage_title">Внутренняя память</string>
     <string name="external_storage_title">SD-карта</string>
-    <string name="storage_selector_spinner_prompt">Выберите хранилище</string>
+    <string name="storage_selector_spinner_prompt">Выбор хранилища</string>
     <string name="description_storage_list_storage_type_icon">Значок типа хранилища</string>
 </resources>
 

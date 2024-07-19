@@ -55,13 +55,14 @@
     <Spinner
         android:id="@+id/storageSelectorSpinner"
         style="@style/flns_dialog_header_button"
-        android:padding="12dp"
+        android:paddingVertical="8dp"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@id/refreshButton"
         android:layout_toStartOf="@id/dialogCloseButton"
         android:gravity="center_horizontal"
         android:background="#cca"
         android:textColor="@color/design_default_color_on_primary"
+        android:prompt="@string/storage_selector_spinner_prompt"
         />
 
     <ImageView

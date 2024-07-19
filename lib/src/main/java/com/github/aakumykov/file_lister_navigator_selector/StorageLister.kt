@@ -1,6 +1,5 @@
 package com.github.aakumykov.file_lister_navigator_selector
 
-import android.app.Application
 import android.content.Context
 import android.os.Environment
 import androidx.annotation.StringRes

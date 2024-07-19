@@ -62,14 +62,17 @@ abstract class ListHoldingListAdapter<T, V: ListHoldingListAdapter.ViewHolder<T>
         return list[position].hashCode().toLong()
     }
 
-
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+        return getViewFromResource(itemLayoutResourceId, position, convertView, parent)
+    }
+
+    protected fun getViewFromResource(layoutResId: Int, position: Int, convertView: View?, parent: ViewGroup?): View {
 
         val viewHolder: ViewHolder<T>
 
         val itemView =
             if (convertView == null) {
-                val itemView = LayoutInflater.from(parent!!.context).inflate(itemLayoutResourceId, parent, false)
+                val itemView = LayoutInflater.from(parent!!.context).inflate(layoutResId, parent, false)
                 viewHolder = createViewHolder(itemView).apply { init(itemView) }
                 itemView.tag = viewHolder
                 itemView

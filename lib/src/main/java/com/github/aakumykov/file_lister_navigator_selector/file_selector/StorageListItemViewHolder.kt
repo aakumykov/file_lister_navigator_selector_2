@@ -9,14 +9,14 @@ import com.github.aakumykov.file_lister_navigator_selector.utils.ListHoldingList
 
 class StorageListItemViewHolder : ListHoldingListAdapter.ViewHolder<Storage>() {
 
-    private lateinit var storageLabelView: TextView
+    private lateinit var storageListItemView: TextView
 
     override fun init(itemView: View) {
-        storageLabelView = itemView.findViewById(R.id.storageLabelView)
+        storageListItemView = itemView.findViewById(R.id.storageLabelView)
     }
 
     override fun fill(item: Storage) {
-        storageLabelView.apply {
+        storageListItemView.apply {
             text = item.label
             setCompoundDrawablesWithIntrinsicBounds(item.iconId, 0, 0, 0);
         }

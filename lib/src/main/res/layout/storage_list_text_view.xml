@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:id="@+id/storageLabelView"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:text="Имя хранилища"
+
     android:textSize="14sp"
     android:textColor="@color/text_on_write"
-    android:id="@+id/storageLabelView"
+
     android:singleLine="true"
     android:ellipsize="end"
     android:gravity="center_vertical"
+
     android:drawableStart="@drawable/ic_storage_sd_card"
-/>
+
+    tools:text="Имя хранилища"
+    />
