@@ -16,14 +16,14 @@ class StorageLister(
         return mutableListOf(
 
             Storage(
-                R.drawable.ic_storage_phone,
+                R.drawable.ic_storage_phone_drop_down,
                 applicationContext.getString(internalStorageTitle),
                 Environment.getExternalStorageDirectory().absolutePath,
             ),
 
             ExternalSDCardDetector.getExternalCardDirectory(applicationContext)?.let { path ->
                 Storage(
-                    R.drawable.ic_storage_sd_card,
+                    R.drawable.ic_storage_sd_card_selected,
                     applicationContext.getString(externalStorageTitle),
                     path
                 )

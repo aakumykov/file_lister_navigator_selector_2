@@ -60,7 +60,6 @@
         android:layout_toEndOf="@id/refreshButton"
         android:layout_toStartOf="@id/dialogCloseButton"
         android:gravity="center_horizontal"
-        android:background="#cca"
         android:textColor="@color/design_default_color_on_primary"
         android:prompt="@string/storage_selector_spinner_prompt"
         />

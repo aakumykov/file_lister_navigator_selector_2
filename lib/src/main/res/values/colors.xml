@@ -4,5 +4,5 @@
     <color name="error_view_bg">#FFEBEE</color>
     <color name="list_divider">#E1E1E1</color>
     <color name="file_info">#636363</color>
-    <color name="text_on_write">#525252</color>
+    <color name="text_on_white">#525252</color>
 </resources>
