@@ -150,6 +150,7 @@ class FileSelectorViewModel<SortingModeType> (
     fun changeSelectedStorage(storage: Storage) {
         _selectedStorage.value = storage
         fileExplorer.changeDir(DirItem.fromPath(storage.absolutePath))
+        listCurrentPath()
     }
 
 
