@@ -40,6 +40,6 @@ class StorageListItemViewHolder : ListHoldingListAdapter.ViewHolder<Storage>() {
             iconView.colorize(colorRes)
         }
 
-        titleView.setPadding(8)
+        titleView.setPadding(12)
     }
 }
