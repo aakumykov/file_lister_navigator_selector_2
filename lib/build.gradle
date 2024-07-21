@@ -67,6 +67,8 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10.1'
 
     api 'com.github.aakumykov:extensible_sorting_comparator:0.0.2'
+
+    implementation "com.github.aakumykov:android_storage_lister:0.0.5-alpha"
 }
 
 publishing {

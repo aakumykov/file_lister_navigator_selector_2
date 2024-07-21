@@ -5,20 +5,19 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.github.aakumykov.file_lister_navigator_selector.StorageLister
+import com.github.aakumykov.android_storage_lister.AndroidStorageLister
 import com.github.aakumykov.file_lister_navigator_selector.entities.Storage
 import com.github.aakumykov.file_lister_navigator_selector.file_explorer.FileExplorer
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.DirItem
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.ParentDirItem
-import com.github.aakumykov.file_lister_navigator_selector.utils.StorageDetector
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class FileSelectorViewModel<SortingModeType> (
     val fileExplorer: FileExplorer<SortingModeType>,
-    private val storageLister: StorageLister,
+    private val storageLister: IconizedAndroidStorageLister,
     private var isMultipleSelectionMode: Boolean,
 )
     : ViewModel()
@@ -57,7 +56,7 @@ class FileSelectorViewModel<SortingModeType> (
     }
 
     private fun detectStorages() {
-        storageLister.listStorages().also { list ->
+        storageLister.storageDirectories.also { list ->
             if (list.size > 0) {
                 _storageList.value = list
                 _selectedStorage.value = list.first()
@@ -149,14 +148,14 @@ class FileSelectorViewModel<SortingModeType> (
 
     fun changeSelectedStorage(storage: Storage) {
         _selectedStorage.value = storage
-        fileExplorer.changeDir(DirItem.fromPath(storage.absolutePath))
+        fileExplorer.changeDir(DirItem.fromPath(storage.path))
         listCurrentPath()
     }
 
 
     class Factory<SortingModeType>(
         private val fileExplorer: FileExplorer<SortingModeType>,
-        private val storageLister: StorageLister,
+        private val storageLister: IconizedAndroidStorageLister,
         private val isMultipleSelectionMode: Boolean
     )
         : ViewModelProvider.Factory

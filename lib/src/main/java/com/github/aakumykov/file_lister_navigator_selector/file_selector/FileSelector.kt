@@ -12,7 +12,6 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import com.github.aakumykov.file_lister_navigator_selector.FileListAdapter
 import com.github.aakumykov.file_lister_navigator_selector.R
-import com.github.aakumykov.file_lister_navigator_selector.StorageLister
 import com.github.aakumykov.file_lister_navigator_selector.databinding.DialogFileSelectorBinding
 import com.github.aakumykov.file_lister_navigator_selector.dir_creator_dialog.DirCreatorDialog
 import com.github.aakumykov.file_lister_navigator_selector.entities.Storage
@@ -51,12 +50,8 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
         )
     }
 
-    private fun createStorageLister(): StorageLister {
-        return StorageLister(
-            requireContext().applicationContext,
-            R.string.internal_storage_title,
-            R.string.external_storage_title
-        )
+    private fun createStorageLister(): IconizedAndroidStorageLister {
+        return IconizedAndroidStorageLister(requireContext().applicationContext)
     }
 
     private val gson by lazy { Gson() }

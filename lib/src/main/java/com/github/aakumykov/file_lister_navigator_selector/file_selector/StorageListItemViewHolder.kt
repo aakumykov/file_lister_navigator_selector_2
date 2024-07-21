@@ -21,8 +21,8 @@ class StorageListItemViewHolder : ListHoldingListAdapter.ViewHolder<Storage>() {
     }
 
     override fun fill(item: Storage) {
-        titleView.text = item.label
-        iconView.setImageResource(item.iconId)
+        titleView.text = item.name
+        iconView.setImageResource(item.icon)
 
         com.google.android.material.R.color.design_default_color_on_primary.also { colorRes ->
             titleView.setColorResource(colorRes)
