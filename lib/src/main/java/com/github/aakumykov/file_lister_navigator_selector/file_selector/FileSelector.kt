@@ -42,6 +42,8 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
     private lateinit var storageSpinnerAdapter: StorageListAdapter
     private lateinit var filesListAdapter: FileListAdapter<SortingModeType>
 
+    private var isFirstRun: Boolean = true
+
     private val viewModel: FileSelectorViewModel<SortingModeType> by viewModels {
         FileSelectorViewModel.Factory(
             createFileExplorer(),
@@ -96,8 +98,9 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
         prepareButtons()
         subscribeToViewModel()
 
-        if (null == savedInstanceState)
-            viewModel.startWork()
+        isFirstRun = (null == savedInstanceState)
+
+        if (isFirstRun) viewModel.startWork()
     }
 
     private fun prepareStorageSelector() {
@@ -159,7 +162,7 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
 
 
     private fun onStorageListChanged(list: List<Storage>?) {
-        Log.d(TAG, "onStorageListChanged() called with: list = $list")
+//        Log.d(TAG, "onStorageListChanged() called with: list = $list")
         list?.also {
             storageSpinnerAdapter.setList(list)
         }
@@ -167,7 +170,7 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
 
 
     private fun onSelectedStorageChanged(storage: Storage?) {
-        Log.d(TAG, "onSelectedStorageChanged() called with: storage = $storage")
+//        Log.d(TAG, "onSelectedStorageChanged() called with: storage = $storage")
     }
 
 
@@ -176,14 +179,19 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
     }
 
     private fun onListChanged(list: List<FSItem>?) {
-        list?.also {
-            filesListAdapter.setList(it)
-        }.also {
-            if (0 == list?.size)
-                binding.emptyListLabel.visibility = View.VISIBLE
-            else
-                binding.emptyListLabel.visibility = View.GONE
-        }
+        list
+            ?.also {
+                filesListAdapter.setList(it)
+            }
+            .apply {
+                Log.d(TAG, ("onListChanged(): " + this?.joinToString(", ") { it.name }) ?: "")
+            }
+            .also {
+                if (0 == list?.size)
+                    binding.emptyListLabel.visibility = View.VISIBLE
+                else
+                    binding.emptyListLabel.visibility = View.GONE
+            }
     }
 
     private fun onSelectedListChanged(selectedItemsList: List<FSItem>?) {
@@ -300,12 +308,12 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
         return true
     }
 
-
     // Для выпадающего списка выборщика хранилища
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        viewModel.storageList.value?.get(position)?.also { storage ->
-            viewModel.changeSelectedStorage(storage)
-        }
+        if (isFirstRun)
+            viewModel.storageList.value?.get(position)?.also { storage ->
+                viewModel.changeSelectedStorage(storage)
+            }
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
