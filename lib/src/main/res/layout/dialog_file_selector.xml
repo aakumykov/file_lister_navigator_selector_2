@@ -40,7 +40,7 @@
         android:layout_alignBottom="@id/storageSelectorSpinner"
         android:contentDescription="@string/description_sort_button"/>
 
-    <!--<TextView
+    <TextView
         android:id="@+id/storageSelectorSpinner"
         style="@style/flns_dialog_header_button"
         android:padding="12dp"
@@ -50,19 +50,7 @@
         android:text="@string/DIALOG_title_common_mode"
         android:gravity="center_horizontal"
         android:textColor="@color/design_default_color_on_primary"
-        android:textStyle="bold" />-->
-
-    <Spinner
-        android:id="@+id/storageSelectorSpinner"
-        style="@style/flns_dialog_header_button"
-        android:paddingVertical="8dp"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@id/refreshButton"
-        android:layout_toStartOf="@id/dialogCloseButton"
-        android:gravity="center_horizontal"
-        android:textColor="@color/design_default_color_on_primary"
-        android:prompt="@string/storage_selector_spinner_prompt"
-        />
+        android:textStyle="bold" />
 
     <ImageView
         android:id="@+id/dialogCloseButton"

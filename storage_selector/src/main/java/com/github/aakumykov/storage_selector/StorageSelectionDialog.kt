@@ -82,6 +82,10 @@ class StorageSelectionDialog : DialogFragment(), AdapterView.OnItemClickListener
         ) {
             fragmentManager.setFragmentResultListener(STORAGE_SELECTION_REQUEST, lifecycleOwner, listener)
         }
+
+        fun show(fragmentManager: FragmentManager) {
+            create(emptyList()).show(fragmentManager, TAG)
+        }
     }
 
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {

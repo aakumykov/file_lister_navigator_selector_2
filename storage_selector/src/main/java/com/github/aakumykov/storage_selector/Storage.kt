@@ -5,12 +5,15 @@ import androidx.annotation.DrawableRes
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
+@Deprecated("Переименовать в SelectableStorage")
 class Storage(
     val name: String,
     val path: String,
+    val type: StorageType,
     @DrawableRes val icon: Int
 ): Parcelable {
-    fun describe(): String = Storage::class.java.simpleName + " { $name, $path }"
+
+    val description: String get() = Storage::class.java.simpleName + " { [$type] name: $name ($path) }"
 
     override fun equals(other: Any?): Boolean {
         return when {

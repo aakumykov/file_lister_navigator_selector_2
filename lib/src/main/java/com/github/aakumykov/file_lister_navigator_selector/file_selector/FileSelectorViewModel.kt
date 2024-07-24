@@ -17,7 +17,6 @@ import kotlinx.coroutines.withContext
 
 class FileSelectorViewModel<SortingModeType> (
     val fileExplorer: FileExplorer<SortingModeType>,
-    private val storageLister: IconizedAndroidStorageLister,
     private var isMultipleSelectionMode: Boolean,
 )
     : ViewModel()
@@ -34,7 +33,6 @@ class FileSelectorViewModel<SortingModeType> (
 
     private val selectedItems: MutableList<FSItem> = mutableListOf()
 
-    val storageList: LiveData<List<Storage>> = _storageList
     val selectedStorage: LiveData<Storage> = _selectedStorage
 
     val path: LiveData<String> = _currentPath
@@ -51,18 +49,9 @@ class FileSelectorViewModel<SortingModeType> (
     private val isSingleSelectionMode get() = !isMultipleSelectionMode
 
     fun startWork() {
-        detectStorages()
         listCurrentPath()
     }
 
-    private fun detectStorages() {
-        storageLister.storageDirectories.also { list ->
-            if (list.size > 0) {
-                _storageList.value = list
-                _selectedStorage.value = list.first()
-            }
-        }
-    }
 
     fun reopenCurrentDir() {
         listCurrentPath()
@@ -155,7 +144,6 @@ class FileSelectorViewModel<SortingModeType> (
 
     class Factory<SortingModeType>(
         private val fileExplorer: FileExplorer<SortingModeType>,
-        private val storageLister: IconizedAndroidStorageLister,
         private val isMultipleSelectionMode: Boolean
     )
         : ViewModelProvider.Factory
@@ -164,7 +152,6 @@ class FileSelectorViewModel<SortingModeType> (
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return FileSelectorViewModel(
                 fileExplorer,
-                storageLister,
                 isMultipleSelectionMode,
             ) as T
         }
