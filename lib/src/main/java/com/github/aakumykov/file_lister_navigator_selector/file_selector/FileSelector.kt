@@ -7,6 +7,7 @@ import android.widget.AdapterView
 import android.widget.CheckBox
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentResultListener
@@ -24,7 +25,7 @@ import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.SimpleFSItem
 import com.github.aakumykov.file_lister_navigator_selector.sorting_info_supplier.SortingInfoSupplier
 import com.github.aakumykov.file_lister_navigator_selector.sorting_mode_translator.SortingModeTranslator
-import com.github.aakumykov.storage_selector.StorageSelectionDialog
+import com.github.aakumykov.storage_selector.StorageSelector
 import com.gitlab.aakumykov.exception_utils_module.ExceptionUtils
 import com.google.gson.Gson
 
@@ -87,15 +88,30 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
         // TODO: инкапсулировать в диалоге создания каталога
         childFragmentManager.setFragmentResultListener(DirCreatorDialog.DIR_NAME, viewLifecycleOwner, ::onDirCreationResult)
 
+        prepareStorageSelector()
         prepareListAdapter()
         prepareButtons()
         subscribeToViewModel()
 
-        StorageSelectionDialog.listenForResult(childFragmentManager, viewLifecycleOwner, this)
+        StorageSelector.listenForResult(childFragmentManager, viewLifecycleOwner, this)
 
         isFirstRun = (null == savedInstanceState)
 
         if (isFirstRun) viewModel.startWork()
+    }
+
+    private fun prepareStorageSelector() {
+        StorageSelector.getStorageList(requireContext()).first().also { androidStorageDirectory ->
+            binding.storageSelectorSpinner.apply {
+                text = androidStorageDirectory.name
+
+                val drawable = resources.getDrawable(StorageSelector.getIconFor(androidStorageDirectory)).apply {
+                    setTint(resources.getColor(android.R.color.system_on_primary_light))
+                }
+//                setCompoundDrawablesWithIntrinsicBounds(, 0, 0, 0)
+                setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
+            }
+        }
     }
 
 
@@ -119,7 +135,7 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
     }
 
     private fun onStorageSelectionButtonClicked() {
-        StorageSelectionDialog.show(childFragmentManager)
+        StorageSelector.show(childFragmentManager)
     }
 
     private fun onRefreshRequested() {
@@ -342,13 +358,13 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
 
     override fun onFragmentResult(requestKey: String, result: Bundle) {
         when(requestKey) {
-            StorageSelectionDialog.STORAGE_SELECTION_REQUEST -> processStorageSelectionResult(result)
+            StorageSelector.STORAGE_SELECTION_REQUEST -> processStorageSelectionResult(result)
         }
     }
 
     private fun processStorageSelectionResult(result: Bundle) {
-        result.getParcelable<com.github.aakumykov.storage_selector.Storage>(StorageSelectionDialog.SELECTED_STORAGE)
-            ?.also { selectedStorage: com.github.aakumykov.storage_selector.Storage ->
+        result.getParcelable<com.github.aakumykov.storage_selector.StorageWithIcon>(StorageSelector.SELECTED_STORAGE)
+            ?.also { selectedStorage: com.github.aakumykov.storage_selector.StorageWithIcon ->
                 viewModel.changeSelectedStorage(
                     Storage(
                         name = selectedStorage.name,

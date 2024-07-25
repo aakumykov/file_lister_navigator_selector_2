@@ -48,9 +48,12 @@
         android:layout_toEndOf="@id/refreshButton"
         android:layout_toStartOf="@id/dialogCloseButton"
         android:text="@string/DIALOG_title_common_mode"
+        tools:text="Хранилище"
         android:gravity="center_horizontal"
         android:textColor="@color/design_default_color_on_primary"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:singleLine="true"
+        android:ellipsize="end" />
 
     <ImageView
         android:id="@+id/dialogCloseButton"

@@ -7,11 +7,12 @@ import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.core.content.res.ResourcesCompat
+import com.github.aakumykov.android_storage_lister.StorageDirectory
 import com.github.aakumykov.list_holding_list_adapter.ListHoldingListAdapter
 
 class StorageListViewHolder(
     @ColorRes private val selectedItemBg: Int
-) : ListHoldingListAdapter.ViewHolder<Storage>() {
+) : ListHoldingListAdapter.ViewHolder<StorageWithIcon>() {
 
     private lateinit var listItemView: View
     private lateinit var iconView: ImageView
@@ -25,14 +26,14 @@ class StorageListViewHolder(
     }
 
 
-    override fun fill(item: Storage, isSelected: Boolean) {
+    override fun fill(item: StorageWithIcon, isSelected: Boolean) {
         this.iconView.setImageResource(item.icon)
         this.nameView.text = item.name
         decorateAsSelected(isSelected)
     }
 
 
-    override fun fillAsDropDown(item: Storage, isSelected: Boolean) {
+    override fun fillAsDropDown(item: StorageWithIcon, isSelected: Boolean) {
         fill(item, isSelected)
     }
 

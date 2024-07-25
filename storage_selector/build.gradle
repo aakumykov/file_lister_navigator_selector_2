@@ -39,7 +39,7 @@ dependencies {
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
 
-    implementation "com.github.aakumykov:android_storage_lister:0.0.5-alpha"
+    implementation "com.github.aakumykov:android_storage_lister:3.0.0-alpha"
     implementation "com.github.aakumykov:list_holding_list_adapter:0.0.1-alpha"
 
     implementation "androidx.fragment:fragment-ktx:1.8.1"

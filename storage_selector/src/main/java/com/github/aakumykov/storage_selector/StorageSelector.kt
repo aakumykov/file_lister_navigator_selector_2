@@ -1,11 +1,12 @@
 package com.github.aakumykov.storage_selector
 
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ListView
+import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
@@ -14,22 +15,25 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentResultListener
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.LifecycleOwner
+import com.github.aakumykov.android_storage_lister.AndroidStorageDirectory
+import com.github.aakumykov.android_storage_lister.AndroidStorageLister
+import com.github.aakumykov.android_storage_lister.StorageDirectory
 import com.github.aakumykov.list_holding_list_adapter.ListHoldingListAdapter
 import kotlin.collections.ArrayList
 
-class StorageSelectionDialog : DialogFragment(), AdapterView.OnItemClickListener {
+class StorageSelector : DialogFragment(), AdapterView.OnItemClickListener {
 
-    private lateinit var storageListAdapter: ListHoldingListAdapter<Storage, StorageListViewHolder>
+    private lateinit var storageListAdapter: ListHoldingListAdapter<StorageWithIcon, StorageListViewHolder>
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
         // Список для отображения
-        arguments?.getParcelableArrayList<Storage>(LIST_TO_DISPLAY)?.also { list ->
+        arguments?.getParcelableArrayList<StorageWithIcon>(LIST_TO_DISPLAY)?.also { list ->
             storageListAdapter.setList(list)
         }
 
         // Предвыбранный элемент
-        arguments?.getParcelable<Storage>(SELECTED_STORAGE)?.also { selectedStorage ->
+        arguments?.getParcelable<StorageWithIcon>(SELECTED_STORAGE)?.also { selectedStorage ->
             storageListAdapter.setSelectedItem(selectedStorage)
             storageListAdapter.notifyDataSetChanged()
 
@@ -37,6 +41,11 @@ class StorageSelectionDialog : DialogFragment(), AdapterView.OnItemClickListener
 
         // Адаптер списка
         storageListAdapter = StorageListAdapter()
+        storageListAdapter.setList(
+            getStorageList(requireContext()).map { androidStorageDirectory ->
+                StorageWithIcon.create(androidStorageDirectory)
+            }
+        )
 
         // Создание разметки списка
         val listLayout = layoutInflater.inflate(R.layout.dialog_storage_selector, null)
@@ -57,37 +66,6 @@ class StorageSelectionDialog : DialogFragment(), AdapterView.OnItemClickListener
             .create()
     }
 
-    companion object {
-
-        val TAG: String = StorageSelectionDialog::class.java.simpleName
-
-        const val LIST_TO_DISPLAY = "LIST_TO_DISPLAY"
-        const val SELECTED_STORAGE = "SELECTED_STORAGE"
-        const val STORAGE_SELECTION_REQUEST = "STORAGE_SELECTION_REQUEST"
-        const val STORAGE_SELECTION_RESULT = "STORAGE_SELECTION_RESULT"
-
-        fun create(listToDisplay: List<Storage>, selectedStorage: Storage? = null): StorageSelectionDialog {
-            return StorageSelectionDialog().apply {
-                arguments = bundleOf(
-                    LIST_TO_DISPLAY to ArrayList(listToDisplay),
-                    SELECTED_STORAGE to selectedStorage,
-                )
-            }
-        }
-
-        fun listenForResult(
-            fragmentManager: FragmentManager,
-            lifecycleOwner: LifecycleOwner,
-            listener: FragmentResultListener
-        ) {
-            fragmentManager.setFragmentResultListener(STORAGE_SELECTION_REQUEST, lifecycleOwner, listener)
-        }
-
-        fun show(fragmentManager: FragmentManager) {
-            create(emptyList()).show(fragmentManager, TAG)
-        }
-    }
-
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
 
         val selectedStorage = storageListAdapter.getItem(position)
@@ -100,5 +78,50 @@ class StorageSelectionDialog : DialogFragment(), AdapterView.OnItemClickListener
         ))
 
         dismiss()
+    }
+
+    companion object {
+
+        val TAG: String = StorageSelector::class.java.simpleName
+
+        const val LIST_TO_DISPLAY = "LIST_TO_DISPLAY"
+        const val SELECTED_STORAGE = "SELECTED_STORAGE"
+        const val STORAGE_SELECTION_REQUEST = "STORAGE_SELECTION_REQUEST"
+        const val STORAGE_SELECTION_RESULT = "STORAGE_SELECTION_RESULT"
+
+        fun create(listToDisplay: List<StorageWithIcon>, selectedStorage: StorageWithIcon? = null): StorageSelector {
+            return StorageSelector().apply {
+                arguments = bundleOf(
+                    LIST_TO_DISPLAY to ArrayList(listToDisplay),
+                    SELECTED_STORAGE to selectedStorage,
+                )
+            }
+        }
+
+
+        fun listenForResult(
+            fragmentManager: FragmentManager,
+            lifecycleOwner: LifecycleOwner,
+            listener: FragmentResultListener
+        ) {
+            fragmentManager.setFragmentResultListener(STORAGE_SELECTION_REQUEST, lifecycleOwner, listener)
+        }
+
+
+        fun show(fragmentManager: FragmentManager) {
+            create(emptyList()).show(fragmentManager, TAG)
+        }
+
+
+        fun getStorageList(context: Context): ArrayList<AndroidStorageDirectory> {
+            return ArrayList(
+                AndroidStorageLister(context).storageDirectories.toList()
+            )
+        }
+
+        @DrawableRes
+        fun getIconFor(androidStorageDirectory: AndroidStorageDirectory): Int {
+            return StorageWithIcon.iconFor(androidStorageDirectory.type)
+        }
     }
 }
