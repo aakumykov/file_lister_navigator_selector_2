@@ -17,7 +17,6 @@ import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.LifecycleOwner
 import com.github.aakumykov.android_storage_lister.AndroidStorageDirectory
 import com.github.aakumykov.android_storage_lister.AndroidStorageLister
-import com.github.aakumykov.android_storage_lister.StorageDirectory
 import com.github.aakumykov.list_holding_list_adapter.ListHoldingListAdapter
 import kotlin.collections.ArrayList
 
@@ -88,19 +87,11 @@ class StorageSelector : DialogFragment(), AdapterView.OnItemClickListener {
         const val STORAGE_SELECTION_REQUEST = "STORAGE_SELECTION_REQUEST"
         const val STORAGE_SELECTION_RESULT = "STORAGE_SELECTION_RESULT"
 
-        fun create(listToDisplay: List<StorageWithIcon>, selectedStorage: StorageWithIcon? = null): StorageSelector {
-            return createReal(listToDisplay, selectedStorage)
-        }
-
-        fun create(selectedStorage: StorageWithIcon? = null): StorageSelector {
-            return createReal(selectedStorage = selectedStorage)
-        }
-
-        private fun createReal(listToDisplay: List<StorageWithIcon>? = null, selectedStorage: StorageWithIcon? = null): StorageSelector {
+        fun create(storageList: List<AndroidStorageDirectory>, selectedStorage: AndroidStorageDirectory? = null): StorageSelector {
             return StorageSelector().apply {
                 arguments = Bundle().apply {
-                    if (null != listToDisplay) putParcelableArrayList(LIST_TO_DISPLAY, java.util.ArrayList(listToDisplay))
-                    if (null != selectedStorage) putParcelable(SELECTED_STORAGE, selectedStorage)
+                    LIST_TO_DISPLAY to storageList
+                    SELECTED_STORAGE to selectedStorage
                 }
             }
         }
@@ -112,11 +103,6 @@ class StorageSelector : DialogFragment(), AdapterView.OnItemClickListener {
             listener: FragmentResultListener
         ) {
             fragmentManager.setFragmentResultListener(STORAGE_SELECTION_REQUEST, lifecycleOwner, listener)
-        }
-
-
-        fun show(fragmentManager: FragmentManager) {
-            create().show(fragmentManager, TAG)
         }
 
 

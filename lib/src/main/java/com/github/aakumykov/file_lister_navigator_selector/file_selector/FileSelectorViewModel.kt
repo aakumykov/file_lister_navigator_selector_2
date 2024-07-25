@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.github.aakumykov.android_storage_lister.AndroidStorageDirectory
+import com.github.aakumykov.android_storage_lister.AndroidStorageLister
 import com.github.aakumykov.file_lister_navigator_selector.file_explorer.FileExplorer
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.DirItem
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
@@ -17,12 +18,19 @@ import kotlinx.coroutines.withContext
 class FileSelectorViewModel<SortingModeType> (
     val fileExplorer: FileExplorer<SortingModeType>,
     private var isMultipleSelectionMode: Boolean,
+    private val androidStorageLister: AndroidStorageLister
 )
     : ViewModel()
 {
+    private val _storageList: MutableLiveData<List<AndroidStorageDirectory>> = MutableLiveData()
     private val _selectedStorage: MutableLiveData<AndroidStorageDirectory> = MutableLiveData()
 
+    val storageList: List<AndroidStorageDirectory>? = _storageList.value
     val selectedStorage: LiveData<AndroidStorageDirectory> = _selectedStorage
+
+    fun setStorageList(storageList: List<AndroidStorageDirectory>) {
+        _storageList.value = storageList
+    }
 
     fun setSelectedStorage(storageDirectory: AndroidStorageDirectory) {
         _selectedStorage.value = storageDirectory
@@ -140,7 +148,8 @@ class FileSelectorViewModel<SortingModeType> (
 
     class Factory<SortingModeType>(
         private val fileExplorer: FileExplorer<SortingModeType>,
-        private val isMultipleSelectionMode: Boolean
+        private val isMultipleSelectionMode: Boolean,
+        private val androidStorageLister: AndroidStorageLister
     )
         : ViewModelProvider.Factory
     {
@@ -149,6 +158,7 @@ class FileSelectorViewModel<SortingModeType> (
             return FileSelectorViewModel(
                 fileExplorer,
                 isMultipleSelectionMode,
+                androidStorageLister = androidStorageLister
             ) as T
         }
     }

@@ -13,6 +13,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentResultListener
 import androidx.fragment.app.viewModels
 import com.github.aakumykov.android_storage_lister.AndroidStorageDirectory
+import com.github.aakumykov.android_storage_lister.AndroidStorageLister
 import com.github.aakumykov.file_lister_navigator_selector.FileListAdapter
 import com.github.aakumykov.file_lister_navigator_selector.R
 import com.github.aakumykov.file_lister_navigator_selector.databinding.DialogFileSelectorBinding
@@ -20,6 +21,7 @@ import com.github.aakumykov.file_lister_navigator_selector.dir_creator_dialog.Di
 import com.github.aakumykov.file_lister_navigator_selector.extensions.hide
 import com.github.aakumykov.file_lister_navigator_selector.extensions.show
 import com.github.aakumykov.file_lister_navigator_selector.extensions.showIf
+import com.github.aakumykov.file_lister_navigator_selector.extensions.showToast
 import com.github.aakumykov.file_lister_navigator_selector.file_explorer.FileExplorer
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.SimpleFSItem
@@ -46,11 +48,12 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
     private val viewModel: FileSelectorViewModel<SortingModeType> by viewModels {
         FileSelectorViewModel.Factory(
             createFileExplorer(),
-            isMultipleSelectionMode()
+            isMultipleSelectionMode(),
+            createAndroidStorageLister()
         )
     }
 
-
+    
     private val gson by lazy { Gson() }
 
 
@@ -79,6 +82,11 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
         onWriteAccessRejected: (errorMsg: String?) -> Unit
     )
 
+    
+    private fun createAndroidStorageLister(): AndroidStorageLister {
+        return AndroidStorageLister(requireContext().applicationContext)
+    }
+    
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -87,8 +95,7 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
 
         // TODO: инкапсулировать в диалоге создания каталога
         childFragmentManager.setFragmentResultListener(DirCreatorDialog.DIR_NAME, viewLifecycleOwner, ::onDirCreationResult)
-
-        prepareStorageSelector()
+        
         prepareListAdapter()
         prepareButtons()
         subscribeToViewModel()
@@ -99,24 +106,7 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
 
         if (isFirstRun) viewModel.startWork()
     }
-
-    private fun prepareStorageSelector() {
-
-        viewModel.setSelectedStorage(StorageSelector.getStorageList(requireContext()).first())
-
-        /*StorageSelector.getStorageList(requireContext()).first().also { androidStorageDirectory ->
-            binding.storageSelectorSpinner.apply {
-                text = androidStorageDirectory.name
-
-                val drawable = resources.getDrawable(StorageSelector.getIconFor(androidStorageDirectory)).apply {
-                    setTint(resources.getColor(android.R.color.system_on_primary_light))
-                }
-//                setCompoundDrawablesWithIntrinsicBounds(, 0, 0, 0)
-                setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
-            }
-        }*/
-    }
-
+    
 
     private fun subscribeToViewModel() {
         viewModel.selectedStorage.observe(viewLifecycleOwner, ::onSelectedStorageChanged)
@@ -128,7 +118,7 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
     }
 
     private fun prepareButtons() {
-        binding.storageSelectorSpinner.setOnClickListener { onStorageSelectionButtonClicked() }
+        binding.storageSelectionButton.setOnClickListener { onStorageSelectionButtonClicked() }
         binding.confirmSelectionButton.setOnClickListener { onConfirmSelectionClicked() }
         binding.dialogCloseButton.setOnClickListener { dismiss() }
         binding.createDirButton.setOnClickListener { onCreateDirClicked() }
@@ -138,7 +128,12 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
     }
 
     private fun onStorageSelectionButtonClicked() {
-        StorageSelector.show(childFragmentManager)
+        viewModel.storageList?.also { storageList ->
+            StorageSelector.create(
+                storageList = storageList,
+                selectedStorage = viewModel.selectedStorage.value
+            ).show(childFragmentManager, StorageSelector.TAG)
+        } ?: showToast(R.string.no_storage_info_available)
     }
 
     private fun onRefreshRequested() {
@@ -169,7 +164,7 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
 
     private fun onSelectedStorageChanged(androidStorageDirectory: AndroidStorageDirectory?) {
         androidStorageDirectory?.also {
-            binding.storageSelectorSpinner.apply {
+            binding.storageSelectionButton.apply {
                 text = androidStorageDirectory.name
                 ResourcesCompat.getDrawable(resources, StorageSelector.getIconFor(androidStorageDirectory), requireContext().theme)
                     ?.also {
