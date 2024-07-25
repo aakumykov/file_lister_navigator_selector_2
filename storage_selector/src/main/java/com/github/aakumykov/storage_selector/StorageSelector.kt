@@ -27,10 +27,16 @@ class StorageSelector : DialogFragment(), AdapterView.OnItemClickListener {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
-        // Список для отображения
-        arguments?.getParcelableArrayList<StorageWithIcon>(LIST_TO_DISPLAY)?.also { list ->
-            storageListAdapter.setList(list)
-        }
+        // Адаптер списка
+        storageListAdapter = StorageListAdapter()
+        storageListAdapter.setList(
+            getStorageList(requireContext())
+                .let { it }
+                .map { androidStorageDirectory ->
+                    StorageWithIcon.create(androidStorageDirectory)
+                }
+        )
+
 
         // Предвыбранный элемент
         arguments?.getParcelable<StorageWithIcon>(SELECTED_STORAGE)?.also { selectedStorage ->
@@ -39,13 +45,6 @@ class StorageSelector : DialogFragment(), AdapterView.OnItemClickListener {
 
         }
 
-        // Адаптер списка
-        storageListAdapter = StorageListAdapter()
-        storageListAdapter.setList(
-            getStorageList(requireContext()).map { androidStorageDirectory ->
-                StorageWithIcon.create(androidStorageDirectory)
-            }
-        )
 
         // Создание разметки списка
         val listLayout = layoutInflater.inflate(R.layout.dialog_storage_selector, null)
@@ -90,11 +89,19 @@ class StorageSelector : DialogFragment(), AdapterView.OnItemClickListener {
         const val STORAGE_SELECTION_RESULT = "STORAGE_SELECTION_RESULT"
 
         fun create(listToDisplay: List<StorageWithIcon>, selectedStorage: StorageWithIcon? = null): StorageSelector {
+            return createReal(listToDisplay, selectedStorage)
+        }
+
+        fun create(selectedStorage: StorageWithIcon? = null): StorageSelector {
+            return createReal(selectedStorage = selectedStorage)
+        }
+
+        private fun createReal(listToDisplay: List<StorageWithIcon>? = null, selectedStorage: StorageWithIcon? = null): StorageSelector {
             return StorageSelector().apply {
-                arguments = bundleOf(
-                    LIST_TO_DISPLAY to ArrayList(listToDisplay),
-                    SELECTED_STORAGE to selectedStorage,
-                )
+                arguments = Bundle().apply {
+                    if (null != listToDisplay) putParcelableArrayList(LIST_TO_DISPLAY, java.util.ArrayList(listToDisplay))
+                    if (null != selectedStorage) putParcelable(SELECTED_STORAGE, selectedStorage)
+                }
             }
         }
 
@@ -109,7 +116,7 @@ class StorageSelector : DialogFragment(), AdapterView.OnItemClickListener {
 
 
         fun show(fragmentManager: FragmentManager) {
-            create(emptyList()).show(fragmentManager, TAG)
+            create().show(fragmentManager, TAG)
         }
 
 

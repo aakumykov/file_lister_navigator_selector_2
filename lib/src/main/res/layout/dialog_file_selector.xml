@@ -49,11 +49,12 @@
         android:layout_toStartOf="@id/dialogCloseButton"
         android:text="@string/DIALOG_title_common_mode"
         tools:text="Хранилище"
-        android:gravity="center_horizontal"
+        android:gravity="center_vertical"
         android:textColor="@color/design_default_color_on_primary"
         android:textStyle="bold"
         android:singleLine="true"
-        android:ellipsize="end" />
+        android:ellipsize="end"
+        android:drawableStart="@drawable/ic_storage_internal" />
 
     <ImageView
         android:id="@+id/dialogCloseButton"

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="dialog_title">Выбор хранилища</string>
+    <string name="dialog_title">Storage selection</string>
     <string name="cancel">Cancel</string>
 </resources>
