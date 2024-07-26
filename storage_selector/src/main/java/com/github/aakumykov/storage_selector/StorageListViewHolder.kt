@@ -20,7 +20,7 @@ class StorageListViewHolder(
 
 
     override fun init(itemView: View) {
-        this.listItemView = itemView.findViewById(R.id.listItemView)
+        this.listItemView = itemView.findViewById(R.id.qwerty)
         this.iconView = itemView.findViewById(R.id.iconView)
         this.nameView = itemView.findViewById(R.id.nameView)
     }

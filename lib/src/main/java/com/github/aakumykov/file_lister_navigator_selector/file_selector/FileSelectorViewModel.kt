@@ -22,20 +22,12 @@ class FileSelectorViewModel<SortingModeType> (
 )
     : ViewModel()
 {
-    private val _storageList: MutableLiveData<List<AndroidStorageDirectory>> = MutableLiveData()
+    private var _storageList: MutableList<AndroidStorageDirectory> = mutableListOf()
+    val storageList: List<AndroidStorageDirectory>
+        get() = _storageList
+
     private val _selectedStorage: MutableLiveData<AndroidStorageDirectory> = MutableLiveData()
-
-    val storageList: List<AndroidStorageDirectory>? = _storageList.value
     val selectedStorage: LiveData<AndroidStorageDirectory> = _selectedStorage
-
-    fun setStorageList(storageList: List<AndroidStorageDirectory>) {
-        _storageList.value = storageList
-    }
-
-    fun setSelectedStorage(storageDirectory: AndroidStorageDirectory) {
-        _selectedStorage.value = storageDirectory
-        listCurrentPath()
-    }
 
     private val _currentPath: MutableLiveData<String> = MutableLiveData()
     private val _currentList: MutableLiveData<List<FSItem>> = MutableLiveData(emptyList())
@@ -61,8 +53,17 @@ class FileSelectorViewModel<SortingModeType> (
 
     fun startWork() {
         listCurrentPath()
+        listStorages()
     }
 
+    private fun listStorages() {
+        androidStorageLister.storageDirectories.also { storageList ->
+            _storageList = storageList
+            _selectedStorage.value = storageList.first {
+                fileExplorer.getCurrentPath() == it.path
+            }
+        }
+    }
 
     fun reopenCurrentDir() {
         listCurrentPath()
