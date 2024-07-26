@@ -9,6 +9,7 @@ import com.github.aakumykov.file_lister_navigator_selector.sorting_info_supplier
 import com.github.aakumykov.file_lister_navigator_selector.sorting_info_supplier.SortingInfoSupplier
 import com.github.aakumykov.file_lister_navigator_selector.sorting_mode_translator.SimpleSortingModeTranslator
 import com.github.aakumykov.file_lister_navigator_selector.sorting_mode_translator.SortingModeTranslator
+import com.github.aakumykov.file_lister_navigator_selector.storage_lister.StorageDirectoryWithIcon
 import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_dir_creator.YandexDiskDirCreator
 import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_dir_creator_dialog.YandexDiskDirCreatorDialog
 import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_file_lister.FileListerYandexDiskClient
@@ -39,6 +40,8 @@ class YandexDiskFileSelector : FileSelector<SimpleSortingMode>() {
     }
 
     override fun defaultReverseMode(): Boolean = false
+
+    override fun initialStorage(): StorageDirectoryWithIcon? = null
 
     override fun getDefaultInitialPath(): String = "/"
 

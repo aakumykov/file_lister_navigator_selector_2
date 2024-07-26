@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
     id 'maven-publish'
+    id 'kotlin-parcelize'
 }
 
 project.ext {
@@ -69,7 +70,7 @@ dependencies {
 
     api 'com.github.aakumykov:extensible_sorting_comparator:0.0.2'
 
-    implementation "com.github.aakumykov:android_storage_lister:0.0.5-alpha"
+    api "com.github.aakumykov:android_storage_lister:4.0.0-alpha"
 }
 
 publishing {

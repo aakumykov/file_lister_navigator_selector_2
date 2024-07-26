@@ -15,7 +15,6 @@ import com.github.aakumykov.file_lister_navigator_selector.FileListAdapter
 import com.github.aakumykov.file_lister_navigator_selector.R
 import com.github.aakumykov.file_lister_navigator_selector.databinding.DialogFileSelectorBinding
 import com.github.aakumykov.file_lister_navigator_selector.dir_creator_dialog.DirCreatorDialog
-import com.github.aakumykov.file_lister_navigator_selector.entities.Storage
 import com.github.aakumykov.file_lister_navigator_selector.extensions.hide
 import com.github.aakumykov.file_lister_navigator_selector.extensions.show
 import com.github.aakumykov.file_lister_navigator_selector.extensions.showIf
@@ -24,6 +23,7 @@ import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.SimpleFSItem
 import com.github.aakumykov.file_lister_navigator_selector.sorting_info_supplier.SortingInfoSupplier
 import com.github.aakumykov.file_lister_navigator_selector.sorting_mode_translator.SortingModeTranslator
+import com.github.aakumykov.file_lister_navigator_selector.storage_lister.StorageDirectoryWithIcon
 import com.github.aakumykov.storage_selector.StorageSelectionDialog
 import com.gitlab.aakumykov.exception_utils_module.ExceptionUtils
 import com.google.gson.Gson
@@ -44,11 +44,11 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
 
     private val viewModel: FileSelectorViewModel<SortingModeType> by viewModels {
         FileSelectorViewModel.Factory(
-            createFileExplorer(),
-            isMultipleSelectionMode()
+            fileExplorer = createFileExplorer(),
+            isMultipleSelectionMode = isMultipleSelectionMode(),
+            initialStorage = initialStorage()
         )
     }
-
 
     private val gson by lazy { Gson() }
 
@@ -64,6 +64,7 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
     @Deprecated("Оцени обоснованность этого метода")
     protected abstract fun defaultReverseMode(): Boolean
 
+    protected abstract fun initialStorage(): StorageDirectoryWithIcon?
 
     // Методы, создающие новый экземпляр, имеют приставку "create".
     protected abstract fun createFileExplorer(): FileExplorer<SortingModeType>
@@ -148,7 +149,7 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
     }
 
 
-    private fun onSelectedStorageChanged(storage: Storage?) {
+    private fun onSelectedStorageChanged(storage: StorageDirectoryWithIcon?) {
         storage?.also {
             binding.storageSelectorSpinner.text = storage.name
         }
@@ -296,7 +297,6 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
         viewModel.reopenCurrentDir()
     }
 
-
     protected fun initialPath(): String {
         return arguments?.getString(INITIAL_PATH) ?: getDefaultInitialPath()
     }
@@ -327,6 +327,7 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
         @Deprecated("Перенести в реализацию для Яндекс")
         const val AUTH_TOKEN = "AUTH_TOKEN"
 
+        const val INITIAL_STORAGE = "INITIAL_STORAGE"
         const val INITIAL_PATH = "INITIAL_PATH"
         const val DIR_SELECTION_MODE = "DIR_SELECTION_MODE"
         const val MULTIPLE_SELECTION_MODE = "MULTIPLE_SELECTION_MODE"
@@ -347,7 +348,7 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
     }
 
     private fun processStorageSelectionResult(result: Bundle) {
-        result.getParcelable<com.github.aakumykov.storage_selector.Storage>(StorageSelectionDialog.SELECTED_STORAGE)
+        /*result.getParcelable<com.github.aakumykov.storage_selector.Storage>(StorageSelectionDialog.SELECTED_STORAGE)
             ?.also { selectedStorage: com.github.aakumykov.storage_selector.Storage ->
                 viewModel.changeSelectedStorage(
                     Storage(
@@ -356,6 +357,6 @@ abstract class FileSelector<SortingModeType> : DialogFragment(R.layout.dialog_fi
                         icon = selectedStorage.icon
                     )
                 )
-            }
+            }*/
     }
 }

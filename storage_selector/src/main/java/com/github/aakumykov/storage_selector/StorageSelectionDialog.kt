@@ -23,6 +23,9 @@ class StorageSelectionDialog : DialogFragment(), AdapterView.OnItemClickListener
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
+        // Адаптер списка
+        storageListAdapter = StorageListAdapter()
+
         // Список для отображения
         arguments?.getParcelableArrayList<Storage>(LIST_TO_DISPLAY)?.also { list ->
             storageListAdapter.setList(list)
@@ -34,9 +37,6 @@ class StorageSelectionDialog : DialogFragment(), AdapterView.OnItemClickListener
             storageListAdapter.notifyDataSetChanged()
 
         }
-
-        // Адаптер списка
-        storageListAdapter = StorageListAdapter()
 
         // Создание разметки списка
         val listLayout = layoutInflater.inflate(R.layout.dialog_storage_selector, null)
@@ -84,7 +84,13 @@ class StorageSelectionDialog : DialogFragment(), AdapterView.OnItemClickListener
         }
 
         fun show(fragmentManager: FragmentManager) {
-            create(emptyList()).show(fragmentManager, TAG)
+            create(
+                listOf(
+                    Storage(name = "1", type = StorageType.USB, path = "/usb", icon = R.drawable.list_divider),
+                    Storage(name = "2", type = StorageType.INTERNAL, path = "/root", icon = R.drawable.list_divider),
+                    Storage(name = "3", type = StorageType.SD_CARD, path = "/sdcard", icon = R.drawable.list_divider),
+                )
+            ).show(fragmentManager, TAG)
         }
     }
 

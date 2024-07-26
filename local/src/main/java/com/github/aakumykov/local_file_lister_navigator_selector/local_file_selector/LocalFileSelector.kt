@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.view.View
 import androidx.core.os.bundleOf
+import com.github.aakumykov.android_storage_lister.AndroidStorageType
 import com.github.aakumykov.file_lister_navigator_selector.dir_creator_dialog.DirCreatorDialog
 import com.github.aakumykov.file_lister_navigator_selector.file_explorer.FileExplorer
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
@@ -16,6 +17,7 @@ import com.github.aakumykov.file_lister_navigator_selector.sorting_info_supplier
 import com.github.aakumykov.file_lister_navigator_selector.sorting_info_supplier.SortingInfoSupplier
 import com.github.aakumykov.file_lister_navigator_selector.sorting_mode_translator.SimpleSortingModeTranslator
 import com.github.aakumykov.file_lister_navigator_selector.sorting_mode_translator.SortingModeTranslator
+import com.github.aakumykov.file_lister_navigator_selector.storage_lister.StorageDirectoryWithIcon
 import com.github.aakumykov.storage_access_helper.StorageAccessHelper
 
 class LocalFileSelector : FileSelector<SimpleSortingMode>() {
@@ -91,6 +93,15 @@ class LocalFileSelector : FileSelector<SimpleSortingMode>() {
                 )
             }
         }
+    }
+
+    override fun initialStorage(): StorageDirectoryWithIcon? {
+        return StorageDirectoryWithIcon(
+            type = AndroidStorageType.INTERNAL,
+            name = "Внутренняя память",
+            path = Environment.getExternalStorageDirectory().absolutePath,
+            icon = com.github.aakumykov.file_lister_navigator_selector.R.drawable.ic_storage_type_internal
+        )
     }
 }
 

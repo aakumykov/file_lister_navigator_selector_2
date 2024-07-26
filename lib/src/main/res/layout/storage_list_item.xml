@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="0"
-        android:src="@drawable/ic_storage_phone"
+        android:src="@drawable/ic_storage_type_internal"
         android:contentDescription="@string/description_storage_list_storage_type_icon"
         tools:tint="@color/design_default_color_primary" />
 

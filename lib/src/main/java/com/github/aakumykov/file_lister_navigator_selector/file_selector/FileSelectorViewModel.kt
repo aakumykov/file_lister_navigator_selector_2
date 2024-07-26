@@ -5,12 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.github.aakumykov.android_storage_lister.AndroidStorageLister
-import com.github.aakumykov.file_lister_navigator_selector.entities.Storage
 import com.github.aakumykov.file_lister_navigator_selector.file_explorer.FileExplorer
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.DirItem
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.ParentDirItem
+import com.github.aakumykov.file_lister_navigator_selector.storage_lister.StorageDirectoryWithIcon
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -18,11 +17,12 @@ import kotlinx.coroutines.withContext
 class FileSelectorViewModel<SortingModeType> (
     val fileExplorer: FileExplorer<SortingModeType>,
     private var isMultipleSelectionMode: Boolean,
+    private val initialStorage: StorageDirectoryWithIcon?
 )
     : ViewModel()
 {
-    private val _storageList: MutableLiveData<List<Storage>> = MutableLiveData()
-    private val _selectedStorage: MutableLiveData<Storage> = MutableLiveData()
+    private val _selectedStorage: MutableLiveData<StorageDirectoryWithIcon?> = MutableLiveData()
+    val selectedStorage: LiveData<StorageDirectoryWithIcon?> = _selectedStorage
 
     private val _currentPath: MutableLiveData<String> = MutableLiveData()
     private val _currentList: MutableLiveData<List<FSItem>> = MutableLiveData(emptyList())
@@ -32,8 +32,6 @@ class FileSelectorViewModel<SortingModeType> (
     private val _isDirMode: MutableLiveData<Boolean> = MutableLiveData()
 
     private val selectedItems: MutableList<FSItem> = mutableListOf()
-
-    val selectedStorage: LiveData<Storage> = _selectedStorage
 
     val path: LiveData<String> = _currentPath
     val list: LiveData<List<FSItem>> = _currentList
@@ -49,6 +47,8 @@ class FileSelectorViewModel<SortingModeType> (
     private val isSingleSelectionMode get() = !isMultipleSelectionMode
 
     fun startWork() {
+        _selectedStorage.value = initialStorage
+
         listCurrentPath()
     }
 
@@ -135,7 +135,7 @@ class FileSelectorViewModel<SortingModeType> (
     }
 
 
-    fun changeSelectedStorage(storage: Storage) {
+    fun changeSelectedStorage(storage: StorageDirectoryWithIcon) {
         _selectedStorage.value = storage
         fileExplorer.changeDir(DirItem.fromPath(storage.path))
         listCurrentPath()
@@ -144,7 +144,8 @@ class FileSelectorViewModel<SortingModeType> (
 
     class Factory<SortingModeType>(
         private val fileExplorer: FileExplorer<SortingModeType>,
-        private val isMultipleSelectionMode: Boolean
+        private val isMultipleSelectionMode: Boolean,
+        private val initialStorage: StorageDirectoryWithIcon?
     )
         : ViewModelProvider.Factory
     {
@@ -153,6 +154,7 @@ class FileSelectorViewModel<SortingModeType> (
             return FileSelectorViewModel(
                 fileExplorer,
                 isMultipleSelectionMode,
+                initialStorage
             ) as T
         }
     }
