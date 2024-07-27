@@ -5,12 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.github.aakumykov.android_storage_lister.AndroidStorageDirectory
-import com.github.aakumykov.android_storage_lister.AndroidStorageLister
 import com.github.aakumykov.file_lister_navigator_selector.file_explorer.FileExplorer
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.DirItem
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.ParentDirItem
+import com.github.aakumykov.storage_lister.StorageDirectory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -21,13 +20,7 @@ class FileSelectorViewModel<SortingModeType> (
 )
     : ViewModel()
 {
-    private var _storageList: MutableList<AndroidStorageDirectory> = mutableListOf()
-    val storageList: List<AndroidStorageDirectory>
-        get() = _storageList
-
-    private val _selectedStorage: MutableLiveData<AndroidStorageDirectory> = MutableLiveData()
-    val selectedStorage: LiveData<AndroidStorageDirectory> = _selectedStorage
-
+    private val _selectedStorage: MutableLiveData<StorageDirectory> = MutableLiveData()
     private val _currentPath: MutableLiveData<String> = MutableLiveData()
     private val _currentList: MutableLiveData<List<FSItem>> = MutableLiveData(emptyList())
     private val _selectedList: MutableLiveData<List<FSItem>> = MutableLiveData(emptyList())
@@ -37,6 +30,7 @@ class FileSelectorViewModel<SortingModeType> (
 
     private val selectedItems: MutableList<FSItem> = mutableListOf()
 
+    val selectedStorage: LiveData<StorageDirectory> = _selectedStorage
     val path: LiveData<String> = _currentPath
     val list: LiveData<List<FSItem>> = _currentList
     val selectedList: LiveData<List<FSItem>> = _selectedList
@@ -142,6 +136,12 @@ class FileSelectorViewModel<SortingModeType> (
 
     fun changeFoldersFist(foldersFirst: Boolean) {
         fileExplorer.setFoldersFirst(foldersFirst)
+        listCurrentPath()
+    }
+
+    fun onStorageChanged(storageDirectory: StorageDirectory) {
+        _selectedStorage.value = storageDirectory
+        fileExplorer.changeDir(DirItem.fromPath(storageDirectory.path))
         listCurrentPath()
     }
 

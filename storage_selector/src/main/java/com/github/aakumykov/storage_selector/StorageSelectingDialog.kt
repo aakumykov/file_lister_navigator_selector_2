@@ -1,7 +1,6 @@
 package com.github.aakumykov.storage_selector
 
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -17,13 +16,10 @@ import androidx.fragment.app.FragmentResultListener
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.LifecycleOwner
 import com.github.aakumykov.android_storage_lister.AndroidStorageDirectory
-import com.github.aakumykov.android_storage_lister.AndroidStorageLister
-import com.github.aakumykov.android_storage_lister.StorageDirectory
-import kotlin.collections.ArrayList
 
 class StorageSelectingDialog : DialogFragment(), AdapterView.OnItemClickListener {
 
-    private lateinit var storageListAdapter: StorageListAdapter
+    private lateinit var storageListAdapter: com.github.aakumykov.file_lister_navigator_selector.storage_selecting_dialog.StorageListAdapter
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
@@ -31,7 +27,8 @@ class StorageSelectingDialog : DialogFragment(), AdapterView.OnItemClickListener
         Log.d(TAG,"name=$name")
 
         // Адаптер списка
-        storageListAdapter = StorageListAdapter()
+        storageListAdapter =
+            com.github.aakumykov.file_lister_navigator_selector.storage_selecting_dialog.StorageListAdapter()
 
         /*if (null != arguments) {
 //            arguments?.also {

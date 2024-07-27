@@ -97,7 +97,7 @@ class LocalFileSelector : FileSelector<SimpleSortingMode>() {
         }
     }
 
-    override fun initialDirectory(): StorageDirectory {
+    override fun initialStorageDirectory(): StorageDirectory {
         return Environment.getExternalStorageDirectory().let {
             InternalStorageDirectory(
                 name = it.name,

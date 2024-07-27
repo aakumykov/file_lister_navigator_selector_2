@@ -16,6 +16,7 @@ import com.github.aakumykov.file_lister_navigator_selector.FileListAdapter
 import com.github.aakumykov.file_lister_navigator_selector.R
 import com.github.aakumykov.file_lister_navigator_selector.databinding.DialogFileSelectorBinding
 import com.github.aakumykov.file_lister_navigator_selector.dir_creator_dialog.DirCreatorDialog
+import com.github.aakumykov.file_lister_navigator_selector.extensions.colorize
 import com.github.aakumykov.file_lister_navigator_selector.extensions.hide
 import com.github.aakumykov.file_lister_navigator_selector.extensions.show
 import com.github.aakumykov.file_lister_navigator_selector.extensions.showIf
@@ -36,7 +37,8 @@ import com.google.gson.Gson
 abstract class FileSelector<SortingModeType> :
     DialogFragment(R.layout.dialog_file_selector),
     AdapterView.OnItemClickListener,
-    AdapterView.OnItemLongClickListener, FragmentResultListener
+    AdapterView.OnItemLongClickListener,
+    FragmentResultListener
 {
     private var _binding: DialogFileSelectorBinding? = null
     private val binding get() = _binding!!
@@ -60,7 +62,7 @@ abstract class FileSelector<SortingModeType> :
     /**
      * Если не нужна, возвращать [DummyStorageDirectory]
      */
-    protected abstract fun initialDirectory(): StorageDirectory
+    protected abstract fun initialStorageDirectory(): StorageDirectory
 
     // Методы, просто возвращающие значение, имеют приставку "get".
     protected abstract fun getDefaultInitialPath(): String
@@ -97,26 +99,29 @@ abstract class FileSelector<SortingModeType> :
         
         prepareListAdapter()
         prepareButtons()
-        prepareStorageIcon()
+        updateStorageIcon(initialStorageDirectory())
         subscribeToViewModel()
-
-//        StorageSelectingDialog.listenForResult(childFragmentManager, viewLifecycleOwner, this)
+        subscribeToStorageSelectingResult()
 
         isFirstRun = (null == savedInstanceState)
 
         if (isFirstRun) viewModel.startWork()
     }
 
-    fun prepareStorageIcon() {
-        val initialDir = initialDirectory()
-        when (initialDir) {
+    private fun subscribeToStorageSelectingResult() {
+        StorageSelectingDialog.listenForResult(childFragmentManager, viewLifecycleOwner, this)
+    }
+
+    private fun updateStorageIcon(storageDirectory: StorageDirectory) {
+        when (storageDirectory) {
             is DummyStorageDirectory -> {
                 binding.storageIcon.visibility = View.INVISIBLE
             }
             else -> {
                 binding.storageIcon.apply {
-                    setImageResource(initialDir.icon)
+                    setImageResource(storageDirectory.icon)
                     visibility = View.VISIBLE
+                    colorize(com.google.android.material.R.color.design_default_color_on_primary)
                 }
             }
         }
@@ -125,7 +130,6 @@ abstract class FileSelector<SortingModeType> :
 
     private fun subscribeToViewModel() {
         viewModel.selectedStorage.observe(viewLifecycleOwner, ::onSelectedStorageChanged)
-
         viewModel.path.observe(viewLifecycleOwner, ::onPathChanged)
         viewModel.list.observe(viewLifecycleOwner, ::onListChanged)
         viewModel.selectedList.observe(viewLifecycleOwner, ::onSelectedListChanged)
@@ -155,8 +159,10 @@ abstract class FileSelector<SortingModeType> :
             }
         }
 
-        StorageSelectingDialog.create(storageList, null)
-            .show(childFragmentManager, StorageSelectingDialog.TAG)
+        StorageSelectingDialog.create(
+            storageList = storageList,
+            selectedStorage = viewModel.selectedStorage.value
+        ).show(childFragmentManager, StorageSelectingDialog.TAG)
     }
 
     private fun onRefreshRequested() {
@@ -185,9 +191,9 @@ abstract class FileSelector<SortingModeType> :
     }
 
 
-    private fun onSelectedStorageChanged(androidStorageDirectory: AndroidStorageDirectory?) {
-        androidStorageDirectory?.also {
-            updateStorageSelectionButtons(it)
+    private fun onSelectedStorageChanged(storageDirectory: StorageDirectory?) {
+        storageDirectory?.also {
+            updateStorageIcon(it)
         }
     }
 
@@ -389,12 +395,16 @@ abstract class FileSelector<SortingModeType> :
     }
 
     override fun onFragmentResult(requestKey: String, result: Bundle) {
-        /*when(requestKey) {
-            StorageSelectingDialog.STORAGE_SELECTION_REQUEST -> processStorageSelectionResult(result)
-        }*/
+        when(requestKey) {
+            StorageSelectingDialog.STORAGE_SELECTION_RESULT -> processStorageSelectionResult(result)
+        }
     }
 
     private fun processStorageSelectionResult(result: Bundle) {
+        result.getParcelable<StorageDirectory>(StorageSelectingDialog.SELECTED_STORAGE)?.also { selectedStorage ->
+            Log.d(TAG, selectedStorage.name)
+            viewModel.onStorageChanged(selectedStorage)
+        }
         /*result.getParcelable<com.github.aakumykov.storage_selector.StorageWithIcon>(StorageSelectingDialog.SELECTED_STORAGE)
             ?.also { selectedStorage: com.github.aakumykov.storage_selector.StorageWithIcon ->
                 *//*viewModel.changeSelectedStorage(

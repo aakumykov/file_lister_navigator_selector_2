@@ -13,7 +13,6 @@
             <option value="$PROJECT_DIR$/lib" />
             <option value="$PROJECT_DIR$/local" />
             <option value="$PROJECT_DIR$/storage_lister" />
-            <option value="$PROJECT_DIR$/storage_selector" />
             <option value="$PROJECT_DIR$/yandex_disk" />
           </set>
         </option>

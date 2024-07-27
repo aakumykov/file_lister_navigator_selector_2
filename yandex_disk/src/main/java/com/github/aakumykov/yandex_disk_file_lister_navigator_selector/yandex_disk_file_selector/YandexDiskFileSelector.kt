@@ -42,7 +42,7 @@ class YandexDiskFileSelector : FileSelector<SimpleSortingMode>() {
 
     override fun defaultReverseMode(): Boolean = false
 
-    override fun initialDirectory(): StorageDirectory {
+    override fun initialStorageDirectory(): StorageDirectory {
         return DummyStorageDirectory()
     }
 
