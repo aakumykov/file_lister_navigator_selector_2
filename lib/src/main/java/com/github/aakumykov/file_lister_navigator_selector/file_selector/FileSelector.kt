@@ -24,8 +24,10 @@ import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.SimpleFSItem
 import com.github.aakumykov.file_lister_navigator_selector.sorting_info_supplier.SortingInfoSupplier
 import com.github.aakumykov.file_lister_navigator_selector.sorting_mode_translator.SortingModeTranslator
+import com.github.aakumykov.file_lister_navigator_selector.storage_selecting_dialog.StorageSelectingDialog
 import com.github.aakumykov.storage_lister.DummyStorageDirectory
 import com.github.aakumykov.storage_lister.StorageDirectory
+import com.github.aakumykov.storage_lister.StorageLister
 import com.gitlab.aakumykov.exception_utils_module.ExceptionUtils
 import com.google.gson.Gson
 
@@ -143,6 +145,18 @@ abstract class FileSelector<SortingModeType> :
 
     private fun onStorageSelectionButtonClicked() {
 
+        val storageList: List<StorageDirectory> = StorageLister(requireContext()).let { storageLister ->
+            storageLister.storageDirectories.map { androidStorageDirectory ->
+                storageLister.createStorageDirectory(
+                    type = androidStorageDirectory.type,
+                    name = androidStorageDirectory.name,
+                    path = androidStorageDirectory.path
+                )
+            }
+        }
+
+        StorageSelectingDialog.create(storageList, null)
+            .show(childFragmentManager, StorageSelectingDialog.TAG)
     }
 
     private fun onRefreshRequested() {
