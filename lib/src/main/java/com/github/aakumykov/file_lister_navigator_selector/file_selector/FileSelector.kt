@@ -197,18 +197,6 @@ abstract class FileSelector<SortingModeType> :
         }
     }
 
-    private fun updateStorageSelectionButtons(androidStorageDirectory: AndroidStorageDirectory) {
-        /*binding.storageSelectionButton.apply {
-            text = androidStorageDirectory.name
-            ResourcesCompat.getDrawable(resources, StorageSelectingDialog.getIconFor(androidStorageDirectory), requireContext().theme)
-                ?.also {
-                    it.setTint(resources.getColor(android.R.color.system_on_primary_light))
-                    setCompoundDrawablesWithIntrinsicBounds(it, null, null, null)
-                }
-        }*/
-    }
-
-
     private fun onPathChanged(s: String?) {
         binding.pathView.text = s
     }
