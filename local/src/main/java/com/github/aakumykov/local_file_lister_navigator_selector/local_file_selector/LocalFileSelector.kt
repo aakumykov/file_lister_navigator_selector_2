@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.view.View
 import androidx.core.os.bundleOf
+import com.github.aakumykov.android_storage_lister.AndroidStorageType
 import com.github.aakumykov.file_lister_navigator_selector.dir_creator_dialog.DirCreatorDialog
 import com.github.aakumykov.file_lister_navigator_selector.file_explorer.FileExplorer
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
@@ -17,6 +18,9 @@ import com.github.aakumykov.file_lister_navigator_selector.sorting_info_supplier
 import com.github.aakumykov.file_lister_navigator_selector.sorting_mode_translator.SimpleSortingModeTranslator
 import com.github.aakumykov.file_lister_navigator_selector.sorting_mode_translator.SortingModeTranslator
 import com.github.aakumykov.storage_access_helper.StorageAccessHelper
+import com.github.aakumykov.storage_lister.InternalStorageDirectory
+import com.github.aakumykov.storage_lister.StorageDirectory
+import java.io.File
 
 class LocalFileSelector : FileSelector<SimpleSortingMode>() {
 
@@ -90,6 +94,15 @@ class LocalFileSelector : FileSelector<SimpleSortingMode>() {
                     MULTIPLE_SELECTION_MODE to isMultipleSelectionMode
                 )
             }
+        }
+    }
+
+    override fun initialDirectory(): StorageDirectory {
+        return Environment.getExternalStorageDirectory().let {
+            InternalStorageDirectory(
+                name = it.name,
+                path = it.absolutePath,
+            )
         }
     }
 }

@@ -32,6 +32,7 @@
     <string name="storage_selector_spinner_prompt">Выбор хранилища</string>
     <string name="description_storage_list_storage_type_icon">Значок типа хранилища</string>
     <string name="no_storage_info_available">Список хранилищ недоступен</string>
+    <string name="description_storage_icon">Значок хранилища</string>
 </resources>
 
 <!-- «» -->

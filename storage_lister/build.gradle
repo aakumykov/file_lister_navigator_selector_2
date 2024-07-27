@@ -38,5 +38,5 @@ dependencies {
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
 
-    implementation "com.github.aakumykov:android_storage_lister:4.0.0-alpha"
+    api "com.github.aakumykov:android_storage_lister:4.0.0-alpha"
 }

@@ -13,12 +13,11 @@ class StorageLister(applicationContext: Context): AndroidStorageLister(applicati
         name: String,
         path: String
     ): StorageDirectory {
-        return StorageDirectory(
-            type = type,
-            name = name,
-            path = path,
-            icon = type2icon(type)
-        )
+        return when(type) {
+            AndroidStorageType.INTERNAL -> InternalStorageDirectory(name, path)
+            AndroidStorageType.SD_CARD -> SDCardDirectory(name, path)
+            AndroidStorageType.USB -> USBDriveDirectory(name, path)
+        }
     }
 
     @DrawableRes
