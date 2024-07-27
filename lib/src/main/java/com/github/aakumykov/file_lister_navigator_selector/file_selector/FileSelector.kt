@@ -108,8 +108,15 @@ abstract class FileSelector<SortingModeType> :
     fun prepareStorageIcon() {
         val initialDir = initialDirectory()
         when (initialDir) {
-            is DummyStorageDirectory -> { binding.storageIcon.visibility = View.INVISIBLE }
-            else -> binding.storageIcon.setImageResource(initialDir.icon)
+            is DummyStorageDirectory -> {
+                binding.storageIcon.visibility = View.INVISIBLE
+            }
+            else -> {
+                binding.storageIcon.apply {
+                    setImageResource(initialDir.icon)
+                    visibility = View.VISIBLE
+                }
+            }
         }
     }
 

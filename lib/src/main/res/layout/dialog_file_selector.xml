@@ -40,13 +40,24 @@
         android:layout_alignBottom="@id/storageIcon"
         android:contentDescription="@string/description_sort_button"/>
 
+    <TextView
+        android:id="@+id/spacer"
+        style="@style/flns_dialog_header_button"
+        android:gravity="center"
+        android:textColor="@color/design_default_color_on_primary"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@id/refreshButton"
+        android:layout_alignBottom="@id/storageIcon"
+        android:layout_toStartOf="@id/dialogCloseButton"
+        />
+
     <ImageView
         android:id="@+id/storageIcon"
         style="@style/flns_dialog_header_button"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@id/refreshButton"
-        android:layout_toStartOf="@id/dialogCloseButton"
         tools:src="@drawable/ic_storage_sd_card"
+        android:visibility="invisible"
         android:contentDescription="@string/description_storage_icon" />
 
     <ImageView
@@ -55,7 +66,7 @@
         android:src="@drawable/ic_close"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignBottom="@id/storageIcon"
+        android:layout_alignBottom="@id/spacer"
         android:contentDescription="@string/description_dialog_close_button"/>
 
     <TextView
