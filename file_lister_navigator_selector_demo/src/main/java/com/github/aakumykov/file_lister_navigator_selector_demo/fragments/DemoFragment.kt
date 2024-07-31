@@ -14,7 +14,7 @@ import com.github.aakumykov.file_lister_navigator_selector.file_lister.FileListe
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
 import com.github.aakumykov.file_lister_navigator_selector.file_selector.FileSelector
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
-import com.github.aakumykov.file_lister_navigator_selector.recursive_dir_reader.RecursiveDirReader
+import com.github.aakumykov.file_lister_navigator_selector.utils.RecursiveDirReader
 import com.github.aakumykov.file_lister_navigator_selector_demo.R
 import com.github.aakumykov.file_lister_navigator_selector_demo.common.StorageType
 import com.github.aakumykov.file_lister_navigator_selector_demo.databinding.FragmentDemoBinding
