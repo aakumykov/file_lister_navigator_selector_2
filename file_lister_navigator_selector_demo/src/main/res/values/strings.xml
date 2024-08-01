@@ -26,4 +26,6 @@
     <string name="ERROR_unknown_storage_type">Неизвестный тип хранилища: %1$s</string>
     <string name="listing_dir_recursively">Рекурсивно читаю каталог «%1$s»...</string>
     <string name="recursive_dir_listing_result">Каталог: %1$s\n\nСодержимое:\n%2$s</string>
+    <string name="BUTTON_select_local_saf">Выбрать локально, SAF</string>
+    <string name="ERROR_selecting_dir">Ошибка выбора каталога</string>
 </resources>

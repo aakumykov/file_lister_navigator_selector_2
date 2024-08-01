@@ -1,26 +1,19 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
 }
 
 android {
-    namespace 'com.github.aakumykov.file_lister_navigator_selector_demo'
+    namespace 'com.github.aakumykov.local_saf'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.github.aakumykov.file_lister_navigator_selector_demo"
         minSdk 21
-        targetSdk 34
-        versionCode 1
-        versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
 
-        manifestPlaceholders = [YANDEX_CLIENT_ID: "bd3713311fde47fe9ff479c7cb66ecae"]
-    }
-    buildFeatures {
-        viewBinding true
-    }
     buildTypes {
         release {
             minifyEnabled false
@@ -38,19 +31,13 @@ android {
 
 dependencies {
 
+    api project(':lib')
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
     implementation libs.material
-    implementation project(':yandex_disk')
-    implementation project(':local')
-    implementation project(':local_saf')
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
 
-    implementation 'com.github.aakumykov:storage_access_helper:2.0.0-alpha'
-
-    implementation 'androidx.preference:preference:1.2.1'
-
-    implementation 'com.yandex.android:authsdk:3.0.0'
+    api("com.github.aakumykov:local_saf_cloud_reader:3.2.0-alpha")
 }

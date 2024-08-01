@@ -11,6 +11,14 @@
         android:text="@string/BUTTON_select_local"/>
 
     <Button
+        android:id="@+id/localSSFSelectButton"
+        style="@style/full_width_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:text="@string/BUTTON_select_local_saf" />
+
+    <Button
         android:id="@+id/yandexSelectButton"
         style="@style/full_width_button"
         android:backgroundTint="@color/yandex"

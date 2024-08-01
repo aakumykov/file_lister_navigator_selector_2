@@ -1,9 +1,12 @@
 package com.github.aakumykov.file_lister_navigator_selector_demo.fragments
 
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentResultListener
@@ -21,6 +24,8 @@ import com.github.aakumykov.file_lister_navigator_selector_demo.databinding.Frag
 import com.github.aakumykov.file_lister_navigator_selector_demo.extensions.showToast
 import com.github.aakumykov.local_file_lister_navigator_selector.local_file_lister.LocalFileLister
 import com.github.aakumykov.local_file_lister_navigator_selector.local_file_selector.LocalFileSelector
+import com.github.aakumykov.local_saf.LocalCloudReaderForStorageAccessFramework
+import com.github.aakumykov.local_saf.local_saf_file_lister.LocalSAFFileLister
 import com.github.aakumykov.storage_access_helper.StorageAccessHelper
 import com.github.aakumykov.yandex_disk_cloud_reader.YandexDiskCloudReader
 import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_file_lister.YandexDiskFileLister
@@ -49,6 +54,8 @@ class DemoFragment : Fragment(R.layout.fragment_demo), FragmentResultListener {
 
     private var storageType: StorageType? = null
 
+    private lateinit var selectDirResultLauncher: ActivityResultLauncher<Uri?>
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -56,16 +63,42 @@ class DemoFragment : Fragment(R.layout.fragment_demo), FragmentResultListener {
         prepareStorageAccessHelper()
         prepareYandexAuthLauncher()
         prepareFragmentResultListener()
+
+        selectDirResultLauncher = registerForActivityResult(ActivityResultContracts.OpenDocumentTree(), ::onDirSelected)
+
+        binding.localSSFSelectButton.setOnClickListener {
+            selectDirResultLauncher.launch(null)
+        }
+
         prepareButtons()
         restoreYandexAuthToken(savedInstanceState)
-
-
     }
+
+    private fun onDirSelected(uri: Uri?) {
+        uri?.also {
+
+            LocalSAFFileLister(
+                applicationContext = requireContext().applicationContext,
+                localSAFCloudReader = LocalCloudReaderForStorageAccessFramework(requireContext().applicationContext)
+            ).listDir(
+                path = uri.toString(),
+                SimpleSortingMode.NAME,
+                reverseOrder = false,
+                foldersFirst = false,
+                dirMode = false
+            ).forEachIndexed { index, fsItem ->
+                Log.d(TAG, "$index) ${fsItem.name}")
+            }
+
+        } ?: showToast(R.string.ERROR_selecting_dir)
+    }
+
 
     private fun prepareFragmentResultListener() {
         listenForFragmentResult(YANDEX_DISK_SELECTION_REQUEST_KEY, this)
         listenForFragmentResult(LOCAL_SELECTION_REQUEST_KEY, this)
     }
+
 
     override fun onFragmentResult(requestKey: String, result: Bundle) {
         FileSelector.extractSelectionResult(result)?.also { list ->
