@@ -1,11 +1,11 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext {
-        commonMajorVersionNumber = 8
+        commonMajorVersionNumber = 9
         commonMinorVersionNumber = 0
         commonPatchVersionNumber = 0
         commonVersionSuffix = "alpha"
-        commonVersionCode = 39
+        commonVersionCode = 40
     }
 }
 
