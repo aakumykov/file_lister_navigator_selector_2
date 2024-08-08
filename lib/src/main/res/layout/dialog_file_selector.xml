@@ -56,10 +56,9 @@
         style="@style/flns_dialog_header_button"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@id/refreshButton"
-        android:contentDescription="@string/description_storage_icon"
-        android:visibility="visible"
-        tools:src="@drawable/ic_storage_dummy"
-        tools:visibility="visible" />
+        tools:src="@drawable/ic_storage_sd_card"
+        android:visibility="invisible"
+        android:contentDescription="@string/description_storage_icon" />
 
     <ImageView
         android:id="@+id/dialogCloseButton"

@@ -56,8 +56,6 @@ abstract class FileSelector<SortingModeType> :
         )
     }
 
-    private var currentStorageDirectory: StorageDirectory? = null
-
     
     private val gson by lazy { Gson() }
 
@@ -115,13 +113,17 @@ abstract class FileSelector<SortingModeType> :
     }
 
     private fun updateStorageIcon(storageDirectory: StorageDirectory) {
-
-        currentStorageDirectory = storageDirectory
-
-        binding.storageIcon.apply {
-            setImageResource(storageDirectory.icon)
-            visibility = View.VISIBLE
-            colorize(com.google.android.material.R.color.design_default_color_on_primary)
+        when (storageDirectory) {
+            is DummyStorageDirectory -> {
+                binding.storageIcon.visibility = View.INVISIBLE
+            }
+            else -> {
+                binding.storageIcon.apply {
+                    setImageResource(storageDirectory.icon)
+                    visibility = View.VISIBLE
+                    colorize(com.google.android.material.R.color.design_default_color_on_primary)
+                }
+            }
         }
     }
 
@@ -146,10 +148,6 @@ abstract class FileSelector<SortingModeType> :
     }
 
     private fun onStorageSelectionButtonClicked() {
-
-        if (null == currentStorageDirectory || currentStorageDirectory is DummyStorageDirectory) {
-            return
-        }
 
         val storageList: List<StorageDirectory> = StorageLister(requireContext()).let { storageLister ->
             storageLister.storageDirectories.map { androidStorageDirectory ->
