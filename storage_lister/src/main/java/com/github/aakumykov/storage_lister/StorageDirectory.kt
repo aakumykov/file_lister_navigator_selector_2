@@ -53,5 +53,5 @@ class DummyStorageDirectory: StorageDirectory(
     name = "",
     path = "",
     type = AndroidStorageType.SD_CARD,
-    icon = -1
+    icon = R.drawable.ic_storage_dummy
 )
