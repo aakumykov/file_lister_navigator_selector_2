@@ -69,7 +69,7 @@ dependencies {
 
     api 'com.github.aakumykov:extensible_sorting_comparator:0.0.2'
 
-    implementation "com.github.aakumykov:list_holding_list_adapter:0.0.3-alpha"
+    implementation "com.github.aakumykov:list_holding_list_adapter:0.0.5-alpha"
 }
 
 publishing {
