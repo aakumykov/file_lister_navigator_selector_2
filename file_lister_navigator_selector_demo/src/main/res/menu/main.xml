@@ -6,7 +6,7 @@
         android:id="@+id/actionCloseApp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:icon="@drawable/baseline_close_24"
+        android:icon="@drawable/ic_cancel"
         android:title="@string/MENU_close_app"
         app:showAsAction="always" />
 

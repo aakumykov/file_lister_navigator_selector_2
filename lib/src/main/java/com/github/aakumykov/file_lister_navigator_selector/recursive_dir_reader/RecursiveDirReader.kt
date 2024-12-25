@@ -4,8 +4,14 @@ import android.net.Uri
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.FileLister
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.Date
 import java.util.function.Predicate
+import kotlin.concurrent.thread
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 class RecursiveDirReader(private val fileLister: FileLister<SimpleSortingMode>) {
 
@@ -19,6 +25,23 @@ class RecursiveDirReader(private val fileLister: FileLister<SimpleSortingMode>) 
                          foldersFirst: Boolean = false,
                          dirMode: Boolean = false
     ): List<FileListItem> {
+        return listDirRecursively(path, sortingMode, reverseOrder, foldersFirst, dirMode)
+    }
+
+
+    @Throws(FileLister.NotADirException::class)
+    fun listDirRecursively(
+        path: String,
+        sortingMode: SimpleSortingMode = SimpleSortingMode.NAME,
+        reverseOrder: Boolean = false,
+        foldersFirst: Boolean = false,
+        dirMode: Boolean = false,
+        isCancelled: () -> Boolean = { false },
+    ): List<FileListItem> {
+
+        if (isCancelled.invoke())
+            return emptyList()
+
         list.add(
             FileListItem(
                 isInitialItem = true,
@@ -30,7 +53,7 @@ class RecursiveDirReader(private val fileLister: FileLister<SimpleSortingMode>) 
             )
         )
 
-        while(hasUnlistedDirs()) {
+        while(hasUnlistedDirs() && !isCancelled.invoke()) {
 
             getUnlistedDir()?.let { currentlyListedDir: FileListItem ->
 
@@ -69,21 +92,38 @@ class RecursiveDirReader(private val fileLister: FileLister<SimpleSortingMode>) 
     }
 
 
-    @Throws(FileLister.NotADirException::class)
-    fun listDirRecursively(path: String,
-                           sortingMode: SimpleSortingMode = SimpleSortingMode.NAME,
-                           reverseOrder: Boolean = false,
-                           foldersFirst: Boolean = false,
-                           dirMode: Boolean = false
+    suspend fun listDirRecursivelySuspend(path: String,
+                                  sortingMode: SimpleSortingMode = SimpleSortingMode.NAME,
+                                  reverseOrder: Boolean = false,
+                                  foldersFirst: Boolean = false,
+                                  dirMode: Boolean = false
     ): List<FileListItem> {
-        return getRecursiveList(
-            path = path,
-             sortingMode = sortingMode,
-            reverseOrder = reverseOrder,
-            foldersFirst = foldersFirst,
-            dirMode = dirMode
-        )
+        return suspendCancellableCoroutine { cancellableContinuation ->
+            thread {
+                try {
+                    var isCancelled = false
+
+                    cancellableContinuation.invokeOnCancellation {
+                        isCancelled = true
+                    }
+
+                    val list = listDirRecursively(
+                        path,
+                        sortingMode,
+                        reverseOrder,
+                        foldersFirst,
+                        dirMode
+                    ) { isCancelled }
+
+                    cancellableContinuation.resume(list)
+
+                } catch (e: Exception) {
+                    cancellableContinuation.resumeWithException(e)
+                }
+            }
+        }
     }
+
 
     private fun hasUnlistedDirs(): Boolean {
         return null != getUnlistedDir()

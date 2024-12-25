@@ -29,7 +29,9 @@ import com.yandex.authsdk.YandexAuthLoginOptions
 import com.yandex.authsdk.YandexAuthOptions
 import com.yandex.authsdk.YandexAuthSdkContract
 import com.yandex.authsdk.internal.strategy.LoginType
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -48,6 +50,8 @@ class DemoFragment : Fragment(R.layout.fragment_demo), FragmentResultListener {
     private val mSelectedItemsList: MutableList<FSItem> = mutableListOf()
 
     private var storageType: StorageType? = null
+
+    private var currentJob: Job? = null
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -75,7 +79,7 @@ class DemoFragment : Fragment(R.layout.fragment_demo), FragmentResultListener {
                 addAll(list)
             }
 
-            binding.selectionResultView.text = getString(
+            binding.outputView.text = getString(
                 R.string.selection_result, list.joinToString("\n") {
 //                    (if (it.isDir) "dir: " else "file: ") + it.name
                     it.absolutePath
@@ -105,6 +109,8 @@ class DemoFragment : Fragment(R.layout.fragment_demo), FragmentResultListener {
         binding.yandexSelectButton.setOnClickListener { onYandexSelectButtonClicked() }
         binding.yandexSelectButton.setOnLongClickListener { return@setOnLongClickListener onYandexSelectButtonLongClicked() }
         binding.listDirRecursivelyButton.setOnClickListener { onListDirRecursivelyClicked() }
+        binding.cancelRecursiveListing.setOnClickListener { onCancelRecursiveListingClicked() }
+        binding.clearOutputButton.setOnClickListener { onClearOutputButtonClicked() }
     }
 
     private fun onListDirRecursivelyClicked() {
@@ -115,19 +121,57 @@ class DemoFragment : Fragment(R.layout.fragment_demo), FragmentResultListener {
         }
     }
 
+    private fun onCancelRecursiveListingClicked() {
+        currentJob?.cancel(CancellationException("Отменено пользователем"))
+            ?: run { showToast("Нет текущей задачи") }
+    }
+
+    private fun onClearOutputButtonClicked() {
+        binding.outputView.text = ""
+    }
+
     private fun listDirRecursively(dirItem: FSItem) {
-        binding.selectionResultView.text = getString(R.string.listing_dir_recursively, dirItem.absolutePath)
-        binding.progressBar.visible()
-        lifecycleScope.launch (Dispatchers.IO) {
-            RecursiveDirReader(fileLister())
-                .listDirRecursively(dirItem.absolutePath)
-                .joinToString("\n") { it.absolutePath }
-                .also {
-                    withContext(Dispatchers.Main) {
-                        binding.progressBar.gone()
-                        binding.selectionResultView.text = getString(R.string.recursive_dir_listing_result, dirItem.name, it)
+
+        binding.outputView.text = getString(R.string.listing_dir_recursively, dirItem.absolutePath)
+
+        showProgressBar()
+        hideError()
+        var list: List<RecursiveDirReader.FileListItem>? = null
+
+        currentJob = lifecycleScope.launch (Dispatchers.IO) {
+            try {
+                list = RecursiveDirReader(fileLister()).listDirRecursivelySuspend(dirItem.absolutePath)
+            }
+            catch (e: CancellationException) {
+                showError(e.message ?: e.javaClass.name)
+            }
+            finally {
+                hideProgressBar()
+
+                list
+                    ?.joinToString("\n") { it.absolutePath }
+                    .also {
+                        withContext(Dispatchers.Main) {
+                            binding.progressBar.gone()
+                            binding.outputView.text = getString(R.string.recursive_dir_listing_result, dirItem.name, it)
+                        }
                     }
-                }
+                    ?: run {
+                        showToast("нет списка")
+                    }
+            }
+
+        }
+    }
+    private fun showProgressBar() {
+        lifecycleScope.launch (Dispatchers.Main) {
+            binding.progressBar.visible()
+        }
+    }
+
+    private fun hideProgressBar() {
+        lifecycleScope.launch (Dispatchers.Main) {
+            binding.progressBar.gone()
         }
     }
 
@@ -150,15 +194,20 @@ class DemoFragment : Fragment(R.layout.fragment_demo), FragmentResultListener {
         )
     }
 
-    /*private fun showError(@StringRes errorMsgRes: Int) {
-        binding.errorView.setText(errorMsgRes)
+    private fun showError(errorMsg: String) {
+        lifecycleScope.launch (Dispatchers.Main) {
+            binding.errorView.apply {
+                text = errorMsg
+                visibility = View.VISIBLE
+            }
+        }
     }
 
     private fun hideError() {
         binding.errorView.apply {
             text = null
         }
-    }*/
+    }
 
     private fun onYandexSelectButtonLongClicked(): Boolean {
 

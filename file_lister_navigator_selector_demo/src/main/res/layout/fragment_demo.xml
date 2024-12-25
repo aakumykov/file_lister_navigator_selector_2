@@ -16,34 +16,68 @@
         android:backgroundTint="@color/yandex"
         android:text="@string/BUTTON_select_yandex"/>
 
-    <Switch
-        android:id="@+id/dirModeSwitch"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="8dp"
         android:layout_weight="0"
-        android:text="@string/only_dirs"
-        android:switchPadding="8dp"
-        android:layout_gravity="center_horizontal"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
+        android:orientation="horizontal">
 
-    <Switch
-        android:id="@+id/multipleModeSwitch"
-        android:layout_width="wrap_content"
+        <Switch
+            android:id="@+id/dirModeSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginVertical="8dp"
+            android:switchPadding="8dp"
+            android:text="@string/only_dirs"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        <Switch
+            android:id="@+id/multipleModeSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginVertical="8dp"
+            android:layout_weight="1"
+            android:checked="true"
+            android:switchPadding="8dp"
+            android:text="@string/multiple_selection_mode"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="8dp"
         android:layout_weight="0"
-        android:text="@string/multiple_selection_mode"
-        android:checked="true"
-        android:switchPadding="8dp"
-        android:layout_gravity="center_horizontal"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/listDirRecursivelyButton"
+            style="@style/full_width_button"
+            android:layout_weight="1"
+            android:backgroundTint="#00BCD4"
+            android:text="@string/BUTTON_list_dir_recursively" />
+
+        <ImageButton
+            android:id="@+id/cancelRecursiveListing"
+            android:contentDescription="@string/description_listing_cancelling_button"
+            android:src="@drawable/ic_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:backgroundTint="#FF9B40"
+            android:layout_weight="0"/>
+
+    </LinearLayout>
 
     <Button
-        android:id="@+id/listDirRecursivelyButton"
+        android:id="@+id/clearOutputButton"
         style="@style/full_width_button"
-        android:backgroundTint="#00BCD4"
-        android:text="@string/BUTTON_list_dir_recursively"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:backgroundTint="@android:color/darker_gray"
+        android:text="@string/BUTTON_clear_output" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -74,7 +108,7 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/selectionResultView"
+            android:id="@+id/outputView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16sp"
