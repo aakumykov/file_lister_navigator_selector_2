@@ -25,5 +25,5 @@ rootProject.name = "file_lister_navigator_selector_2"
 include ':lib'
 include ':local'
 include ':yandex_disk'
-include ':demo'
+include ':app'
 include ':storage_lister'
