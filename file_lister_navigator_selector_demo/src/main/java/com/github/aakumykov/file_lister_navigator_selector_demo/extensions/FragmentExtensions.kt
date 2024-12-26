@@ -3,13 +3,24 @@ package com.github.aakumykov.file_lister_navigator_selector_demo.extensions
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentResultListener
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+
+fun Fragment.listenForFragmentResult(requestKey: String, listener: FragmentResultListener) {
+    childFragmentManager.setFragmentResultListener(requestKey, viewLifecycleOwner, listener)
+}
 
 fun Fragment.showToast(text: String) {
-    Toast.makeText(requireContext(), text, Toast.LENGTH_SHORT).show()
+    lifecycleScope.launch {
+        Toast.makeText(requireContext(), text, Toast.LENGTH_SHORT).show()
+    }
 }
 
 fun Fragment.showToast(@StringRes strRes: Int) {
-    showToast(getString(strRes))
+    lifecycleScope.launch {
+        showToast(getString(strRes))
+    }
 }
 
 fun Fragment.storeString(key: String, value: String?): Unit {
