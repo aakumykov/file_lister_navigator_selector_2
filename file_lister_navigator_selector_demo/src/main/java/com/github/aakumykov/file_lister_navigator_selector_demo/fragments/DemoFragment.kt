@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentResultListener
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
-import com.github.aakumykov.file_lister_navigator_selector.extensions.listenForFragmentResult
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.FileLister
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
 import com.github.aakumykov.file_lister_navigator_selector.file_selector.FileSelector
@@ -18,6 +17,8 @@ import com.github.aakumykov.file_lister_navigator_selector.recursive_dir_reader.
 import com.github.aakumykov.file_lister_navigator_selector_demo.R
 import com.github.aakumykov.file_lister_navigator_selector_demo.common.StorageType
 import com.github.aakumykov.file_lister_navigator_selector_demo.databinding.FragmentDemoBinding
+import com.github.aakumykov.file_lister_navigator_selector_demo.extensions.errorMsg
+import com.github.aakumykov.file_lister_navigator_selector_demo.extensions.listenForFragmentResult
 import com.github.aakumykov.file_lister_navigator_selector_demo.extensions.showToast
 import com.github.aakumykov.local_file_lister_navigator_selector.local_file_lister.LocalFileLister
 import com.github.aakumykov.local_file_lister_navigator_selector.local_file_selector.LocalFileSelector
@@ -136,33 +137,34 @@ class DemoFragment : Fragment(R.layout.fragment_demo), FragmentResultListener {
 
         showProgressBar()
         hideError()
-        var list: List<RecursiveDirReader.FileListItem>? = null
 
         currentJob = lifecycleScope.launch (Dispatchers.IO) {
             try {
-                list = RecursiveDirReader(fileLister()).listDirRecursivelySuspend(dirItem.absolutePath)
+                RecursiveDirReader(fileLister())
+                    .listDirRecursivelySuspend(dirItem.absolutePath)
+                    .also { displayList(dirItem, it) }
             }
             catch (e: CancellationException) {
-                showError(e.message ?: e.javaClass.name)
+                showError(e.errorMsg)
+                showToast(e.errorMsg)
             }
             finally {
                 hideProgressBar()
-
-                list
-                    ?.joinToString("\n") { it.absolutePath }
-                    .also {
-                        withContext(Dispatchers.Main) {
-                            binding.progressBar.gone()
-                            binding.outputView.text = getString(R.string.recursive_dir_listing_result, dirItem.name, it)
-                        }
-                    }
-                    ?: run {
-                        showToast("нет списка")
-                    }
             }
 
         }
     }
+
+    private suspend fun displayList(dirItem: FSItem, list: List<RecursiveDirReader.FileListItem>) {
+        list.joinToString("\n") { it.absolutePath }
+            .also {
+                withContext(Dispatchers.Main) {
+                    binding.progressBar.gone()
+                    binding.outputView.text = getString(R.string.recursive_dir_listing_result, dirItem.name, it)
+                }
+            }
+    }
+
     private fun showProgressBar() {
         lifecycleScope.launch (Dispatchers.Main) {
             binding.progressBar.visible()
@@ -206,6 +208,7 @@ class DemoFragment : Fragment(R.layout.fragment_demo), FragmentResultListener {
     private fun hideError() {
         binding.errorView.apply {
             text = null
+            visibility = View.GONE
         }
     }
 
