@@ -141,7 +141,11 @@ class DemoFragment : Fragment(R.layout.fragment_demo), FragmentResultListener {
         currentJob = lifecycleScope.launch (Dispatchers.IO) {
             try {
                 RecursiveDirReader(fileLister())
-                    .listDirRecursivelySuspend(dirItem.absolutePath)
+                    .listDirRecursivelySuspend(
+                        path = dirItem.absolutePath,
+                        debug_log_each_item = true,
+                        debug_each_step_delay_for_debug_ms = 1000,
+                    )
                     .also { displayList(dirItem, it) }
             }
             catch (e: CancellationException) {

@@ -1,17 +1,16 @@
 package com.github.aakumykov.file_lister_navigator_selector.recursive_dir_reader
 
 import android.net.Uri
+import android.util.Log
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.FileLister
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.Date
-import java.util.function.Predicate
+import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 class RecursiveDirReader(private val fileLister: FileLister<SimpleSortingMode>) {
 
@@ -36,8 +35,20 @@ class RecursiveDirReader(private val fileLister: FileLister<SimpleSortingMode>) 
         reverseOrder: Boolean = false,
         foldersFirst: Boolean = false,
         dirMode: Boolean = false,
+        debug_each_step_delay_for_debug_ms: Long = 0,
+        debug_log_each_item: Boolean = false,
         isCancelled: () -> Boolean = { false },
     ): List<FileListItem> {
+
+        fun logIfRequested(text: String) {
+            if (debug_log_each_item) Log.d(TAG,text)
+        }
+
+        fun logFileListItem(item: FileListItem) {
+            val typeMark = if (item.isDir) "DIR:" else "FILE:"
+            logIfRequested("${typeMark} ${item.absolutePath}")
+        }
+
 
         if (isCancelled.invoke())
             return emptyList()
@@ -50,7 +61,9 @@ class RecursiveDirReader(private val fileLister: FileLister<SimpleSortingMode>) 
                 isDir = true,
                 mTime = Date().time,
                 size = 0L
-            )
+            ).also {
+                logFileListItem(it)
+            }
         )
 
         while(hasUnlistedDirs() && !isCancelled.invoke()) {
@@ -75,12 +88,18 @@ class RecursiveDirReader(private val fileLister: FileLister<SimpleSortingMode>) 
                         size = fsItem.size
                     )
 
+                    logFileListItem(childItem)
+
                     currentlyListedDir.addChildId(childItem.id)
 
                     list.add(childItem)
+
+                    TimeUnit.MILLISECONDS.sleep(debug_each_step_delay_for_debug_ms)
                 }
 
                 currentlyListedDir.isListed = true
+
+                TimeUnit.MILLISECONDS.sleep(debug_each_step_delay_for_debug_ms)
             }
         }
 
@@ -96,7 +115,9 @@ class RecursiveDirReader(private val fileLister: FileLister<SimpleSortingMode>) 
                                   sortingMode: SimpleSortingMode = SimpleSortingMode.NAME,
                                   reverseOrder: Boolean = false,
                                   foldersFirst: Boolean = false,
-                                  dirMode: Boolean = false
+                                  dirMode: Boolean = false,
+                                  debug_each_step_delay_for_debug_ms: Long = 0,
+                                  debug_log_each_item: Boolean = false,
     ): List<FileListItem> {
         return suspendCancellableCoroutine { cancellableContinuation ->
             thread {
@@ -112,7 +133,9 @@ class RecursiveDirReader(private val fileLister: FileLister<SimpleSortingMode>) 
                         sortingMode,
                         reverseOrder,
                         foldersFirst,
-                        dirMode
+                        dirMode,
+                        debug_each_step_delay_for_debug_ms,
+                        debug_log_each_item
                     ) { isCancelled }
 
                     cancellableContinuation.resume(list)
