@@ -143,6 +143,7 @@ abstract class FileSelector<SortingModeType> :
         binding.sortButton.setOnClickListener { onSortButtonClicked() }
         binding.backButton.setOnClickListener { onBackButtonClicked() }
         binding.refreshButton.setOnClickListener { onRefreshRequested() }
+        binding.homeButton.setOnClickListener { onHomeButtonClicked() }
     }
 
     private fun onStorageSelectionButtonClicked() {
@@ -173,6 +174,10 @@ abstract class FileSelector<SortingModeType> :
 
     private fun onBackButtonClicked() {
         viewModel.onBackClicked()
+    }
+
+    private fun onHomeButtonClicked() {
+        viewModel.onHomeClicked()
     }
 
     private fun prepareListAdapter() {

@@ -14,11 +14,20 @@
         android:contentDescription="@string/description_back_button"/>
 
     <ImageView
+        android:id="@+id/homeButton"
+        style="@style/flns_dialog_home_button"
+        android:src="@drawable/ic_home"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@id/backButton"
+        android:layout_alignBottom="@id/storageIcon"
+        android:contentDescription="@string/description_create_dir_button"/>
+
+    <ImageView
         android:id="@+id/createDirButton"
         style="@style/flns_dialog_header_button"
         android:src="@drawable/ic_mkdir"
         android:layout_alignParentTop="true"
-        android:layout_toEndOf="@id/backButton"
+        android:layout_toEndOf="@id/homeButton"
         android:layout_alignBottom="@id/storageIcon"
         android:contentDescription="@string/description_create_dir_button"/>
 

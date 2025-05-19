@@ -3,8 +3,11 @@ package com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_d
 import com.github.aakumykov.file_lister_navigator_selector.file_explorer.BasicFileExplorer
 import com.github.aakumykov.file_lister_navigator_selector.file_explorer.FileExplorer
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
+import com.github.aakumykov.file_lister_navigator_selector.fs_item.DirItem
+import com.github.aakumykov.file_lister_navigator_selector.fs_item.RootDirItem
 import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_dir_creator.YandexDiskDirCreator
 import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_file_lister.YandexDiskFileLister
+import java.io.File
 
 class YandexDiskFileExplorer (
     yandexDiskFileLister: YandexDiskFileLister,
@@ -23,4 +26,6 @@ class YandexDiskFileExplorer (
     initialSortingMode = defaultSortingMode,
     listCache = listCache,
     pathCache = pathCache
-)
+) {
+    override fun getHomeDir(): DirItem = RootDirItem()
+}

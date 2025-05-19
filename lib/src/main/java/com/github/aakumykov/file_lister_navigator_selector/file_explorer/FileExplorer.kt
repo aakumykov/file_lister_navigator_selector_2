@@ -20,6 +20,7 @@ interface FileExplorer<SortingModeType> {
 
     fun getCurrentPath(): String
     fun getCurrentDir(): DirItem
+    fun getHomeDir(): DirItem
 
     fun setSortingMode(sortingMode: SortingModeType)
     fun getSortingMode(): SortingModeType

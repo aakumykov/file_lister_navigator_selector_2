@@ -97,6 +97,11 @@ class FileSelectorViewModel<SortingModeType> (
         listCurrentPath()
     }
 
+    fun onHomeClicked() {
+        fileExplorer.changeDir(fileExplorer.getHomeDir())
+        listCurrentPath()
+    }
+
     private fun getItemAtPosition(position: Int): FSItem? {
         return _currentList.value?.get(position)
     }

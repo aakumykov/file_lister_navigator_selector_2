@@ -31,6 +31,8 @@ abstract class BasicFileExplorer<SortingModeType> (
     override fun getCurrentPath(): String = currentPath
     override fun getCurrentDir(): DirItem = currentDir
 
+    abstract override fun getHomeDir(): DirItem
+
     override fun setSortingMode(sortingMode: SortingModeType) {
         currentSortingMode = sortingMode
     }
