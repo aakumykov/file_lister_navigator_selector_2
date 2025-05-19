@@ -36,12 +36,10 @@ class YandexDiskFileSelector : FileSelector<SimpleSortingMode>() {
         return SimpleSortingModeTranslator(resources)
     }
 
-    @Deprecated("Оцени обоснованность этого метода")
     override fun defaultSortingMode(): SimpleSortingMode {
         return SimpleSortingMode.NAME
     }
 
-    @Deprecated("Оцени обоснованность этого метода")
     override fun defaultReverseMode(): Boolean = false
 
     override fun initialStorageDirectory(): StorageDirectory {
