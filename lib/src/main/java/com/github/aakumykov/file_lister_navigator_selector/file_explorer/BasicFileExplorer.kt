@@ -67,6 +67,7 @@ abstract class BasicFileExplorer<SortingModeType> (
         return currentList
     }
 
+    @Deprecated("Не используется / задействовать?")
     override suspend fun createDir(dirName: String): Result<String> {
         return try {
             dirCreator.makeDir(dirName)

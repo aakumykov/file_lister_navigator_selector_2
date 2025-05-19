@@ -35,8 +35,10 @@ class LocalFileSelector : FileSelector<SimpleSortingMode>() {
     }
 
 
+    @Deprecated("Оцени обоснованность этого метода")
     override fun defaultSortingMode(): SimpleSortingMode = SimpleSortingMode.NAME
 
+    @Deprecated("Оцени обоснованность этого метода")
     override fun defaultReverseMode(): Boolean = false
 
 
