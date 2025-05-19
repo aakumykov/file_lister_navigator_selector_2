@@ -3,13 +3,8 @@ package com.github.aakumykov.file_lister_navigator_selector_demo.extensions
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentResultListener
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
-
-fun Fragment.listenForFragmentResult(requestKey: String, listener: FragmentResultListener) {
-    childFragmentManager.setFragmentResultListener(requestKey, viewLifecycleOwner, listener)
-}
 
 fun Fragment.showToast(text: String) {
     lifecycleScope.launch {
