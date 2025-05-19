@@ -144,7 +144,7 @@ class DemoFragment : Fragment(R.layout.fragment_demo), FragmentResultListener {
                     .listDirRecursivelySuspend(
                         path = dirItem.absolutePath,
                         debug_log_each_item = true,
-                        debug_each_step_delay_for_debug_ms = 1000,
+                        debug_each_step_delay_for_debug_ms = 0,
                     )
                     .also { displayList(dirItem, it) }
             }
