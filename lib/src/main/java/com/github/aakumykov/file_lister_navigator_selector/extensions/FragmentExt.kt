@@ -6,3 +6,7 @@ import androidx.fragment.app.FragmentResultListener
 fun Fragment.listenForFragmentResult(requestKey: String, listener: FragmentResultListener) {
     childFragmentManager.setFragmentResultListener(requestKey, viewLifecycleOwner, listener)
 }
+
+fun Fragment.qwerty() {
+
+}
