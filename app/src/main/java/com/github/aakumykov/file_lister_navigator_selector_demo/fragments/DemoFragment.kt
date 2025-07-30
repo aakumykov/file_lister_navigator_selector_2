@@ -323,10 +323,6 @@ class DemoFragment : Fragment(R.layout.fragment_demo), FragmentResultListener {
         }
 
         yandexAuthLauncher = registerForActivityResult(yandexAuthSdkContract) { result: YandexAuthResult ->
-            /*yandexAuthToken = result.getOrNull()?.value
-            storeYandexAuthToken()
-            if (null != yandexAuthToken)
-                showFileSelector()*/
 
             when(result) {
                 is YandexAuthResult.Success -> {
