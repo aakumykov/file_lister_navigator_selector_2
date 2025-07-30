@@ -1,6 +1,7 @@
 package com.github.aakumykov.file_lister_navigator_selector_demo.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import androidx.activity.result.ActivityResultLauncher
@@ -28,6 +29,7 @@ import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_di
 import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_file_selector.YandexDiskFileSelector
 import com.yandex.authsdk.YandexAuthLoginOptions
 import com.yandex.authsdk.YandexAuthOptions
+import com.yandex.authsdk.YandexAuthResult
 import com.yandex.authsdk.YandexAuthSdkContract
 import com.yandex.authsdk.internal.strategy.LoginType
 import kotlinx.coroutines.CancellationException
@@ -320,17 +322,25 @@ class DemoFragment : Fragment(R.layout.fragment_demo), FragmentResultListener {
             YandexAuthSdkContract(yandexAuthOptions)
         }
 
-        yandexAuthLauncher = registerForActivityResult(yandexAuthSdkContract) { result ->
+        yandexAuthLauncher = registerForActivityResult(yandexAuthSdkContract) { result: YandexAuthResult ->
             /*yandexAuthToken = result.getOrNull()?.value
             storeYandexAuthToken()
             if (null != yandexAuthToken)
                 showFileSelector()*/
 
-            result.getOrNull()?.value?.also { token ->
-                yandexAuthToken = token
-                storeYandexAuthToken()
+            when(result) {
+                is YandexAuthResult.Success -> {
+                    yandexAuthToken = result.token.value
+                    storeYandexAuthToken()
 //                prepareYandexFileSelector()
-                showFileSelector()
+                    showFileSelector()
+                }
+                is YandexAuthResult.Failure -> {
+                    Log.e(TAG, result.exception.message ?: result.exception.javaClass.name)
+                }
+                else -> {
+                    Log.w(TAG, "Auth was cancelled.")
+                }
             }
         }
     }
