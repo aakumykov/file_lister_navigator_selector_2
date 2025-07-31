@@ -51,7 +51,7 @@ android {
 
 dependencies {
 
-    api project(':lib')
+    implementation project(':lib')
 
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
@@ -64,8 +64,8 @@ dependencies {
     // TODO: избавиться от этой библиотеки
     implementation 'com.github.aakumykov:yandex_disk_client:0.0.24'
 
-    api "com.github.aakumykov:cloud_reader_2:4.0.0-alpha"
-    api "com.github.aakumykov:cloud_writer_2:7.4.0-alpha"
+    implementation "com.github.aakumykov:cloud_reader_2:4.0.0-alpha"
+    implementation "com.github.aakumykov:cloud_writer_2:7.4.0-alpha"
 }
 
 publishing {
