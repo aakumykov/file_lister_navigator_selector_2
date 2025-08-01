@@ -1,20 +1,22 @@
 package com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_dir_creator
 
 import com.github.aakumykov.file_lister_navigator_selector.dir_creator.DirCreator
-import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
-import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
-import com.github.aakumykov.yandex_disk_client.YandexDiskClient
-import com.github.aakumykov.yandex_disk_client.exceptions.OperationFailedException
+import com.github.aakumykov.file_lister_navigator_selector.extensions.errorMsg
+import com.github.aakumykov.file_lister_navigator_selector.fs_item.utils.parentPathFor
+import com.github.aakumykov.yandex_disk_cloud_writer.YandexDiskCloudWriter
+import java.io.File
 
-class YandexDiskDirCreator(private val yandexDiskClient: YandexDiskClient<FSItem, SimpleSortingMode>) : DirCreator {
+class YandexDiskDirCreator(private val yandexDiskCloudWriter: YandexDiskCloudWriter) : DirCreator {
 
     override fun makeDir(absoluteDirPath: String) {
         try {
-            yandexDiskClient.createDir(absoluteDirPath)
+            yandexDiskCloudWriter.createDir(
+                basePath = parentPathFor(absoluteDirPath),
+                dirName = File(absoluteDirPath).name
+            )
         }
-        catch (e: OperationFailedException) {
-            // FIXME: убрать "!!", обновить библиотеку yandex_disk_client
-            throw DirCreator.UnsuccessfulOperationException(e.message!!)
+        catch (e: Exception) {
+            throw DirCreator.UnsuccessfulOperationException(e.errorMsg)
         }
     }
 }

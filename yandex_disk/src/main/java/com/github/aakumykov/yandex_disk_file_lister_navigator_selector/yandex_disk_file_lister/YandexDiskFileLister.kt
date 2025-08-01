@@ -1,9 +1,14 @@
 package com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_file_lister
 
+import com.github.aakumykov.cloud_reader.FileMetadata
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.FileLister
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
+import com.github.aakumykov.file_lister_navigator_selector.fs_item.SimpleFSItem
+import com.github.aakumykov.file_lister_navigator_selector.fs_item.utils.parentPathFor
+import com.github.aakumykov.file_lister_navigator_selector.sorting_comparator.FSItemSortingComparator
 import com.github.aakumykov.yandex_disk_cloud_reader.YandexDiskCloudReader
+import kotlinx.coroutines.runBlocking
 
 class YandexDiskFileLister(
     private val authToken: String,
@@ -11,10 +16,6 @@ class YandexDiskFileLister(
 )
     : FileLister<SimpleSortingMode>
 {
-    private val yandexDiskClient: FileListerYandexDiskClient by lazy {
-        FileListerYandexDiskClient(authToken)
-    }
-
     /**
      * Параметр foldersFirst не имеет эффекта.
      */
@@ -27,14 +28,28 @@ class YandexDiskFileLister(
     )
         : List<FSItem>
     {
-        return yandexDiskClient
-            .listDir(path, sortingMode, reverseOrder)
-            .filter {
-                // TODO: вынести этот фильтр в единое место
-                if (dirMode) it.isDir
-                else true
-            }
-            .map { convertDirToDirItem(it) }
+        return runBlocking {
+            yandexCloudReader
+                .listDir(path)
+                .getOrThrow()
+                ?.map { fileMetadata: FileMetadata ->
+                    val simpleFSItem = SimpleFSItem(
+                        name = fileMetadata.name,
+                        absolutePath = fileMetadata.absolutePath,
+                        parentPath = parentPathFor(fileMetadata.absolutePath),
+                        isDir = fileMetadata.isDir,
+                        mTime = fileMetadata.modified,
+                        size = fileMetadata.size
+                    )
+                    convertDirToDirItem(simpleFSItem)
+                } ?: emptyList()
+        }.filter {
+            // TODO: вынести этот фильтр в единое место
+            if (dirMode) it.isDir
+            else true
+        }.sortedWith(
+            FSItemSortingComparator.create(sortingMode, reverseOrder, foldersFirst)
+        )
     }
 
     override suspend fun fileExists(path: String): Result<Boolean> = yandexCloudReader.fileExists(path)
