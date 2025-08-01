@@ -11,9 +11,9 @@ import com.github.aakumykov.file_lister_navigator_selector.sorting_mode_translat
 import com.github.aakumykov.file_lister_navigator_selector.sorting_mode_translator.SortingModeTranslator
 import com.github.aakumykov.storage_lister.DummyStorageDirectory
 import com.github.aakumykov.storage_lister.StorageDirectory
+import com.github.aakumykov.yandex_disk_cloud_writer.YandexDiskCloudWriter
 import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_dir_creator.YandexDiskDirCreator
 import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_dir_creator_dialog.YandexDiskDirCreatorDialog
-import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_file_lister.FileListerYandexDiskClient
 import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_file_lister.YandexDiskFileLister
 import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_fs_navigator.YandexDiskFileExplorer
 
@@ -62,11 +62,11 @@ class YandexDiskFileSelector : FileSelector<SimpleSortingMode>() {
                 throw IllegalArgumentException("Auth token is null or empty")
 
             // FIXME: передавать классы через конструктор!
-            val yandexDiskClient = FileListerYandexDiskClient(authToken)
+            val yandexDiskCloudWriter = YandexDiskCloudWriter(authToken)
 
             _fileExplorer = YandexDiskFileExplorer(
                     yandexDiskFileLister = YandexDiskFileLister(authToken),
-                    yandexDiskDirCreator = YandexDiskDirCreator(yandexDiskClient),
+                    yandexDiskDirCreator = YandexDiskDirCreator(yandexDiskCloudWriter),
                     initialPath = "/",
                     isDirMode = isDirMode(),
             )

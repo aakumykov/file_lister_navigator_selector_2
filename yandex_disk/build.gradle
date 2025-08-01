@@ -61,9 +61,6 @@ dependencies {
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
 
-    // TODO: избавиться от этой библиотеки
-//    api 'com.github.aakumykov:yandex_disk_client:0.0.23'
-
     api "com.github.aakumykov:cloud_reader_2:4.0.0-alpha"
     api "com.github.aakumykov:cloud_writer_2:7.4.0-alpha"
 }
