@@ -6,6 +6,7 @@ import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSor
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.SimpleFSItem
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.utils.parentPathFor
+import com.github.aakumykov.file_lister_navigator_selector.sorting_comparator.FSItemSortingComparator
 import com.github.aakumykov.yandex_disk_cloud_reader.YandexDiskCloudReader
 import kotlinx.coroutines.runBlocking
 
@@ -42,7 +43,13 @@ class YandexDiskFileLister(
                     )
                     convertDirToDirItem(simpleFSItem)
                 } ?: emptyList()
-        }
+        }.filter {
+            // TODO: вынести этот фильтр в единое место
+            if (dirMode) it.isDir
+            else true
+        }.sortedWith(
+            FSItemSortingComparator.create(sortingMode, reverseOrder, foldersFirst)
+        )
     }
 
     override suspend fun fileExists(path: String): Result<Boolean> = yandexCloudReader.fileExists(path)
