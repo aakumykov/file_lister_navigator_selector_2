@@ -12,7 +12,7 @@ class YandexDiskDirCreator(private val yandexDiskClient: YandexDiskClient<FSItem
         try {
             yandexDiskClient.createDir(absoluteDirPath)
         }
-        catch (e: OperationFailedException) {
+        catch (e: Exception) {
             // FIXME: убрать "!!", обновить библиотеку yandex_disk_client
             throw DirCreator.UnsuccessfulOperationException(e.message!!)
         }

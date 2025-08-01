@@ -61,6 +61,7 @@ class YandexDiskFileSelector : FileSelector<SimpleSortingMode>() {
             if (authToken.isNullOrEmpty())
                 throw IllegalArgumentException("Auth token is null or empty")
 
+            // FIXME: передавать классы через конструктор!
             val yandexDiskClient = FileListerYandexDiskClient(authToken)
 
             _fileExplorer = YandexDiskFileExplorer(
