@@ -2,7 +2,7 @@ package com.github.aakumykov.file_lister_navigator_selector.fs_item.utils
 
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
 
-public fun parentPathFor(path: String): String {
+fun parentPathFor(path: String): String {
     return when(path) {
         FSItem.PARENT_DIR_PATH -> path
         FSItem.NO_PARENT_PATH -> path
