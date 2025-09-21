@@ -61,7 +61,7 @@ dependencies {
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
 
-    api "com.github.aakumykov:cloud_reader_2:4.0.0-alpha"
+    api "com.github.aakumykov:cloud_reader_2:4.1.0-alpha"
     api "com.github.aakumykov:cloud_writer_2:7.4.0-alpha"
 }
 
