@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
         android:id="@+id/backButton"
@@ -130,7 +131,8 @@
         android:divider="@color/list_divider"
         android:dividerHeight="1dp"/>
 
-    <Button
+    <LinearLayout
+        android:orientation="horizontal"
         android:id="@+id/confirmSelectionButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -139,6 +141,32 @@
         android:layout_alignParentBottom="true"
         android:layout_marginHorizontal="4dp"
         android:enabled="false"
-        android:text="@string/BUTTON_confirm_selection" />
+        android:text="@string/BUTTON_confirm_selection">
+
+        <ImageButton
+            android:id="@+id/listBackwardButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/ic_backward" />
+
+        <TextView
+            android:id="@+id/pageBumberView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textStyle="bold"
+            tools:text="1" />
+
+        <ImageButton
+            android:id="@+id/listForwardButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/ic_forward" />
+
+
+    </LinearLayout>
 
 </RelativeLayout>

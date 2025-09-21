@@ -133,6 +133,7 @@ abstract class FileSelector<SortingModeType> :
         viewModel.selectedList.observe(viewLifecycleOwner, ::onSelectedListChanged)
         viewModel.errorMsg.observe(viewLifecycleOwner, ::onNewError)
         viewModel.isBusy.observe(viewLifecycleOwner, ::onIsBusyChanged)
+        viewModel.offset.observe(viewLifecycleOwner, ::onOffsetChanged)
     }
 
     private fun prepareButtons() {
@@ -246,6 +247,10 @@ abstract class FileSelector<SortingModeType> :
             if (isBusy)
                 binding.errorView.hide()
         }
+    }
+
+    private fun onOffsetChanged(offset: Int?) {
+        binding.pageBumberView.text = offset?.toString() ?: 1.toString()
     }
 
     private fun onCreateDirClicked() {
