@@ -11,7 +11,6 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentResultListener
 import androidx.fragment.app.viewModels
-import com.github.aakumykov.android_storage_lister.AndroidStorageDirectory
 import com.github.aakumykov.file_lister_navigator_selector.FileListAdapter
 import com.github.aakumykov.file_lister_navigator_selector.R
 import com.github.aakumykov.file_lister_navigator_selector.databinding.DialogFileSelectorBinding
@@ -133,7 +132,7 @@ abstract class FileSelector<SortingModeType> :
         viewModel.selectedList.observe(viewLifecycleOwner, ::onSelectedListChanged)
         viewModel.errorMsg.observe(viewLifecycleOwner, ::onNewError)
         viewModel.isBusy.observe(viewLifecycleOwner, ::onIsBusyChanged)
-        viewModel.offset.observe(viewLifecycleOwner, ::onOffsetChanged)
+        viewModel.page.observe(viewLifecycleOwner, ::onPageChanged)
     }
 
     private fun prepareButtons() {
@@ -145,6 +144,8 @@ abstract class FileSelector<SortingModeType> :
         binding.backButton.setOnClickListener { onBackButtonClicked() }
         binding.refreshButton.setOnClickListener { onRefreshRequested() }
         binding.homeButton.setOnClickListener { onHomeButtonClicked() }
+        binding.listForwardButton.setOnClickListener { viewModel.onForwardClicked() }
+        binding.listBackwardButton.setOnClickListener { viewModel.onBackwardClicked() }
     }
 
     private fun onStorageSelectionButtonClicked() {
@@ -249,8 +250,8 @@ abstract class FileSelector<SortingModeType> :
         }
     }
 
-    private fun onOffsetChanged(offset: Int?) {
-        binding.pageBumberView.text = offset?.toString() ?: 1.toString()
+    private fun onPageChanged(offset: Int?) {
+        binding.pagePageBumberView.text = offset?.toString() ?: 1.toString()
     }
 
     private fun onCreateDirClicked() {

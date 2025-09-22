@@ -28,4 +28,6 @@ class YandexDiskFileExplorer (
     pathCache = pathCache
 ) {
     override fun getHomeDir(): DirItem = RootDirItem()
+
+    override val defaultListingLimit: Int = yandexDiskFileLister.defaultListingLimit
 }

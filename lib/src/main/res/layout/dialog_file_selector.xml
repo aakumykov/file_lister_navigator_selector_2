@@ -151,7 +151,7 @@
             app:srcCompat="@drawable/ic_backward" />
 
         <TextView
-            android:id="@+id/pageBumberView"
+            android:id="@+id/pagePageBumberView"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"

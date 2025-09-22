@@ -10,6 +10,8 @@ import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
  */
 interface FileExplorer<SortingModeType> {
 
+    val defaultListingLimit: Int
+
     fun changeDir(dirItem: DirItem) // TODO: выброс исключений...
 
     // TODO: suspend

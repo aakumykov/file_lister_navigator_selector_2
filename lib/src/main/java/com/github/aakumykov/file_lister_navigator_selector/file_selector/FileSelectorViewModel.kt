@@ -27,7 +27,7 @@ class FileSelectorViewModel<SortingModeType> (
     private val _currentError: MutableLiveData<Throwable> = MutableLiveData()
     private val _isBusy: MutableLiveData<Boolean> = MutableLiveData()
     private val _isDirMode: MutableLiveData<Boolean> = MutableLiveData()
-    private val _offset: MutableLiveData<Int> = MutableLiveData()
+    private val _pageMutableLiveData: MutableLiveData<Int> = MutableLiveData(1)
 
     private val selectedItems: MutableList<FSItem> = mutableListOf()
 
@@ -38,7 +38,7 @@ class FileSelectorViewModel<SortingModeType> (
     val errorMsg: LiveData<Throwable> = _currentError
     val isBusy: LiveData<Boolean> = _isBusy
     val isDirMode: LiveData<Boolean> = _isDirMode
-    val offset: LiveData<Int> = _offset
+    val page: LiveData<Int> = _pageMutableLiveData
 
     val currentSortingMode get() = fileExplorer.getSortingMode()
     val isReverseOrder: Boolean get() = fileExplorer.getReverseOrder()
@@ -46,11 +46,21 @@ class FileSelectorViewModel<SortingModeType> (
 
     private val isSingleSelectionMode get() = !isMultipleSelectionMode
 
-    private var currentOffset: Int = 1
+    private var currentPage: Int = 1
         set(value) {
-            _offset.value = value
-            field = value
+            field = if (value < 0) 1 else value
+            _pageMutableLiveData.value = field
         }
+
+    private val currentOffset: Int get() {
+        return (currentPage - 1) * currentLimit
+    }
+
+    private val currentLimit: Int get() {
+        return fileExplorer.defaultListingLimit
+    }
+
+
 
     fun startWork() {
         listCurrentPath()
@@ -111,7 +121,13 @@ class FileSelectorViewModel<SortingModeType> (
     }
 
     fun onForwardClicked() {
-        currentOffset++
+        currentPage++
+        reopenCurrentDir()
+    }
+
+    fun onBackwardClicked() {
+        currentPage--
+        reopenCurrentDir()
     }
 
 
@@ -130,7 +146,10 @@ class FileSelectorViewModel<SortingModeType> (
 
             try {
                 withContext(Dispatchers.IO) {
-                    fileExplorer.listCurrentPath()
+                    fileExplorer.listCurrentPath(
+                        offset = currentOffset,
+                        limit = currentLimit
+                    )
                 }.also {
                     _currentList.value = it
                 }

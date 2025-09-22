@@ -29,4 +29,6 @@ class LocalFileExplorer(
     override fun getHomeDir(): DirItem {
         return DirItem(Environment.getExternalStorageDirectory())
     }
+
+    override val defaultListingLimit: Int = localFileLister.defaultListingLimit
 }

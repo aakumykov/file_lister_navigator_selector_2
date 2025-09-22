@@ -14,12 +14,23 @@ class LocalFileLister(
 )
     : FileLister<SimpleSortingMode>
 {
+    companion object {
+        private const val DEFAULT_STARTING_OFFSET = 0
+        private const val DEFAULT_LISTING_LIMIT = 5
+    }
+
+    override val defaultListingOffset: Int = DEFAULT_STARTING_OFFSET
+
+    override val defaultListingLimit: Int = DEFAULT_LISTING_LIMIT
+
     override fun listDir(
         path: String,
         sortingMode: SimpleSortingMode,
         reverseOrder: Boolean,
         foldersFirst: Boolean,
-        dirMode: Boolean
+        dirMode: Boolean,
+        offset: Int,
+        limit: Int,
     )
         : List<FSItem>
     {

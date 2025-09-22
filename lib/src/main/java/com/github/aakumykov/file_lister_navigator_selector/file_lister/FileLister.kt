@@ -10,6 +10,10 @@ import java.io.IOException
  */
 interface FileLister<SortingModeType> {
 
+    val defaultListingOffset: Int
+
+    val defaultListingLimit: Int
+
     /**
      * Возвращает список файлов (объектов с интерфейсом FSItem) по указанному пути.
      * Если расположение, указанное в аргументе, не удаётся прочитать, возвращает пустой список.
@@ -31,6 +35,8 @@ interface FileLister<SortingModeType> {
         reverseOrder: Boolean,
         foldersFirst: Boolean,
         dirMode: Boolean,
+        offset: Int = defaultListingOffset,
+        limit: Int = defaultListingLimit
     ): List<FSItem>
 
 

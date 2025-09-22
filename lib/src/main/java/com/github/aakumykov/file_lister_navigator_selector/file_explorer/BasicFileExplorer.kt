@@ -45,13 +45,19 @@ abstract class BasicFileExplorer<SortingModeType> (
     }
 
     override fun listCurrentPath(): List<FSItem> {
+        return listCurrentPath(fileLister.defaultListingOffset, fileLister.defaultListingLimit)
+    }
+
+    override fun listCurrentPath(offset: Int, limit: Int): List<FSItem> {
 
         val rawDirList = fileLister.listDir(
-            currentPath,
-            currentSortingMode,
-            reverseOrder,
-            foldersFirst,
-            isDirMode
+            path = currentPath,
+            sortingMode = currentSortingMode,
+            reverseOrder = reverseOrder,
+            foldersFirst = foldersFirst,
+            dirMode = isDirMode,
+            offset = offset,
+            limit = limit
         )
 
         currentList.clear()
@@ -67,10 +73,6 @@ abstract class BasicFileExplorer<SortingModeType> (
         listCache?.cacheList(currentList)
 
         return currentList
-    }
-
-    override fun listCurrentPath(offset: Int, limit: Int): List<FSItem> {
-
     }
 
     override suspend fun createDir(dirName: String): Result<String> {
