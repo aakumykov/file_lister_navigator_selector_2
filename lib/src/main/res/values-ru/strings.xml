@@ -27,6 +27,16 @@
     <string name="sorting_flags_folders_first">Сначала каталоги</string>
     <string name="error">Ошибка: %1$s</string>
     <string name="write_access_denied">Запись запрещена</string>
+
+    <string name="internal_storage_title">Внутренняя память</string>
+    <string name="external_storage_title">SD-карта</string>
+    <string name="storage_selector_spinner_prompt">Выбор хранилища</string>
+    <string name="description_storage_list_storage_type_icon">Значок типа хранилища</string>
+    <string name="no_storage_info_available">Список хранилищ недоступен</string>
+    <string name="description_storage_icon">Значок хранилища</string>
+
+    <string name="description_previous_page_button">Предыдущая страница</string>
+    <string name="description_next_page_button">Следующая страница</string>
 </resources>
 
     <!-- «» -->

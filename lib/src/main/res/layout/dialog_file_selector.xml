@@ -6,9 +6,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
-        android:id="@+id/backButton"
+        android:id="@+id/upButton"
         style="@style/flns_dialog_header_button"
-        android:src="@drawable/ic_back"
+        android:src="@drawable/ic_up"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_alignBottom="@id/storageIcon"
@@ -19,7 +19,7 @@
         style="@style/flns_dialog_home_button"
         android:src="@drawable/ic_home"
         android:layout_alignParentTop="true"
-        android:layout_toEndOf="@id/backButton"
+        android:layout_toEndOf="@id/upButton"
         android:layout_alignBottom="@id/storageIcon"
         android:contentDescription="@string/description_create_dir_button"/>
 
@@ -131,8 +131,52 @@
         android:divider="@color/list_divider"
         android:dividerHeight="1dp"/>
 
-    <LinearLayout
-        android:orientation="horizontal"
+    <!--<com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:contentDescription="@string/description_previous_page_button"
+        android:focusable="true"
+        android:src="@drawable/ic_confirm_selection"
+        android:layout_alignLeft="@id/listView"
+        android:layout_centerInParent="true"
+        />-->
+
+    <ImageView
+        android:id="@+id/listBackwardButton"
+        style="@style/flns_dialog_pagination_button"
+        android:src="@drawable/ic_backward"
+        android:layout_alignStart="@id/listView"
+        android:contentDescription="@string/description_previous_page_button"/>
+
+    <ImageView
+        android:id="@+id/listForwardButton"
+        style="@style/flns_dialog_pagination_button"
+        android:src="@drawable/ic_forward"
+        android:layout_alignEnd="@id/listView"
+        android:contentDescription="@string/description_previous_page_button"/>
+
+    <!--<TextView
+        android:id="@+id/pagePageBumberView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"/>-->
+
+    <!-- Ломает кнопки смены страницы -->
+    <!--<TextView
+        android:id="@+id/pagePageBumberView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/listView"
+        android:layout_centerInParent="true"
+        tools:text="10"
+        android:textStyle="bold"
+        android:alpha="0.5"
+        android:padding="6dp"
+        android:gravity="center"
+        android:visibility="invisible"/>-->
+
+    <Button
         android:id="@+id/confirmSelectionButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -141,32 +185,6 @@
         android:layout_alignParentBottom="true"
         android:layout_marginHorizontal="4dp"
         android:enabled="false"
-        android:text="@string/BUTTON_confirm_selection">
-
-        <ImageButton
-            android:id="@+id/listBackwardButton"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/ic_backward" />
-
-        <TextView
-            android:id="@+id/pagePageBumberView"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textStyle="bold"
-            tools:text="1" />
-
-        <ImageButton
-            android:id="@+id/listForwardButton"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/ic_forward" />
-
-
-    </LinearLayout>
+        android:text="@string/BUTTON_confirm_selection" />
 
 </RelativeLayout>

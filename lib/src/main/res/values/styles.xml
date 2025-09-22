@@ -27,6 +27,12 @@
         <item name="android:padding">8dp</item>
     </style>
 
+    <style name="flns_dialog_pagination_button" parent="flns_dialog_header_button">
+        <item name="android:alpha">0.5</item>
+        <item name="android:layout_margin">8dp</item>
+        <item name="android:layout_centerInParent">true</item>
+    </style>
+
     <style name="flns_dialog_home_button">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

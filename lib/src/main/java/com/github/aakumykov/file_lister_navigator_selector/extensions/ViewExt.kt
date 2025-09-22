@@ -2,7 +2,7 @@ package com.github.aakumykov.file_lister_navigator_selector.extensions
 
 import android.view.View
 
-fun View.show() {
+fun View.visible() {
     visibility = View.VISIBLE
 }
 
@@ -10,10 +10,10 @@ fun View.hide() {
     visibility = View.GONE
 }
 
-fun View.showIf(condition: View.() -> Boolean) {
-    visibility = if (condition()) View.VISIBLE else View.GONE
+fun View.invisible() {
+    visibility = View.INVISIBLE
 }
 
-fun View.hideIf(condition: View.() -> Boolean) {
-    visibility = if (condition()) View.GONE else View.VISIBLE
+fun View.showIf(condition: View.() -> Boolean) {
+    visibility = if (condition()) View.VISIBLE else View.INVISIBLE
 }

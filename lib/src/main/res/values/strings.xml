@@ -27,12 +27,16 @@
     <string name="sorting_flags_folders_first">Folders first</string>
     <string name="error">Error: %1$s</string>
     <string name="write_access_denied">Write access denied</string>
-    <string name="internal_storage_title">Внутренняя память</string>
-    <string name="external_storage_title">SD-карта</string>
-    <string name="storage_selector_spinner_prompt">Выбор хранилища</string>
-    <string name="description_storage_list_storage_type_icon">Значок типа хранилища</string>
-    <string name="no_storage_info_available">Список хранилищ недоступен</string>
-    <string name="description_storage_icon">Значок хранилища</string>
+
+    <string name="internal_storage_title">Internal storage</string>
+    <string name="external_storage_title">SD-card</string>
+    <string name="storage_selector_spinner_prompt">Select storage</string>
+    <string name="description_storage_list_storage_type_icon">Storage type icon</string>
+    <string name="no_storage_info_available">Storage list unavailable</string>
+    <string name="description_storage_icon">Storage icon</string>
+
+    <string name="description_previous_page_button">Previous page</string>
+    <string name="description_next_page_button">Next page</string>
 </resources>
 
 <!-- «» -->

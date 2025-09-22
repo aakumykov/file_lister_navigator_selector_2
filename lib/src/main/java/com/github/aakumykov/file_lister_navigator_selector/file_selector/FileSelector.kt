@@ -17,8 +17,8 @@ import com.github.aakumykov.file_lister_navigator_selector.databinding.DialogFil
 import com.github.aakumykov.file_lister_navigator_selector.dir_creator_dialog.DirCreatorDialog
 import com.github.aakumykov.file_lister_navigator_selector.extensions.colorize
 import com.github.aakumykov.file_lister_navigator_selector.extensions.hide
-import com.github.aakumykov.file_lister_navigator_selector.extensions.show
-import com.github.aakumykov.file_lister_navigator_selector.extensions.showIf
+import com.github.aakumykov.file_lister_navigator_selector.extensions.invisible
+import com.github.aakumykov.file_lister_navigator_selector.extensions.visible
 import com.github.aakumykov.file_lister_navigator_selector.file_explorer.FileExplorer
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.SimpleFSItem
@@ -141,7 +141,7 @@ abstract class FileSelector<SortingModeType> :
         binding.dialogCloseButton.setOnClickListener { dismiss() }
         binding.createDirButton.setOnClickListener { onCreateDirClicked() }
         binding.sortButton.setOnClickListener { onSortButtonClicked() }
-        binding.backButton.setOnClickListener { onBackButtonClicked() }
+        binding.upButton.setOnClickListener { onBackButtonClicked() }
         binding.refreshButton.setOnClickListener { onRefreshRequested() }
         binding.homeButton.setOnClickListener { onHomeButtonClicked() }
         binding.listForwardButton.setOnClickListener { viewModel.onForwardClicked() }
@@ -237,21 +237,20 @@ abstract class FileSelector<SortingModeType> :
         throwable?.also {
             binding.errorView.apply {
                 text = getString(R.string.error, ExceptionUtils.getErrorMessage(throwable))
-                this.show()
+                this.visible()
             }
-        }
+        } ?: binding.errorView.hide()
     }
 
     private fun onIsBusyChanged(isBusy: Boolean?) {
-        isBusy?.also {
-            binding.progressBar.showIf { isBusy }
-            if (isBusy)
-                binding.errorView.hide()
+        when (isBusy) {
+            true -> binding.progressBar.visible()
+            else -> binding.progressBar.invisible()
         }
     }
 
     private fun onPageChanged(offset: Int?) {
-        binding.pagePageBumberView.text = offset?.toString() ?: 1.toString()
+
     }
 
     private fun onCreateDirClicked() {

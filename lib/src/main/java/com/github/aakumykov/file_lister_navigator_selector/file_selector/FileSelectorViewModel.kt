@@ -13,6 +13,7 @@ import com.github.aakumykov.storage_lister.StorageDirectory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.math.sign
 
 class FileSelectorViewModel<SortingModeType> (
     val fileExplorer: FileExplorer<SortingModeType>,
@@ -24,7 +25,7 @@ class FileSelectorViewModel<SortingModeType> (
     private val _currentPath: MutableLiveData<String> = MutableLiveData()
     private val _currentList: MutableLiveData<List<FSItem>> = MutableLiveData(emptyList())
     private val _selectedList: MutableLiveData<List<FSItem>> = MutableLiveData(emptyList())
-    private val _currentError: MutableLiveData<Throwable> = MutableLiveData()
+    private val _currentError: MutableLiveData<Throwable?> = MutableLiveData()
     private val _isBusy: MutableLiveData<Boolean> = MutableLiveData()
     private val _isDirMode: MutableLiveData<Boolean> = MutableLiveData()
     private val _pageMutableLiveData: MutableLiveData<Int> = MutableLiveData(1)
@@ -35,7 +36,7 @@ class FileSelectorViewModel<SortingModeType> (
     val path: LiveData<String> = _currentPath
     val list: LiveData<List<FSItem>> = _currentList
     val selectedList: LiveData<List<FSItem>> = _selectedList
-    val errorMsg: LiveData<Throwable> = _currentError
+    val errorMsg: LiveData<Throwable?> = _currentError
     val isBusy: LiveData<Boolean> = _isBusy
     val isDirMode: LiveData<Boolean> = _isDirMode
     val page: LiveData<Int> = _pageMutableLiveData
@@ -52,8 +53,16 @@ class FileSelectorViewModel<SortingModeType> (
             _pageMutableLiveData.value = field
         }
 
+    private val currentList: List<FSItem> get() = list.value ?: emptyList()
+
+    private val isFistPage: Boolean get() = 0 == currentOffset
+
+    private val isLastPage: Boolean get() = currentList.size-1 < fileExplorer.defaultListingLimit
+
+
     private val currentOffset: Int get() {
-        return (currentPage - 1) * currentLimit
+        val offset = (currentPage - 1) * currentLimit
+        return if (offset < 0) 0 else offset
     }
 
     private val currentLimit: Int get() {
@@ -121,13 +130,17 @@ class FileSelectorViewModel<SortingModeType> (
     }
 
     fun onForwardClicked() {
-        currentPage++
-        reopenCurrentDir()
+        if (!isLastPage) {
+            currentPage++
+            reopenCurrentDir()
+        }
     }
 
     fun onBackwardClicked() {
-        currentPage--
-        reopenCurrentDir()
+        if (!isFistPage) {
+            currentPage--
+            reopenCurrentDir()
+        }
     }
 
 
@@ -137,6 +150,7 @@ class FileSelectorViewModel<SortingModeType> (
 
     private fun listCurrentPath() {
 
+        _currentError.value = null
         _currentPath.value = fileExplorer.getCurrentPath()
         _selectedList.value = emptyList()
 

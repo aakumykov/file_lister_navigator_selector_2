@@ -18,7 +18,7 @@ class YandexDiskFileLister(
 {
     companion object {
         private const val DEFAULT_STARTING_OFFSET = 0
-        private const val DEFAULT_LISTING_LIMIT = 5
+        private const val DEFAULT_LISTING_LIMIT = 20
     }
 
     override val defaultListingOffset: Int = DEFAULT_STARTING_OFFSET
