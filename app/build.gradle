@@ -47,9 +47,9 @@ dependencies {
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
 
-    implementation 'com.github.aakumykov:storage_access_helper:2.0.0-alpha'
+    implementation libs.storage.access.helper
 
     implementation 'androidx.preference:preference:1.2.1'
 
-    implementation 'com.yandex.android:authsdk:3.1.0'
+    implementation libs.authsdk
 }

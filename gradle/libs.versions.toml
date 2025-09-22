@@ -1,20 +1,38 @@
 [versions]
 agp = "8.5.0"
+android_storage_lister = "4.0.0-alpha"
+authsdk = "3.1.0"
+cloud_reader_x = "4.1.0-alpha"
+cloud_writer_x = "7.4.0-alpha"
+extensible_sorting_comparator = "0.0.2"
+fragmentKtx = "1.7.0"
+gson = "2.10.1"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.0"
+list_holding_list_adapter = "0.0.5-alpha"
 material = "1.12.0"
+storage_access_helper = "2.0.0-alpha"
 
 [libraries]
+android_storage_lister = { module = "com.github.aakumykov:android_storage_lister", version.ref = "android_storage_lister" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtx" }
+authsdk = { module = "com.yandex.android:authsdk", version.ref = "authsdk" }
+cloud_reader_x = { module = "com.github.aakumykov:cloud_reader_2", version.ref = "cloud_reader_x" }
+cloud_writer_x = { module = "com.github.aakumykov:cloud_writer_2", version.ref = "cloud_writer_x" }
+extensible_sorting_comparator = { module = "com.github.aakumykov:extensible_sorting_comparator", version.ref = "extensible_sorting_comparator" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+list_holding_list_adapter = { module = "com.github.aakumykov:list_holding_list_adapter", version.ref = "list_holding_list_adapter" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+storage_access_helper = { module = "com.github.aakumykov:storage_access_helper", version.ref = "storage_access_helper" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -61,15 +61,16 @@ dependencies {
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
 
-    api 'androidx.fragment:fragment-ktx:1.7.0'
+    api libs.androidx.fragment.ktx
 
+    // TODO: убрать exception_utils
     implementation 'com.github.aakumykov:exception_utils:0.4'
 
-    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation libs.gson
 
-    api 'com.github.aakumykov:extensible_sorting_comparator:0.0.2'
+    api libs.extensible.sorting.comparator
 
-    implementation "com.github.aakumykov:list_holding_list_adapter:0.0.5-alpha"
+    implementation libs.list.holding.list.adapter
 }
 
 publishing {

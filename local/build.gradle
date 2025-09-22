@@ -61,10 +61,10 @@ dependencies {
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
 
-    implementation 'com.github.aakumykov:storage_access_helper:2.0.0-alpha'
+    implementation libs.storage.access.helper
 
-    api("com.github.aakumykov:cloud_reader_2:4.1.0-alpha")
-    api("com.github.aakumykov:cloud_writer_2:7.4.0-alpha")
+    api(libs.cloud.reader.x)
+    api(libs.cloud.writer.x)
 }
 
 publishing {
