@@ -69,6 +69,10 @@ abstract class BasicFileExplorer<SortingModeType> (
         return currentList
     }
 
+    override fun listCurrentPath(offset: Int, limit: Int): List<FSItem> {
+
+    }
+
     override suspend fun createDir(dirName: String): Result<String> {
         return try {
             dirCreator.makeDir(dirName)

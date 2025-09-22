@@ -14,6 +14,7 @@ interface FileExplorer<SortingModeType> {
 
     // TODO: suspend
     fun listCurrentPath(): List<FSItem> // TODO: throws NotADirException
+    fun listCurrentPath(offset: Int, limit: Int): List<FSItem> // TODO: throws NotADirException
 
     @Deprecated("Не используется / задействовать?")
     suspend fun createDir(dirName: String): Result<String>
