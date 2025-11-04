@@ -1,7 +1,11 @@
 package com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_file_lister
 
 import com.github.aakumykov.cloud_reader.FileMetadata
+import com.github.aakumykov.file_lister_navigator_selector.extensions.errorMsg
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.FileLister
+import com.github.aakumykov.file_lister_navigator_selector.file_lister.FileLister.CannotReadException
+import com.github.aakumykov.file_lister_navigator_selector.file_lister.FileLister.NotADirException
+import com.github.aakumykov.file_lister_navigator_selector.file_lister.FileLister.OtherDirListingException
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.SimpleFSItem
@@ -9,6 +13,8 @@ import com.github.aakumykov.file_lister_navigator_selector.fs_item.utils.parentP
 import com.github.aakumykov.file_lister_navigator_selector.sorting_comparator.FSItemSortingComparator
 import com.github.aakumykov.yandex_disk_cloud_reader.YandexDiskCloudReader
 import kotlinx.coroutines.runBlocking
+import java.io.FileNotFoundException
+import java.io.IOException
 
 class YandexDiskFileLister(
     private val authToken: String,
@@ -29,6 +35,13 @@ class YandexDiskFileLister(
     /**
      * Параметр foldersFirst не имеет эффекта.
      */
+    @Throws(
+        FileNotFoundException::class,
+        CannotReadException::class,
+        NotADirException::class,
+        OtherDirListingException::class,
+        IOException::class
+    )
     override fun listDir(
         path: String,
         sortingMode: SimpleSortingMode,
@@ -41,20 +54,29 @@ class YandexDiskFileLister(
         : List<FSItem>
     {
         return runBlocking {
-            yandexCloudReader
-                .listDir(path, offset, limit)
-                .getOrThrow()
-                ?.map { fileMetadata: FileMetadata ->
-                    val simpleFSItem = SimpleFSItem(
-                        name = fileMetadata.name,
-                        absolutePath = fileMetadata.absolutePath,
-                        parentPath = parentPathFor(fileMetadata.absolutePath),
-                        isDir = fileMetadata.isDir,
-                        mTime = fileMetadata.modified,
-                        size = fileMetadata.size
-                    )
-                    convertDirToDirItem(simpleFSItem)
-                } ?: emptyList()
+
+            try {
+                yandexCloudReader
+                    .listDir(path, offset, limit)
+                    .getOrThrow()
+                    ?.map { fileMetadata: FileMetadata ->
+                        val simpleFSItem = SimpleFSItem(
+                            name = fileMetadata.name,
+                            absolutePath = fileMetadata.absolutePath,
+                            parentPath = parentPathFor(fileMetadata.absolutePath),
+                            isDir = fileMetadata.isDir,
+                            mTime = fileMetadata.modified,
+                            size = fileMetadata.size
+                        )
+                        convertDirToDirItem(simpleFSItem)
+                    } ?: emptyList<FSItem>()
+
+            } catch (e: FileNotFoundException) {
+                throw e
+            } catch (e: Exception) {
+                throw OtherDirListingException(e.errorMsg)
+            }
+
         }.filter {
             // TODO: вынести этот фильтр в единое место
             if (dirMode) it.isDir

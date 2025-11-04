@@ -1,12 +1,17 @@
 package com.github.aakumykov.local_file_lister_navigator_selector.local_file_lister
 
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.FileLister
+import com.github.aakumykov.file_lister_navigator_selector.file_lister.FileLister.CannotReadException
+import com.github.aakumykov.file_lister_navigator_selector.file_lister.FileLister.NotADirException
+import com.github.aakumykov.file_lister_navigator_selector.file_lister.FileLister.OtherDirListingException
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.SimpleFSItem
 import com.github.aakumykov.file_lister_navigator_selector.sorting_comparator.FSItemSortingComparator
 import com.github.aakumykov.local_cloud_reader.LocalCloudReader
 import java.io.File
+import java.io.FileNotFoundException
+import java.io.IOException
 
 class LocalFileLister(
     private val dummyAuthToken: String = "",
@@ -23,6 +28,13 @@ class LocalFileLister(
 
     override val defaultListingLimit: Int = DEFAULT_LISTING_LIMIT
 
+    @Throws(
+        FileNotFoundException::class,
+        NotADirException::class,
+        CannotReadException::class,
+        OtherDirListingException::class,
+        IOException::class
+    )
     override fun listDir(
         path: String,
         sortingMode: SimpleSortingMode,
@@ -32,8 +44,19 @@ class LocalFileLister(
         offset: Int,
         limit: Int,
     )
-        : List<FSItem>
+            : List<FSItem>
     {
+        val listingDir = File(path)
+
+        if (!listingDir.exists())
+            throw FileNotFoundException(path)
+
+        if (!listingDir.isDirectory)
+            throw NotADirException(path)
+
+        if (!listingDir.canRead())
+            throw CannotReadException(path)
+
         val fileNamesArray = File(path).list()
 
         val fileList = mutableListOf<FSItem>()
@@ -48,6 +71,8 @@ class LocalFileLister(
                     )
                 )
             }
+        } else {
+            throw OtherDirListingException("Listing of '$path' returns null.")
         }
 
         return fileList
