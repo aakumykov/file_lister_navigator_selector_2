@@ -52,4 +52,7 @@ dependencies {
     implementation 'androidx.preference:preference:1.2.1'
 
     implementation libs.authsdk
+
+    androidTestImplementation libs.kaspresso
+    androidTestUtil libs.androidx.orchestrator
 }
