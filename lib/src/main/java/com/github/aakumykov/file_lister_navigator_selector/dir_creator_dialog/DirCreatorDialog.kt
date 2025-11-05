@@ -13,8 +13,8 @@ import com.github.aakumykov.file_lister_navigator_selector.R
 import com.github.aakumykov.file_lister_navigator_selector.databinding.DialogDirCreatorBinding
 import com.github.aakumykov.file_lister_navigator_selector.dir_creator.DirCreator
 import com.github.aakumykov.file_lister_navigator_selector.dir_creator.stripExtraSlashes
+import com.github.aakumykov.file_lister_navigator_selector.extensions.errorMsg
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
-import com.gitlab.aakumykov.exception_utils_module.ExceptionUtils
 
 abstract class DirCreatorDialog : DialogFragment(R.layout.dialog_dir_creator) {
 
@@ -84,14 +84,12 @@ abstract class DirCreatorDialog : DialogFragment(R.layout.dialog_dir_creator) {
 
 
     private fun showError(e: Exception?) {
-        if (null != e) {
-            ExceptionUtils.getErrorMessage(e).also {
-                binding.errorView.apply {
-                    text = it
-                    visibility = View.VISIBLE
-                }
-                Log.e(TAG, it, e)
+        e?.errorMsg?.also {
+            binding.errorView.apply {
+                text = it
+                visibility = View.VISIBLE
             }
+            Log.e(TAG, it, e)
         }
     }
     

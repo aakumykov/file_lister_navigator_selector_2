@@ -16,6 +16,7 @@ import com.github.aakumykov.file_lister_navigator_selector.R
 import com.github.aakumykov.file_lister_navigator_selector.databinding.DialogFileSelectorBinding
 import com.github.aakumykov.file_lister_navigator_selector.dir_creator_dialog.DirCreatorDialog
 import com.github.aakumykov.file_lister_navigator_selector.extensions.colorize
+import com.github.aakumykov.file_lister_navigator_selector.extensions.errorMsg
 import com.github.aakumykov.file_lister_navigator_selector.extensions.hide
 import com.github.aakumykov.file_lister_navigator_selector.extensions.invisible
 import com.github.aakumykov.file_lister_navigator_selector.extensions.visible
@@ -28,7 +29,6 @@ import com.github.aakumykov.file_lister_navigator_selector.storage_selecting_dia
 import com.github.aakumykov.storage_lister.DummyStorageDirectory
 import com.github.aakumykov.storage_lister.StorageDirectory
 import com.github.aakumykov.storage_lister.StorageLister
-import com.gitlab.aakumykov.exception_utils_module.ExceptionUtils
 import com.google.gson.Gson
 
 // TODO: Сделать интерфейс "FileSelectorFragment" ?
@@ -236,7 +236,7 @@ abstract class FileSelector<SortingModeType> :
     private fun onNewError(throwable: Throwable?) {
         throwable?.also {
             binding.errorView.apply {
-                text = getString(R.string.error, ExceptionUtils.getErrorMessage(throwable))
+                text = getString(R.string.error, throwable.errorMsg)
                 this.visible()
             }
         } ?: binding.errorView.hide()

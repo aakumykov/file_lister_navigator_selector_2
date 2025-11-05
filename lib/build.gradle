@@ -63,9 +63,6 @@ dependencies {
 
     api libs.androidx.fragment.ktx
 
-    // TODO: убрать exception_utils
-    implementation 'com.github.aakumykov:exception_utils:0.4'
-
     implementation libs.gson
 
     api libs.extensible.sorting.comparator
