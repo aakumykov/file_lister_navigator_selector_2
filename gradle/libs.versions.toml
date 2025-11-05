@@ -17,6 +17,7 @@ appcompat = "1.7.0"
 list_holding_list_adapter = "0.0.5-alpha"
 material = "1.12.0"
 orchestrator = "1.6.1"
+preferenceKtx = "1.2.1"
 storage_access_helper = "2.0.0-alpha"
 
 [libraries]
@@ -24,6 +25,7 @@ android_storage_lister = { module = "com.github.aakumykov:android_storage_lister
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtx" }
 androidx-orchestrator = { module = "androidx.test:orchestrator", version.ref = "orchestrator" }
+androidx-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preferenceKtx" }
 authsdk = { module = "com.yandex.android:authsdk", version.ref = "authsdk" }
 cloud_reader_x = { module = "com.github.aakumykov:cloud_reader_2", version.ref = "cloud_reader_x" }
 cloud_writer_x = { module = "com.github.aakumykov:cloud_writer_2", version.ref = "cloud_writer_x" }

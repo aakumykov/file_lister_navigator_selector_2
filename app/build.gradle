@@ -49,7 +49,7 @@ dependencies {
 
     implementation libs.storage.access.helper
 
-    implementation 'androidx.preference:preference:1.2.1'
+    implementation libs.androidx.preference.ktx
 
     implementation libs.authsdk
 
