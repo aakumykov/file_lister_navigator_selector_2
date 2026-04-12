@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RadioGroup
+        android:id="@+id/workModeSelector"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <RadioButton
+            android:id="@+id/workModeLocal"
+            android:checked="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/work_mode_local" />
+
+        <RadioButton
+            android:id="@+id/workModeYandexDisk"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/work_mode_yandex" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/selectFileButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/select_file" />
+
+    <TextView
+        android:id="@+id/infoView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textSize="31sp"
+        android:typeface="serif"
+        android:textStyle="italic"
+        android:paddingVertical="8dp"
+        tools:text="Werty" />
+
+</LinearLayout>

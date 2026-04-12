@@ -6,6 +6,7 @@ import android.view.View
 import androidx.core.os.bundleOf
 import com.github.aakumykov.android_storage_lister.AndroidStorageType
 import com.github.aakumykov.file_lister_navigator_selector.dir_creator_dialog.DirCreatorDialog
+import com.github.aakumykov.file_lister_navigator_selector.extensions.listenForFragmentResult
 import com.github.aakumykov.file_lister_navigator_selector.file_explorer.FileExplorer
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
 import com.github.aakumykov.file_lister_navigator_selector.file_selector.FileSelector
@@ -22,8 +23,25 @@ import com.github.aakumykov.storage_lister.InternalStorageDirectory
 import com.github.aakumykov.storage_lister.StorageDirectory
 import java.io.File
 
-class LocalFileSelector : FileSelector<SimpleSortingMode>() {
+class LocalFileSelector(private val callbacks: Callbacks)
+    : FileSelector<SimpleSortingMode>(callbacks)
+{
+    fun prepare(
+        initialPath: String = Environment.getExternalStorageDirectory().absolutePath,
+        isDirSelectionMode: Boolean = false,
+        isMultipleSelectionMode: Boolean = false
+    )
+        : LocalFileSelector
+    {
+        arguments = bundleOf(
+            INITIAL_PATH to initialPath,
+            DIR_SELECTION_MODE to isDirSelectionMode,
+            MULTIPLE_SELECTION_MODE to isMultipleSelectionMode
+        )
+        return this
+    }
 
+    // FIXME: удалить StorageAccessHelper
     private lateinit var storageAccessHelper: StorageAccessHelper
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -80,21 +98,7 @@ class LocalFileSelector : FileSelector<SimpleSortingMode>() {
     }
 
     companion object {
-        fun create(
-            fragmentResultKey: String,
-            initialPath: String? = null,
-            isDirSelectionMode: Boolean = false,
-            isMultipleSelectionMode: Boolean = false
-        ) : LocalFileSelector {
-            return LocalFileSelector().apply {
-                arguments = bundleOf(
-                    FRAGMENT_RESULT_KEY to fragmentResultKey,
-                    INITIAL_PATH to initialPath,
-                    DIR_SELECTION_MODE to isDirSelectionMode,
-                    MULTIPLE_SELECTION_MODE to isMultipleSelectionMode
-                )
-            }
-        }
+        val TAG: String = LocalFileSelector::class.java.simpleName
     }
 
     override fun initialStorageDirectory(): StorageDirectory {

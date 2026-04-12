@@ -38,8 +38,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class DemoFragment : Fragment(R.layout.fragment_demo), FragmentResultListener {
-
+class DemoFragment
+    : Fragment(R.layout.fragment_demo),
+    FragmentResultListener
+{
     private var _binding: FragmentDemoBinding? = null
     private val binding get()= _binding!!
 

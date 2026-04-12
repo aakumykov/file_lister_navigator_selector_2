@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'com.github.aakumykov.file_lister_navigator_selector_demo'
+    namespace 'com.github.aakumykov.demo_simple'
     compileSdk 36
 
     defaultConfig {
-        applicationId "com.github.aakumykov.file_lister_navigator_selector_demo"
+        applicationId "com.github.aakumykov.demo_simple"
         minSdk 24
         targetSdk 36
         versionCode 1
@@ -28,31 +28,28 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
     }
 }
 
 dependencies {
-
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
-    implementation libs.material
-    implementation project(':yandex_disk')
-    implementation project(':local')
+//    implementation libs.androidx.activity
+
+    implementation libs.cloud.authenticator
+    implementation libs.yandex.authenticator
+
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
 
     implementation libs.storage.access.helper
 
-    implementation libs.androidx.preference.ktx
-
-    implementation libs.authsdk
-
-    androidTestImplementation libs.kaspresso
-    androidTestUtil libs.androidx.orchestrator
+    implementation project(':yandex_disk')
+    implementation project(':local')
 }

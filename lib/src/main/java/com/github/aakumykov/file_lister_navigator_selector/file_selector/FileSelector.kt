@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentResultListener
 import androidx.fragment.app.viewModels
 import com.github.aakumykov.file_lister_navigator_selector.FileListAdapter
@@ -19,6 +20,7 @@ import com.github.aakumykov.file_lister_navigator_selector.extensions.colorize
 import com.github.aakumykov.file_lister_navigator_selector.extensions.errorMsg
 import com.github.aakumykov.file_lister_navigator_selector.extensions.hide
 import com.github.aakumykov.file_lister_navigator_selector.extensions.invisible
+import com.github.aakumykov.file_lister_navigator_selector.extensions.listenForFragmentResult
 import com.github.aakumykov.file_lister_navigator_selector.extensions.visible
 import com.github.aakumykov.file_lister_navigator_selector.file_explorer.FileExplorer
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
@@ -31,14 +33,29 @@ import com.github.aakumykov.storage_lister.StorageDirectory
 import com.github.aakumykov.storage_lister.StorageLister
 import com.google.gson.Gson
 
-// TODO: Сделать интерфейс "FileSelectorFragment" ?
-
-abstract class FileSelector<SortingModeType> :
+abstract class FileSelector<SortingModeType>(
+    private val callbacks: Callbacks
+) :
     DialogFragment(R.layout.dialog_file_selector),
     AdapterView.OnItemClickListener,
     AdapterView.OnItemLongClickListener,
     FragmentResultListener
 {
+    fun show(fragment: Fragment) {
+
+        //
+        // В этот момент фрагмент диалога ещё не создан
+        // (не вызван его метод "show"), поэтому
+        //
+        fragment.listenForFragmentResult(FRAGMENT_RESULT_KEY) { _,bundle ->
+            callbacks.onFileSelected(
+                extractSelectionResult(bundle) ?: emptyList()
+            )
+        }
+
+        show(fragment.childFragmentManager, TAG)
+    }
+
     private var _binding: DialogFileSelectorBinding? = null
     private val binding get() = _binding!!
 
@@ -317,9 +334,7 @@ abstract class FileSelector<SortingModeType> :
      * используя специфический для реализации ключ результата.
      */
     private fun setSelectionResult(bundle: Bundle) {
-        getFragmentResultKey()?.also { key ->
-            parentFragmentManager.setFragmentResult(key, bundle)
-        } ?: throw IllegalStateException("Key for use to result selection result with FragmentResultAPI not found.")
+        parentFragmentManager.setFragmentResult(FRAGMENT_RESULT_KEY, bundle)
     }
 
     private fun selectedItemsToBundle(): Bundle {
@@ -361,10 +376,6 @@ abstract class FileSelector<SortingModeType> :
 
     private fun isMultipleSelectionMode(): Boolean {
         return arguments?.getBoolean(MULTIPLE_SELECTION_MODE) ?: getDefaultMultipleSelectionMode()
-    }
-
-    private fun getFragmentResultKey(): String? {
-        return arguments?.getString(FRAGMENT_RESULT_KEY)
     }
 
 
@@ -415,5 +426,9 @@ abstract class FileSelector<SortingModeType> :
                     )
                 )*//*
             }*/
+    }
+
+    interface Callbacks {
+        fun onFileSelected(list: List<FSItem>)
     }
 }
