@@ -6,7 +6,6 @@ import android.widget.RadioGroup
 import androidx.fragment.app.Fragment
 import com.github.aakumykov.demo_simple.databinding.FragmentSimpleDemoBinding
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
-import com.github.aakumykov.file_lister_navigator_selector.file_selector.ConnectableFileSelector
 import com.github.aakumykov.file_lister_navigator_selector.file_selector.FileSelector
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
 import com.github.aakumykov.local_file_lister_navigator_selector.local_file_selector.LocalFileSelector
@@ -53,7 +52,6 @@ class SimpleDemoFragment():
 
     private fun createAndPrepareLocalSelector(): FileSelector<SimpleSortingMode> {
         return LocalFileSelector().prepare(
-            callbacks = this,
             isDirSelectionMode = false,
             isMultipleSelectionMode = false,
         )
@@ -61,7 +59,6 @@ class SimpleDemoFragment():
 
     private fun createAndPrepareYandexSelector(): FileSelector<SimpleSortingMode> {
         return YandexDiskFileSelector().prepare(
-            callbacks = this,
             authToken = "",
             initialPath = "/",
             isDirSelectionMode = false,
@@ -86,7 +83,7 @@ class SimpleDemoFragment():
 
     private fun connectToFileSelector() {
         val fragment = childFragmentManager.findFragmentByTag(FileSelector.TAG)
-        if (fragment is ConnectableFileSelector) {
+        if (fragment is FileSelector<*>) {
             fragment.connect(this, this)
         }
     }

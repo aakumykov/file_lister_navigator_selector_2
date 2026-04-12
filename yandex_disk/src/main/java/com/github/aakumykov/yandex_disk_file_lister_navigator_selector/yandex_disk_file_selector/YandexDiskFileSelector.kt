@@ -22,7 +22,6 @@ import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_di
 class YandexDiskFileSelector : FileSelector<SimpleSortingMode>()
 {
     fun prepare(
-        callbacks: Callbacks,
         authToken: String,
         initialPath: String? = "/",
         isDirSelectionMode: Boolean = false,

@@ -34,20 +34,15 @@ import com.github.aakumykov.storage_lister.StorageDirectory
 import com.github.aakumykov.storage_lister.StorageLister
 import com.google.gson.Gson
 
-interface ConnectableFileSelector {
-    fun connect(parentFragment: Fragment, callbacks: Callbacks)
-}
-
 abstract class FileSelector<SortingModeType> :
     DialogFragment(R.layout.dialog_file_selector),
     AdapterView.OnItemClickListener,
     AdapterView.OnItemLongClickListener,
-    FragmentResultListener,
-    ConnectableFileSelector
+    FragmentResultListener
 {
     private var callbacks: Callbacks? = null
 
-    override fun connect(parentFragment: Fragment, callbacks: Callbacks) {
+    fun connect(parentFragment: Fragment, callbacks: Callbacks) {
 
         this.callbacks = callbacks
 
