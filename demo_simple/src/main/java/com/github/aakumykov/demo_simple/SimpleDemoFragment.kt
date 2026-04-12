@@ -1,21 +1,16 @@
 package com.github.aakumykov.demo_simple
 
 import android.os.Bundle
-import android.os.Environment
-import android.os.Message
 import android.view.View
 import android.widget.RadioGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentResultListener
 import com.github.aakumykov.demo_simple.databinding.FragmentSimpleDemoBinding
-import com.github.aakumykov.file_lister_navigator_selector.extensions.errorMsg
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
+import com.github.aakumykov.file_lister_navigator_selector.file_selector.ConnectableFileSelector
 import com.github.aakumykov.file_lister_navigator_selector.file_selector.FileSelector
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
 import com.github.aakumykov.local_file_lister_navigator_selector.local_file_selector.LocalFileSelector
 import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_file_selector.YandexDiskFileSelector
-import kotlinx.coroutines.flow.callbackFlow
-import java.io.File
 
 class SimpleDemoFragment():
     Fragment(R.layout.fragment_simple_demo),
@@ -51,23 +46,27 @@ class SimpleDemoFragment():
 
     private val fileSelector: FileSelector<SimpleSortingMode> get() {
         return when(workMode) {
-            WorkMode.YANDEX -> {
-                YandexDiskFileSelector().prepare(
-                        callbacks = this,
-                        authToken = "",
-                        initialPath = "/",
-                        isDirSelectionMode = false,
-                        isMultipleSelectionMode = false,
-                    )
-            }
-            else -> {
-                LocalFileSelector().prepare(
-                    callbacks = this,
-                    isDirSelectionMode = false,
-                    isMultipleSelectionMode = false,
-                )
-            }
+            WorkMode.YANDEX -> createAndPrepareYandexSelector()
+            else -> createAndPrepareLocalSelector()
         }
+    }
+
+    private fun createAndPrepareLocalSelector(): FileSelector<SimpleSortingMode> {
+        return LocalFileSelector().prepare(
+            callbacks = this,
+            isDirSelectionMode = false,
+            isMultipleSelectionMode = false,
+        )
+    }
+
+    private fun createAndPrepareYandexSelector(): FileSelector<SimpleSortingMode> {
+        return YandexDiskFileSelector().prepare(
+            callbacks = this,
+            authToken = "",
+            initialPath = "/",
+            isDirSelectionMode = false,
+            isMultipleSelectionMode = false,
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -80,8 +79,22 @@ class SimpleDemoFragment():
         binding.selectFileButton.setOnClickListener(::onSelectFileClicked)
     }
 
+    override fun onResume() {
+        super.onResume()
+        connectToFileSelector()
+    }
+
+    private fun connectToFileSelector() {
+        val fragment = childFragmentManager.findFragmentByTag(FileSelector.TAG)
+        if (fragment is ConnectableFileSelector) {
+            fragment.connect(this, this)
+        }
+    }
+
     private fun onSelectFileClicked(view: View) {
-        fileSelector.show(this)
+        fileSelector.show(this).also {
+            connectToFileSelector()
+        }
     }
 
     private fun displayWorkMode() {

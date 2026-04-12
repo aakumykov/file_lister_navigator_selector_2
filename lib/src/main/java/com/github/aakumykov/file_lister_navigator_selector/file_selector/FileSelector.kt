@@ -23,6 +23,7 @@ import com.github.aakumykov.file_lister_navigator_selector.extensions.invisible
 import com.github.aakumykov.file_lister_navigator_selector.extensions.listenForFragmentResult
 import com.github.aakumykov.file_lister_navigator_selector.extensions.visible
 import com.github.aakumykov.file_lister_navigator_selector.file_explorer.FileExplorer
+import com.github.aakumykov.file_lister_navigator_selector.file_selector.FileSelector.Callbacks
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.SimpleFSItem
 import com.github.aakumykov.file_lister_navigator_selector.sorting_info_supplier.SortingInfoSupplier
@@ -33,19 +34,22 @@ import com.github.aakumykov.storage_lister.StorageDirectory
 import com.github.aakumykov.storage_lister.StorageLister
 import com.google.gson.Gson
 
+interface ConnectableFileSelector {
+    fun connect(parentFragment: Fragment, callbacks: Callbacks)
+}
+
 abstract class FileSelector<SortingModeType> :
     DialogFragment(R.layout.dialog_file_selector),
     AdapterView.OnItemClickListener,
     AdapterView.OnItemLongClickListener,
-    FragmentResultListener
+    FragmentResultListener,
+    ConnectableFileSelector
 {
     private var callbacks: Callbacks? = null
 
-    protected fun setCallbacks(callbacks: Callbacks) {
-        this.callbacks = callbacks
-    }
+    override fun connect(parentFragment: Fragment, callbacks: Callbacks) {
 
-    fun show(fragment: Fragment) {
+        this.callbacks = callbacks
 
         /*
         Ожиданием результата занимается родительский фрагмент,
@@ -53,11 +57,14 @@ abstract class FileSelector<SortingModeType> :
         1) в момент навески слушателя фрагмент-диалог ещё не существует;
         2) при возвращении результата от уничтожается.
          */
-        fragment.listenForFragmentResult(FRAGMENT_RESULT_KEY) { _,bundle ->
-            callbacks?.onFileSelected(
+        parentFragment.listenForFragmentResult(FRAGMENT_RESULT_KEY) { _,bundle ->
+            this.callbacks?.onFileSelected(
                 extractSelectionResult(bundle) ?: emptyList()
             )
         }
+    }
+
+    fun show(fragment: Fragment) {
 
         show(fragment.childFragmentManager, TAG)
     }
@@ -239,7 +246,7 @@ abstract class FileSelector<SortingModeType> :
                 filesListAdapter.setList(it)
             }
             .apply {
-                Log.d(TAG, ("onListChanged(): " + this?.joinToString(", ") { it.name }) ?: "")
+                Log.d(TAG, ("onListChanged(): " + this?.joinToString(", ") { it.name }))
             }
             .also {
                 if (0 == list?.size)

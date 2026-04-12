@@ -30,7 +30,6 @@ class YandexDiskFileSelector : FileSelector<SimpleSortingMode>()
     )
     : YandexDiskFileSelector
     {
-        setCallbacks(callbacks)
         arguments = bundleOf(
             AUTH_TOKEN to authToken,
             INITIAL_PATH to initialPath,
