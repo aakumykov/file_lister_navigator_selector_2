@@ -19,10 +19,10 @@ import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_di
 
 // TODO: внедрять зависимости
 
-class YandexDiskFileSelector(callbacks: Callbacks)
-    : FileSelector<SimpleSortingMode>(callbacks)
+class YandexDiskFileSelector : FileSelector<SimpleSortingMode>()
 {
     fun prepare(
+        callbacks: Callbacks,
         authToken: String,
         initialPath: String? = "/",
         isDirSelectionMode: Boolean = false,
@@ -30,6 +30,7 @@ class YandexDiskFileSelector(callbacks: Callbacks)
     )
     : YandexDiskFileSelector
     {
+        setCallbacks(callbacks)
         arguments = bundleOf(
             AUTH_TOKEN to authToken,
             INITIAL_PATH to initialPath,

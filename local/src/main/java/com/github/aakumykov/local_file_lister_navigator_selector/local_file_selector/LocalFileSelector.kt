@@ -23,16 +23,17 @@ import com.github.aakumykov.storage_lister.InternalStorageDirectory
 import com.github.aakumykov.storage_lister.StorageDirectory
 import java.io.File
 
-class LocalFileSelector(private val callbacks: Callbacks)
-    : FileSelector<SimpleSortingMode>(callbacks)
+class LocalFileSelector: FileSelector<SimpleSortingMode>()
 {
     fun prepare(
+        callbacks: Callbacks,
         initialPath: String = Environment.getExternalStorageDirectory().absolutePath,
         isDirSelectionMode: Boolean = false,
         isMultipleSelectionMode: Boolean = false
     )
         : LocalFileSelector
     {
+        setCallbacks(callbacks)
         arguments = bundleOf(
             INITIAL_PATH to initialPath,
             DIR_SELECTION_MODE to isDirSelectionMode,

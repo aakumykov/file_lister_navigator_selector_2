@@ -14,6 +14,7 @@ import com.github.aakumykov.file_lister_navigator_selector.file_selector.FileSel
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
 import com.github.aakumykov.local_file_lister_navigator_selector.local_file_selector.LocalFileSelector
 import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_file_selector.YandexDiskFileSelector
+import kotlinx.coroutines.flow.callbackFlow
 import java.io.File
 
 class SimpleDemoFragment():
@@ -51,8 +52,8 @@ class SimpleDemoFragment():
     private val fileSelector: FileSelector<SimpleSortingMode> get() {
         return when(workMode) {
             WorkMode.YANDEX -> {
-                YandexDiskFileSelector(this)
-                    .prepare(
+                YandexDiskFileSelector().prepare(
+                        callbacks = this,
                         authToken = "",
                         initialPath = "/",
                         isDirSelectionMode = false,
@@ -60,11 +61,11 @@ class SimpleDemoFragment():
                     )
             }
             else -> {
-                LocalFileSelector(this)
-                    .prepare(
-                        isDirSelectionMode = false,
-                        isMultipleSelectionMode = false,
-                    )
+                LocalFileSelector().prepare(
+                    callbacks = this,
+                    isDirSelectionMode = false,
+                    isMultipleSelectionMode = false,
+                )
             }
         }
     }

@@ -33,22 +33,28 @@ import com.github.aakumykov.storage_lister.StorageDirectory
 import com.github.aakumykov.storage_lister.StorageLister
 import com.google.gson.Gson
 
-abstract class FileSelector<SortingModeType>(
-    private val callbacks: Callbacks
-) :
+abstract class FileSelector<SortingModeType> :
     DialogFragment(R.layout.dialog_file_selector),
     AdapterView.OnItemClickListener,
     AdapterView.OnItemLongClickListener,
     FragmentResultListener
 {
+    private var callbacks: Callbacks? = null
+
+    protected fun setCallbacks(callbacks: Callbacks) {
+        this.callbacks = callbacks
+    }
+
     fun show(fragment: Fragment) {
 
-        //
-        // В этот момент фрагмент диалога ещё не создан
-        // (не вызван его метод "show"), поэтому
-        //
+        /*
+        Ожиданием результата занимается родительский фрагмент,
+        потому что:
+        1) в момент навески слушателя фрагмент-диалог ещё не существует;
+        2) при возвращении результата от уничтожается.
+         */
         fragment.listenForFragmentResult(FRAGMENT_RESULT_KEY) { _,bundle ->
-            callbacks.onFileSelected(
+            callbacks?.onFileSelected(
                 extractSelectionResult(bundle) ?: emptyList()
             )
         }
