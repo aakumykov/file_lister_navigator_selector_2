@@ -11,9 +11,10 @@ import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.ParentDirItem
 import com.github.aakumykov.storage_lister.StorageDirectory
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.math.sign
 
 class FileSelectorViewModel<SortingModeType> (
     val fileExplorer: FileExplorer<SortingModeType>,
@@ -21,6 +22,9 @@ class FileSelectorViewModel<SortingModeType> (
 )
     : ViewModel()
 {
+    private val _mutableSelectionFlow: MutableStateFlow<List<FSItem>> = MutableStateFlow(emptyList())
+    val selectionFlow: StateFlow<List<FSItem>> get() = _mutableSelectionFlow
+
     private val _selectedStorage: MutableLiveData<StorageDirectory> = MutableLiveData()
     private val _currentPath: MutableLiveData<String> = MutableLiveData()
     private val _currentList: MutableLiveData<List<FSItem>> = MutableLiveData(emptyList())
@@ -140,6 +144,12 @@ class FileSelectorViewModel<SortingModeType> (
         if (!isFistPage) {
             currentPage--
             reopenCurrentDir()
+        }
+    }
+
+    fun onConfirmSelectionClicked() {
+        viewModelScope.launch {
+            _mutableSelectionFlow.emit(selectedItems)
         }
     }
 

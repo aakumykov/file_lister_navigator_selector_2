@@ -4,21 +4,17 @@ import android.os.Bundle
 import android.view.View
 import android.widget.RadioGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.github.aakumykov.demo_simple.databinding.FragmentSimpleDemoBinding
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
 import com.github.aakumykov.file_lister_navigator_selector.file_selector.FileSelector
-import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
 import com.github.aakumykov.local_file_lister_navigator_selector.local_file_selector.LocalFileSelector
 import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_file_selector.YandexDiskFileSelector
+import kotlinx.coroutines.launch
 
 class SimpleDemoFragment():
-    Fragment(R.layout.fragment_simple_demo),
-    FileSelector.Callbacks
+    Fragment(R.layout.fragment_simple_demo)
 {
-    override fun onFileSelected(list: List<FSItem>) {
-        showInfo(list.joinToString { it.name + "\n" })
-    }
-
     private fun showInfo(text: String) {
         binding.infoView.apply {
             this.text = text
@@ -84,7 +80,11 @@ class SimpleDemoFragment():
     private fun connectToFileSelector() {
         val fragment = childFragmentManager.findFragmentByTag(FileSelector.TAG)
         if (fragment is FileSelector<*>) {
-            fragment.connect(this, this)
+            lifecycleScope.launch {
+                fragment.selectionFlow.collect { list ->
+                    showInfo(list.joinToString { it.name + "\n" })
+                }
+            }
         }
     }
 
