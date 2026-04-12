@@ -20,8 +20,10 @@ import com.github.aakumykov.file_lister_navigator_selector.extensions.colorize
 import com.github.aakumykov.file_lister_navigator_selector.extensions.errorMsg
 import com.github.aakumykov.file_lister_navigator_selector.extensions.hide
 import com.github.aakumykov.file_lister_navigator_selector.extensions.invisible
+import com.github.aakumykov.file_lister_navigator_selector.extensions.listenForFragmentResult
 import com.github.aakumykov.file_lister_navigator_selector.extensions.visible
 import com.github.aakumykov.file_lister_navigator_selector.file_explorer.FileExplorer
+import com.github.aakumykov.file_lister_navigator_selector.file_selector.FileSelector.Callbacks
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.SimpleFSItem
 import com.github.aakumykov.file_lister_navigator_selector.sorting_info_supplier.SortingInfoSupplier
@@ -31,7 +33,6 @@ import com.github.aakumykov.storage_lister.DummyStorageDirectory
 import com.github.aakumykov.storage_lister.StorageDirectory
 import com.github.aakumykov.storage_lister.StorageLister
 import com.google.gson.Gson
-import kotlinx.coroutines.flow.StateFlow
 
 abstract class FileSelector<SortingModeType> :
     DialogFragment(R.layout.dialog_file_selector),
@@ -39,7 +40,24 @@ abstract class FileSelector<SortingModeType> :
     AdapterView.OnItemLongClickListener,
     FragmentResultListener
 {
-    val selectionFlow: StateFlow<List<FSItem>> get() = viewModel.selectionFlow
+    private var callbacks: Callbacks? = null
+
+    fun connect(parentFragment: Fragment, callbacks: Callbacks) {
+
+        this.callbacks = callbacks
+
+        /*
+        Ожиданием результата занимается родительский фрагмент,
+        потому что:
+        1) в момент навески слушателя фрагмент-диалог ещё не существует;
+        2) при возвращении результата от уничтожается.
+         */
+        parentFragment.listenForFragmentResult(FRAGMENT_RESULT_KEY) { _,bundle ->
+            this.callbacks?.onFileSelected(
+                extractSelectionResult(bundle) ?: emptyList()
+            )
+        }
+    }
 
     fun show(fragment: Fragment) {
 
@@ -315,7 +333,7 @@ abstract class FileSelector<SortingModeType> :
     }
 
     private fun onConfirmSelectionClicked() {
-        viewModel.onConfirmSelectionClicked()
+        setSelectionResult(selectedItemsToBundle())
         dismiss()
     }
 
@@ -416,5 +434,9 @@ abstract class FileSelector<SortingModeType> :
                     )
                 )*//*
             }*/
+    }
+
+    interface Callbacks {
+        fun onFileSelected(list: List<FSItem>)
     }
 }
