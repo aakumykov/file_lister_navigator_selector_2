@@ -24,10 +24,25 @@
             android:text="@string/work_mode_yandex" />
     </RadioGroup>
 
+    <ToggleButton
+        android:id="@+id/multipleSelectionMode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textOff="@string/multiple_selection_mode_off"
+        android:textOn="@string/multiple_selection_mode_on"/>
+
+    <ToggleButton
+        android:id="@+id/directoriesOnly"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textOff="@string/directories_only_off"
+        android:textOn="@string/directories_only_on"/>
+
     <Button
         android:id="@+id/selectFileButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:text="@string/select_file" />
 
     <TextView

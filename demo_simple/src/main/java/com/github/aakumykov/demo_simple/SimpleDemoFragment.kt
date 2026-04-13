@@ -15,6 +15,9 @@ class SimpleDemoFragment():
     Fragment(R.layout.fragment_simple_demo),
     FileSelector.Callbacks
 {
+    private val multipleSelectionMode: Boolean get() = binding.multipleSelectionMode.isChecked
+    private val directoriesOnlyMode: Boolean get() = binding.directoriesOnly.isChecked
+
     override fun onFileSelected(list: List<FSItem>) {
         showInfo(list.joinToString { it.name + "\n" })
     }
@@ -52,8 +55,8 @@ class SimpleDemoFragment():
 
     private fun createAndPrepareLocalSelector(): FileSelector<SimpleSortingMode> {
         return LocalFileSelector().prepare(
-            isDirSelectionMode = false,
-            isMultipleSelectionMode = false,
+            isDirSelectionMode = directoriesOnlyMode,
+            isMultipleSelectionMode = multipleSelectionMode,
         )
     }
 
@@ -61,8 +64,8 @@ class SimpleDemoFragment():
         return YandexDiskFileSelector().prepare(
             authToken = "",
             initialPath = "/",
-            isDirSelectionMode = false,
-            isMultipleSelectionMode = false,
+            isDirSelectionMode = directoriesOnlyMode,
+            isMultipleSelectionMode = multipleSelectionMode,
         )
     }
 
