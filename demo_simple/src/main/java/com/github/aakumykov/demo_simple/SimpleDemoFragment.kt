@@ -78,20 +78,11 @@ class SimpleDemoFragment():
 
     override fun onResume() {
         super.onResume()
-        connectToFileSelector()
-    }
-
-    private fun connectToFileSelector() {
-        val fragment = childFragmentManager.findFragmentByTag(FileSelector.TAG)
-        if (fragment is FileSelector<*>) {
-            fragment.connect(this, this)
-        }
+        FileSelector.restoreConnection(this, this)
     }
 
     private fun onSelectFileClicked(view: View) {
-        fileSelector.show(this).also {
-            connectToFileSelector()
-        }
+        fileSelector.show(this, this)
     }
 
     private fun displayWorkMode() {

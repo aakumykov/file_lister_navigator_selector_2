@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentResultListener
 import androidx.fragment.app.viewModels
 import com.github.aakumykov.file_lister_navigator_selector.FileListAdapter
@@ -23,7 +24,6 @@ import com.github.aakumykov.file_lister_navigator_selector.extensions.invisible
 import com.github.aakumykov.file_lister_navigator_selector.extensions.listenForFragmentResult
 import com.github.aakumykov.file_lister_navigator_selector.extensions.visible
 import com.github.aakumykov.file_lister_navigator_selector.file_explorer.FileExplorer
-import com.github.aakumykov.file_lister_navigator_selector.file_selector.FileSelector.Callbacks
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.SimpleFSItem
 import com.github.aakumykov.file_lister_navigator_selector.sorting_info_supplier.SortingInfoSupplier
@@ -42,26 +42,9 @@ abstract class FileSelector<SortingModeType> :
 {
     private var callbacks: Callbacks? = null
 
-    fun connect(parentFragment: Fragment, callbacks: Callbacks) {
-
-        this.callbacks = callbacks
-
-        /*
-        Ожиданием результата занимается родительский фрагмент,
-        потому что:
-        1) в момент навески слушателя фрагмент-диалог ещё не существует;
-        2) при возвращении результата от уничтожается.
-         */
-        parentFragment.listenForFragmentResult(FRAGMENT_RESULT_KEY) { _,bundle ->
-            this.callbacks?.onFileSelected(
-                extractSelectionResult(bundle) ?: emptyList()
-            )
-        }
-    }
-
-    fun show(fragment: Fragment) {
-
-        show(fragment.childFragmentManager, TAG)
+    fun show(parentFragment: Fragment, callbacks: Callbacks) {
+        bindTo(parentFragment, callbacks)
+        show(parentFragment.childFragmentManager, TAG)
     }
 
     private var _binding: DialogFileSelectorBinding? = null
@@ -132,6 +115,27 @@ abstract class FileSelector<SortingModeType> :
         isFirstRun = (null == savedInstanceState)
 
         if (isFirstRun) viewModel.startWork()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+    }
+
+    private fun bindTo(fragment: Fragment, callbacks: Callbacks) {
+
+        this.callbacks = callbacks
+
+        /*
+        Ожиданием результата занимается родительский фрагмент,
+        потому что:
+        1) в момент навески слушателя фрагмент-диалог ещё не существует;
+        2) при возвращении результата от уничтожается.
+         */
+        fragment.listenForFragmentResult(FRAGMENT_RESULT_KEY) { _, bundle ->
+            this.callbacks?.onFileSelected(
+                extractSelectionResult(bundle) ?: emptyList()
+            )
+        }
     }
 
     private fun subscribeToStorageSelectingResult() {
@@ -410,6 +414,13 @@ abstract class FileSelector<SortingModeType> :
                 ?.map { json ->
                     gson.fromJson(json, SimpleFSItem::class.java)
                 }
+        }
+
+        fun restoreConnection(parentFragment: Fragment, callbacks: Callbacks) {
+            val dialogFragment = parentFragment.childFragmentManager.findFragmentByTag(TAG)
+            if (dialogFragment is FileSelector<*>) {
+                dialogFragment.bindTo(parentFragment, callbacks)
+            }
         }
     }
 
