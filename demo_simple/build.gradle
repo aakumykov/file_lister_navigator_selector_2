@@ -52,4 +52,6 @@ dependencies {
 
     implementation project(':yandex_disk')
     implementation project(':local')
+
+    debugImplementation libs.leakcanary.android
 }

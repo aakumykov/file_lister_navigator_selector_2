@@ -55,4 +55,6 @@ dependencies {
 
     androidTestImplementation libs.kaspresso
     androidTestUtil libs.androidx.orchestrator
+
+    debugImplementation libs.leakcanary.android
 }
