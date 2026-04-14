@@ -120,7 +120,7 @@ class SimpleDemoFragment():
 
     private fun createAndPrepareYandexSelector(): FileSelector<SimpleSortingMode> {
         return YandexDiskFileSelector().prepare(
-            authToken = "",
+            authToken = authToken!!,
             initialPath = "/",
             isDirSelectionMode = directoriesOnlyMode,
             isMultipleSelectionMode = multipleSelectionMode,
@@ -131,7 +131,6 @@ class SimpleDemoFragment():
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentSimpleDemoBinding.bind(view)
 
-        binding.workModeSelector.setOnCheckedChangeListener(::onWorkModeChanged)
         binding.selectFileButton.setOnClickListener { onSelectFileClicked() }
         binding.yandexAuthButton.setOnClickListener { onYandexAuthButtonClicked() }
 
@@ -164,7 +163,10 @@ class SimpleDemoFragment():
     private fun onSelectFileClicked() {
         if (WorkMode.LOCAL == workMode) {
             storageAccessHelper.requestReadAccess { startSelectingFile() }
-        } else { startSelectingFile() }
+        } else {
+            if (hasAuth) startSelectingFile()
+            else showToast(R.string.auth_required)
+        }
     }
 
     private fun startSelectingFile() {
@@ -173,10 +175,6 @@ class SimpleDemoFragment():
 
     private fun displayWorkMode() {
         showInfo(workMode.name)
-
-    }
-
-    private fun onWorkModeChanged(radioGroup: RadioGroup, selectedId: Int) {
 
     }
 

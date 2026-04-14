@@ -50,6 +50,7 @@
         android:id="@+id/infoView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="15sp"
         android:textAlignment="center"
         android:typeface="serif"
         android:textStyle="italic"
