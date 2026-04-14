@@ -10,7 +10,7 @@
         android:theme="@style/Theme.File_lister_navigator_selector_2">
 
     <activity
-        android:name="com.github.aakumykov.demo.SimpleDemoActivity"
+        android:name="com.github.aakumykov.file_lister_navigator_selector_2_demo.SimpleDemoActivity"
         android:exported="true" >
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />

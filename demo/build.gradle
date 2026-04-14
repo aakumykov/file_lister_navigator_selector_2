@@ -4,19 +4,23 @@ plugins {
 }
 
 android {
-    namespace 'com.github.aakumykov.demo'
+    namespace 'com.github.aakumykov.file_lister_navigator_selector_2_demo'
     compileSdk {
         version = release(36)
     }
 
     defaultConfig {
-        applicationId "com.github.aakumykov.demo"
+        applicationId "com.github.aakumykov.file_lister_navigator_selector_2_demo"
         minSdk 24
         targetSdk 36
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        manifestPlaceholders = [
+                YANDEX_CLIENT_ID: "1a0edef06a60424aad2e78c5011b2eb0"
+        ]
     }
     buildFeatures {
         viewBinding true
@@ -54,4 +58,6 @@ dependencies {
     androidTestImplementation libs.kaspresso
     androidTestUtil libs.androidx.orchestrator
     debugImplementation libs.leakcanary.android
+
+    implementation libs.yandex.authenticator
 }

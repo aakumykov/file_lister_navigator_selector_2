@@ -1,4 +1,4 @@
-package com.github.aakumykov.demo
+package com.github.aakumykov.file_lister_navigator_selector_2_demo
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.github.aakumykov.demo", appContext.packageName)
+        assertEquals("com.github.aakumykov.file_lister_navigator_selector_2_demo", appContext.packageName)
     }
 }

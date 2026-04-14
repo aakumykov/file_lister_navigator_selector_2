@@ -23,6 +23,7 @@ leakcanaryAndroid = "2.14"
 activity = "1.13.0"
 constraintlayout = "2.2.1"
 constraintlayoutCore = "1.1.1"
+yandex_authenticator = "0.0.11-alpha"
 
 [libraries]
 android_storage_lister = { module = "com.github.aakumykov:android_storage_lister", version.ref = "android_storage_lister" }
@@ -47,6 +48,7 @@ leakcanary-android = { group = "com.squareup.leakcanary", name = "leakcanary-and
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-constraintlayout-core = { group = "androidx.constraintlayout", name = "constraintlayout-core", version.ref = "constraintlayoutCore" }
+yandex_authenticator = { group = "com.github.aakumykov.cloud_authenticator", name = "yandex_authenticator", version.ref = "yandex_authenticator" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

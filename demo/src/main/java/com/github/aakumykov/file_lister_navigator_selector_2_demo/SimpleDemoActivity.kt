@@ -1,4 +1,4 @@
-package com.github.aakumykov.demo
+package com.github.aakumykov.file_lister_navigator_selector_2_demo
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge

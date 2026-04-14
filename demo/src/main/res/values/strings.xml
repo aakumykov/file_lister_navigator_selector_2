@@ -9,5 +9,8 @@
     <string name="directories_only_off">Файлы и каталоги</string>
     <string name="directories_only_on">Только каталоги</string>
     <string name="select_file">Выбрать файл</string>
+    <string name="yandex_auth">Авторизоваться в Яндекс</string>
+    <string name="yandex_deauth">Выйти из Яндекс</string>
+    <string name="auth_cancelled">Аутентификация отменена</string>
 
 </resources>

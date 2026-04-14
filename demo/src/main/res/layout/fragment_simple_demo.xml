@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="8dp">
 
     <RadioGroup
         android:id="@+id/workModeSelector"
@@ -42,7 +43,7 @@
         android:id="@+id/selectFileButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_marginTop="8dp"
         android:text="@string/select_file" />
 
     <TextView
@@ -50,10 +51,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        android:textSize="31sp"
         android:typeface="serif"
         android:textStyle="italic"
-        android:paddingVertical="8dp"
-        tools:text="Werty" />
+        tools:text="Выбранный файл" />
+
+    <Button
+        android:id="@+id/yandexAuthButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/yandex_auth" />
 
 </LinearLayout>
