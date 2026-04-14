@@ -1,6 +1,5 @@
 package com.github.aakumykov.file_lister_navigator_selector.file_selector
 
-import android.R.attr.fragment
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -11,7 +10,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentResultListener
 import androidx.fragment.app.clearFragmentResultListener
 import androidx.fragment.app.viewModels
@@ -44,7 +42,7 @@ abstract class FileSelector<SortingModeType> :
 {
     private var callbacks: Callbacks? = null
 
-    fun show(parentFragment: Fragment, callbacks: Callbacks) {
+    fun display(parentFragment: Fragment, callbacks: Callbacks) {
         bindTo(parentFragment, callbacks)
         show(parentFragment.childFragmentManager, TAG)
     }

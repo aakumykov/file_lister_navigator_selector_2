@@ -4,9 +4,7 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
-import android.util.TypedValue
 import android.view.View
-import android.widget.RadioGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
@@ -170,7 +168,7 @@ class SimpleDemoFragment():
     }
 
     private fun startSelectingFile() {
-        fileSelector.show(this, this)
+        fileSelector.display(this, this)
     }
 
     private fun displayWorkMode() {
