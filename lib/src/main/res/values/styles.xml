@@ -23,7 +23,7 @@
     <style name="flns_dialog_header_button">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:background">@color/design_default_color_primary</item>
+        <item name="android:background">@color/default_button_bg</item>
         <item name="android:padding">8dp</item>
     </style>
 
@@ -36,7 +36,7 @@
     <style name="flns_dialog_home_button">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:background">@color/design_default_color_primary</item>
+        <item name="android:background">@color/default_button_bg</item>
         <item name="android:padding">8dp</item>
     </style>
 </resources>

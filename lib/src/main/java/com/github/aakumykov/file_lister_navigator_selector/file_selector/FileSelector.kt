@@ -154,7 +154,7 @@ abstract class FileSelector<SortingModeType> :
         binding.storageIcon.apply {
             setImageResource(storageDirectory.icon)
             visibility = View.VISIBLE
-            colorize(android.R.color.tab_indicator_text)
+            colorize(R.color.default_button_fg)
         }
     }
 
