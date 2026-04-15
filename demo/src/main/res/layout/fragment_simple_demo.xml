@@ -1,161 +1,168 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="8dp">
+    android:layout_height="match_parent">
 
-    <RadioGroup
-        android:id="@+id/workModeSelector"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginEnd="8dp">
-
-        <RadioButton
-            android:id="@+id/workModeLocal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="@string/work_mode_local" />
-
-        <RadioButton
-            android:id="@+id/workModeYandexDisk"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/work_mode_yandex" />
-    </RadioGroup>
-
-    <ToggleButton
-        android:id="@+id/multipleSelectionMode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@id/workModeSelector"
-        android:textOff="@string/multiple_selection_mode_off"
-        android:textOn="@string/multiple_selection_mode_on"/>
-
-    <ToggleButton
-        android:id="@+id/directoriesOnly"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@id/multipleSelectionMode"
-        android:textOff="@string/directories_only_off"
-        android:textOn="@string/directories_only_on"/>
-
-    <TextView
-        android:id="@+id/sortingModeLabel"
+    <RelativeLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_below="@id/directoriesOnly"
-        android:text="@string/sorting_mode_label"/>
+        android:padding="8dp">
 
-    <RadioGroup
-        android:id="@+id/sortingModeSelector"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@id/sortingModeLabel">
+        <RadioGroup
+            android:id="@+id/workModeSelector"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginEnd="8dp">
 
-        <RadioButton
-            android:id="@+id/sortingModeName"
+            <RadioButton
+                android:id="@+id/workModeLocal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/work_mode_local" />
+
+            <RadioButton
+                android:id="@+id/workModeYandexDisk"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/work_mode_yandex" />
+        </RadioGroup>
+
+        <ToggleButton
+            android:id="@+id/multipleSelectionMode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@id/workModeSelector"
+            android:textOff="@string/multiple_selection_mode_off"
+            android:textOn="@string/multiple_selection_mode_on"/>
+
+        <ToggleButton
+            android:id="@+id/directoriesOnly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/multipleSelectionMode"
+            android:textOff="@string/directories_only_off"
+            android:textOn="@string/directories_only_on"/>
+
+        <TextView
+            android:id="@+id/sortingModeLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/sort_by_name"
+            android:layout_marginTop="8dp"
+            android:layout_below="@id/directoriesOnly"
+            android:text="@string/sorting_mode_label"/>
+
+        <RadioGroup
+            android:id="@+id/sortingModeSelector"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/sortingModeLabel">
+
+            <RadioButton
+                android:id="@+id/sortingModeName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/sort_by_name"
+                android:checked="true"
+                />
+
+            <RadioButton
+                android:id="@+id/sortingModeSize"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/sort_by_size"
+                />
+
+            <RadioButton
+                android:id="@+id/sortingModeCreated"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/sort_by_created"
+                />
+
+            <RadioButton
+                android:id="@+id/sortingModeModified"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/sort_by_modified"
+                />
+
+        </RadioGroup>
+
+        <ToggleButton
+            android:id="@+id/sortingOrderSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/sortingModeSelector"
+            android:layout_alignParentEnd="true"
+            android:textOn="@string/sort_order_direct"
+            android:textOff="@string/sort_order_reverse"
             android:checked="true"
             />
 
-        <RadioButton
-            android:id="@+id/sortingModeSize"
-            android:layout_width="match_parent"
+        <ToggleButton
+            android:id="@+id/sortingModeFoldersFirstSwitch"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/sort_by_size"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/sortingOrderSwitch"
+            android:textOn="@string/sort_folders_first_yes"
+            android:textOff="@string/sort_folders_first_no"
+            android:checked="true"
             />
 
-        <RadioButton
-            android:id="@+id/sortingModeCreated"
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/selectFileButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/sort_by_created"
-            />
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/sortingModeSelector"
+            android:text="@string/select_file" />
 
-        <RadioButton
-            android:id="@+id/sortingModeModified"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/infoView"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/sort_by_modified"
-            />
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/selectFileButton"
+            android:textSize="15sp"
+            android:textAlignment="center"
+            android:typeface="serif"
+            android:textStyle="italic"
+            tools:text="Выбранный файл" />
 
-    </RadioGroup>
+        <Button
+            android:id="@+id/yandexAuthButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/infoView"
+            android:layout_marginTop="8dp"
+            android:text="@string/yandex_auth" />
 
-    <ToggleButton
-        android:id="@+id/sortingOrderSwitch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@id/sortingModeSelector"
-        android:layout_alignParentEnd="true"
-        android:textOn="@string/sort_order_direct"
-        android:textOff="@string/sort_order_reverse"
-        android:checked="true"
-        />
+        <Button
+            android:id="@+id/probeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/yandexAuthButton"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="#00BCD4"
+            android:text="Проба" />
 
-    <ToggleButton
-        android:id="@+id/sortingModeFoldersFirstSwitch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@id/sortingOrderSwitch"
-        android:textOn="@string/sort_folders_first_yes"
-        android:textOff="@string/sort_folders_first_no"
-        android:checked="true"
-        />
+    </RelativeLayout>
 
-    <Button
-        android:id="@+id/selectFileButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@id/sortingModeSelector"
-        android:text="@string/select_file" />
-
-    <TextView
-        android:id="@+id/infoView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@id/selectFileButton"
-        android:textSize="15sp"
-        android:textAlignment="center"
-        android:typeface="serif"
-        android:textStyle="italic"
-        tools:text="Выбранный файл" />
-
-    <Button
-        android:id="@+id/yandexAuthButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@id/infoView"
-        android:layout_marginTop="8dp"
-        android:text="@string/yandex_auth" />
-
-    <Button
-        android:id="@+id/probeButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@id/yandexAuthButton"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="#00BCD4"
-        android:text="Проба" />
-
-</RelativeLayout>
+</ScrollView>

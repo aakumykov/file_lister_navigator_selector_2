@@ -2,17 +2,13 @@ package com.github.aakumykov.file_lister_navigator_selector.sorting_dialog
 
 import android.app.Dialog
 import android.os.Bundle
-import android.util.Log
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AlertDialog
-import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.github.aakumykov.file_lister_navigator_selector.R
 import com.github.aakumykov.file_lister_navigator_selector.databinding.DialogSortingBinding
-import com.github.aakumykov.file_lister_navigator_selector.extensions.errorMsg
-import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
-import com.github.aakumykov.file_lister_navigator_selector.sorting_dialog.SortingDialog.Companion.IS_DIRECT_ORDER
 
 abstract class SortingDialog<SortingModeType> : DialogFragment() {
 
@@ -133,66 +129,13 @@ abstract class SortingDialog<SortingModeType> : DialogFragment() {
 
     companion object {
         val TAG: String = SortingDialog::class.java.simpleName
+
         const val INITIAL_SORTING_MODE = "INITIAL_SORTING_MODE"
         const val IS_DIRECT_ORDER = "IS_DIRECT_ORDER"
         const val FOLDERS_FIRST = "FOLDERS_FIRST"
-    }
-}
 
-class SimpleSortingDialog(
-    override val defaultSortingMode: SimpleSortingMode = SimpleSortingMode.NAME,
-    override val defaultIsDirectOrder: Boolean = true,
-    override val defaultFoldersFirst: Boolean = true,
-)
-    : SortingDialog<SimpleSortingMode>()
-{
-    override fun string2sortingMode(s: String): SimpleSortingMode {
-        return try { SimpleSortingMode.valueOf(s) }
-        catch (t: Throwable) {
-            Log.e(TAG, t.errorMsg, t)
-            defaultSortingMode
-        }
-    }
-
-    override fun viewId2sortingMode(id: Int): SimpleSortingMode = when(id) {
-        R.id.sortingModeBySize -> SimpleSortingMode.SIZE
-        R.id.sortingModeByCTime -> SimpleSortingMode.C_TIME
-        R.id.sortingModeByMTime -> SimpleSortingMode.M_TIME
-        else -> SimpleSortingMode.NAME
-    }
-
-    override fun sortingMode2viewId(sortingModeType: SimpleSortingMode): Int {
-         return when(sortingModeType) {
-            SimpleSortingMode.SIZE -> R.id.sortingModeBySize
-            SimpleSortingMode.C_TIME -> R.id.sortingModeByCTime
-            SimpleSortingMode.M_TIME -> R.id.sortingModeByMTime
-            else -> R.id.sortingModeByName
-        }
-    }
-
-    override val sortingModesMap: Map<Int, SimpleSortingMode>
-        get() = mapOf(
-            R.string.sorting_mode_name to SimpleSortingMode.NAME,
-            R.string.sorting_mode_size to SimpleSortingMode.SIZE,
-            R.string.sorting_mode_c_time to SimpleSortingMode.C_TIME,
-            R.string.sorting_mode_m_time to SimpleSortingMode.M_TIME,
-        )
-
-    companion object {
-        val TAG: String = SimpleSortingDialog::class.java.simpleName
-
-        fun create(
-            initialSortingMode: SimpleSortingMode? = SimpleSortingMode.NAME,
-            isDirectOrder: Boolean? = true,
-            foldersFirst: Boolean? = true
-        ): SimpleSortingDialog {
-            return SimpleSortingDialog().apply {
-                arguments = bundleOf(
-                INITIAL_SORTING_MODE to initialSortingMode?.name,
-                    IS_DIRECT_ORDER to isDirectOrder,
-                    FOLDERS_FIRST to foldersFirst,
-                )
-            }
+        fun findDialog(fragmentManager: FragmentManager): Fragment? {
+            return fragmentManager.findFragmentByTag(TAG)
         }
     }
 }

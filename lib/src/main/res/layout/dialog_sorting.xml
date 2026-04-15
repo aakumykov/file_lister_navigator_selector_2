@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp"
+    android:paddingHorizontal="12dp"
     android:id="@+id/sortingDialogRootView">
 
     <RadioGroup
         android:id="@+id/sortingModeSelector"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
 
         <RadioButton
             android:id="@+id/sortingModeByName"
@@ -37,33 +39,33 @@
             android:text="@string/sorting_mode_m_time" />
     </RadioGroup>
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <CheckBox
+        android:id="@+id/reverseOrderCheckbox"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:orientation="horizontal">
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignEnd="@id/sortingModeSelector"
+        android:text="@string/sorting_flags_reverse_order" />
 
-        <CheckBox
-            android:id="@+id/reverseOrderCheckbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/sorting_flags_reverse_order" />
-
-        <CheckBox
-            android:id="@+id/foldersFirstCheckbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:checked="true"
-            android:text="@string/sorting_flags_folders_first" />
-    </LinearLayout>
+    <CheckBox
+        android:id="@+id/foldersFirstCheckbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignEnd="@id/sortingModeSelector"
+        android:layout_below="@id/reverseOrderCheckbox"
+        android:checked="true"
+        android:text="@string/sorting_flags_folders_first" />
 
     <Button
         android:id="@+id/applyButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/sortingModeSelector"
         android:layout_marginTop="8dp"
         android:text="@string/dialog_button_apply" />
 
-</LinearLayout>
+</RelativeLayout>

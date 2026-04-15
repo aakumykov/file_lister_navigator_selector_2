@@ -165,6 +165,8 @@ class SimpleDemoFragment():
 
         displayWorkMode()
         displayAuthState()
+
+        SimpleSortingDialog.reconnectToDialog(childFragmentManager, this)
     }
 
     private var savedSortingMode: SimpleSortingMode?
@@ -186,8 +188,8 @@ class SimpleDemoFragment():
                 initialSortingMode = savedSortingMode,
                 isDirectOrder = savedIsDirectOrder,
                 foldersFirst = savedFoldersFirst,
+                callbacks = this,
             )
-            .setCallbacks(this)
             .display(childFragmentManager)
     }
 
