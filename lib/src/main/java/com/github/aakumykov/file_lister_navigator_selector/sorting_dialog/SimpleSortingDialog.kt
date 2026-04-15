@@ -38,14 +38,6 @@ class SimpleSortingDialog(
         }
     }
 
-    override val sortingModesMap: Map<Int, SimpleSortingMode>
-        get() = mapOf(
-            R.string.sorting_mode_name to SimpleSortingMode.NAME,
-            R.string.sorting_mode_size to SimpleSortingMode.SIZE,
-            R.string.sorting_mode_c_time to SimpleSortingMode.C_TIME,
-            R.string.sorting_mode_m_time to SimpleSortingMode.M_TIME,
-        )
-
     companion object {
         val TAG: String = SimpleSortingDialog::class.java.simpleName
 
