@@ -25,14 +25,18 @@ class LocalFileSelector: FileSelector<SimpleSortingMode>()
     fun prepare(
         initialPath: String = Environment.getExternalStorageDirectory().absolutePath,
         isDirSelectionMode: Boolean = false,
-        isMultipleSelectionMode: Boolean = false
+        isMultipleSelectionMode: Boolean = false,
+        initialSortingMode: SimpleSortingMode = SimpleSortingMode.NAME,
+        isDirectSortingOrder: Boolean = true,
     )
         : LocalFileSelector
     {
         arguments = bundleOf(
             INITIAL_PATH to initialPath,
             DIR_SELECTION_MODE to isDirSelectionMode,
-            MULTIPLE_SELECTION_MODE to isMultipleSelectionMode
+            MULTIPLE_SELECTION_MODE to isMultipleSelectionMode,
+            INITIAL_SORTING_MODE to initialSortingMode,
+            INITIAL_SORTING_ORDER to isDirectSortingOrder
         )
         return this
     }
@@ -49,18 +53,19 @@ class LocalFileSelector: FileSelector<SimpleSortingMode>()
     }
 
 
-    override fun defaultSortingMode(): SimpleSortingMode = SimpleSortingMode.NAME
+    override val defaultSortingMode: SimpleSortingMode = SimpleSortingMode.NAME
 
-    override fun defaultReverseMode(): Boolean = false
+    override val defaultDirectSortingOrder: Boolean = true
 
 
     override fun createFileExplorer(): FileExplorer<SimpleSortingMode> {
         return LocalFileExplorer(
             localFileLister = LocalFileLister(),
             localDirCreator = LocalDirCreator(),
-            initialPath = initialPath(),
-            isDirMode = isDirMode(),
-            defaultSortingMode = defaultSortingMode()
+            initialPath = initialPath,
+            isDirMode = isDirMode,
+            initialSortingMode = initialSortingMode,
+            initialSortingOrder = initialSortingOrder,
         )
     }
 
@@ -104,6 +109,10 @@ class LocalFileSelector: FileSelector<SimpleSortingMode>()
                 path = it.absolutePath,
             )
         }
+    }
+
+    override fun string2sortingMode(value: String): SimpleSortingMode {
+        return SimpleSortingMode.valueOf(value)
     }
 }
 

@@ -36,6 +36,18 @@ class SimpleDemoFragment():
     private val authToken: String? get() = getStringFromPreferences(YANDEX_AUTH_TOKEN)
     private val hasAuth: Boolean get() = null != authToken
 
+    private val sortingMode: SimpleSortingMode get() {
+        return when(binding.sortingModeSelector.checkedRadioButtonId) {
+            R.id.sortingModeSize -> SimpleSortingMode.SIZE
+            R.id.sortingModeCreated -> SimpleSortingMode.C_TIME
+            R.id.sortingModeModified -> SimpleSortingMode.M_TIME
+            else -> SimpleSortingMode.NAME
+        }
+    }
+
+    private val directOrder: Boolean get() = binding.sortingOrderSwitch.isChecked
+    private val foldersFirst: Boolean get() = binding.sortingModeFoldersFirstSwitch.isChecked
+
     private val storageAccessHelper: StorageAccessHelper by lazy {
         StorageAccessHelper.create(this)
     }
@@ -113,6 +125,8 @@ class SimpleDemoFragment():
         return LocalFileSelector().prepare(
             isDirSelectionMode = directoriesOnlyMode,
             isMultipleSelectionMode = multipleSelectionMode,
+            initialSortingMode = sortingMode,
+            isDirectSortingOrder = directOrder,
         )
     }
 
@@ -122,6 +136,8 @@ class SimpleDemoFragment():
             initialPath = "/",
             isDirSelectionMode = directoriesOnlyMode,
             isMultipleSelectionMode = multipleSelectionMode,
+            initialSortingMode = sortingMode,
+            isDirectSortingOrder = directOrder,
         )
     }
 

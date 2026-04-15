@@ -13,7 +13,7 @@
     <string name="dir_creator_dialog_title">New dir</string>
     <string name="dir_was_created">Dir «%1$s» was created</string>
 
-    <string name="dir_is_empty">Пустой каталог</string>
+    <string name="dir_is_empty">Empty dir</string>
 
     <string name="sorting_mode_name">Name</string>
     <string name="sorting_mode_c_time">Crated</string>

@@ -13,7 +13,8 @@ class LocalFileExplorer(
     localDirCreator: LocalDirCreator,
     initialPath: String,
     isDirMode: Boolean = false,
-    defaultSortingMode: SimpleSortingMode = SimpleSortingMode.NAME,
+    initialSortingMode: SimpleSortingMode,
+    initialSortingOrder: Boolean,
     listCache: FileExplorer.ListCache? = null,
     pathCache: FileExplorer.PathCache? = null
 )
@@ -22,7 +23,8 @@ class LocalFileExplorer(
     dirCreator = localDirCreator,
     initialPath = initialPath,
     isDirMode = isDirMode,
-    initialSortingMode = defaultSortingMode,
+    initialSortingMode = initialSortingMode,
+    initialSortingOrder = initialSortingOrder,
     listCache = listCache,
     pathCache = pathCache
 ) {

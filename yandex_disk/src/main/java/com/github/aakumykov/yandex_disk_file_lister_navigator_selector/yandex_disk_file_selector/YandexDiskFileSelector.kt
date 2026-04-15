@@ -25,7 +25,9 @@ class YandexDiskFileSelector : FileSelector<SimpleSortingMode>()
         authToken: String,
         initialPath: String? = "/",
         isDirSelectionMode: Boolean = false,
-        isMultipleSelectionMode: Boolean = false
+        isMultipleSelectionMode: Boolean = false,
+        initialSortingMode: SimpleSortingMode = SimpleSortingMode.NAME,
+        isDirectSortingOrder: Boolean = true,
     )
     : YandexDiskFileSelector
     {
@@ -33,7 +35,9 @@ class YandexDiskFileSelector : FileSelector<SimpleSortingMode>()
             AUTH_TOKEN to authToken,
             INITIAL_PATH to initialPath,
             DIR_SELECTION_MODE to isDirSelectionMode,
-            MULTIPLE_SELECTION_MODE to isMultipleSelectionMode
+            MULTIPLE_SELECTION_MODE to isMultipleSelectionMode,
+            INITIAL_SORTING_MODE to initialSortingMode,
+            INITIAL_SORTING_ORDER to isDirectSortingOrder
         )
         return this
     }
@@ -53,11 +57,9 @@ class YandexDiskFileSelector : FileSelector<SimpleSortingMode>()
         return SimpleSortingModeTranslator(resources)
     }
 
-    override fun defaultSortingMode(): SimpleSortingMode {
-        return SimpleSortingMode.NAME
-    }
+    override val defaultSortingMode: SimpleSortingMode = SimpleSortingMode.NAME
 
-    override fun defaultReverseMode(): Boolean = false
+    override val defaultDirectSortingOrder: Boolean = true
 
     override fun initialStorageDirectory(): StorageDirectory {
         return DummyStorageDirectory()
@@ -84,8 +86,10 @@ class YandexDiskFileSelector : FileSelector<SimpleSortingMode>()
             _fileExplorer = YandexDiskFileExplorer(
                     yandexDiskFileLister = YandexDiskFileLister(authToken),
                     yandexDiskDirCreator = YandexDiskDirCreator(yandexDiskCloudWriter),
-                    initialPath = initialPath(),
-                    isDirMode = isDirMode(),
+                    initialPath = initialPath,
+                    isDirMode = isDirMode,
+                    initialSortingMode = initialSortingMode,
+                    initialSortingOrder = initialSortingOrder,
             )
         }
 
@@ -97,6 +101,10 @@ class YandexDiskFileSelector : FileSelector<SimpleSortingMode>()
         onWriteAccessRejected: (errorMsg: String?) -> Unit
     ) {
         onWriteAccessGranted()
+    }
+
+    override fun string2sortingMode(value: String): SimpleSortingMode {
+        return SimpleSortingMode.valueOf(value)
     }
 
 

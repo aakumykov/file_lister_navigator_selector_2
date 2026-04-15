@@ -45,7 +45,7 @@ class YandexDiskFileLister(
     override fun listDir(
         path: String,
         sortingMode: SimpleSortingMode,
-        reverseOrder: Boolean,
+        sortingOrder: Boolean,
         foldersFirst: Boolean,
         dirMode: Boolean,
         offset: Int,
@@ -82,7 +82,8 @@ class YandexDiskFileLister(
             if (dirMode) it.isDir
             else true
         }.sortedWith(
-            FSItemSortingComparator.create(sortingMode, reverseOrder, foldersFirst)
+            FSItemSortingComparator
+                .create(sortingMode, sortingOrder, foldersFirst)
         )
     }
 

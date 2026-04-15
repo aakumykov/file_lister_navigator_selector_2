@@ -7,14 +7,14 @@ import com.github.aakumykov.file_lister_navigator_selector.fs_item.DirItem
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.RootDirItem
 import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_dir_creator.YandexDiskDirCreator
 import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_file_lister.YandexDiskFileLister
-import java.io.File
 
 class YandexDiskFileExplorer (
     yandexDiskFileLister: YandexDiskFileLister,
     yandexDiskDirCreator: YandexDiskDirCreator,
     initialPath: String,
     isDirMode: Boolean = false,
-    defaultSortingMode: SimpleSortingMode = SimpleSortingMode.NAME,
+    initialSortingMode: SimpleSortingMode,
+    initialSortingOrder: Boolean,
     listCache: FileExplorer.ListCache? = null,
     pathCache: FileExplorer.PathCache? = null
 )
@@ -23,7 +23,8 @@ class YandexDiskFileExplorer (
     dirCreator = yandexDiskDirCreator,
     initialPath = initialPath,
     isDirMode = isDirMode,
-    initialSortingMode = defaultSortingMode,
+    initialSortingMode = initialSortingMode,
+    initialSortingOrder = initialSortingOrder,
     listCache = listCache,
     pathCache = pathCache
 ) {

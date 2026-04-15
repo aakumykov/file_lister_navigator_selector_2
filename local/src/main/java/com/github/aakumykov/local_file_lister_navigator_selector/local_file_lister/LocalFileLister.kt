@@ -38,7 +38,7 @@ class LocalFileLister(
     override fun listDir(
         path: String,
         sortingMode: SimpleSortingMode,
-        reverseOrder: Boolean,
+        sortingOrder: Boolean,
         foldersFirst: Boolean,
         dirMode: Boolean,
         offset: Int,
@@ -83,7 +83,8 @@ class LocalFileLister(
                 else true
             }
             .sortedWith(
-                FSItemSortingComparator.create(sortingMode, reverseOrder, foldersFirst)
+                FSItemSortingComparator
+                    .create(sortingMode, sortingOrder, foldersFirst)
             )
     }
 

@@ -13,7 +13,7 @@ abstract class BasicFileExplorer<SortingModeType> (
     private val initialPath: String,
     private var isDirMode: Boolean,
     private val initialSortingMode: SortingModeType,
-    private var reverseOrder: Boolean = false,
+    private val initialSortingOrder: Boolean,
     private var foldersFirst: Boolean = true, // TODO: вынести в более явное место?
     private var listCache: FileExplorer.ListCache?, // TODO: сделать val
     private var pathCache: FileExplorer.PathCache?, // TODO: сделать val
@@ -25,6 +25,7 @@ abstract class BasicFileExplorer<SortingModeType> (
     private var currentDir: DirItem = DirItem.fromPath(initialPath)
 
     private var currentSortingMode: SortingModeType = initialSortingMode
+    private var currentSortingOrder: Boolean = initialSortingOrder
 
     private val currentList: MutableList<FSItem> = mutableListOf()
 
@@ -40,8 +41,8 @@ abstract class BasicFileExplorer<SortingModeType> (
     override fun getSortingMode(): SortingModeType = currentSortingMode
 
     override fun changeSortingMode(newSortingMode: SortingModeType) {
-        reverseOrder = if (currentSortingMode == newSortingMode) !reverseOrder else false
-        currentSortingMode = newSortingMode
+//        reverseOrder = if (currentSortingMode == newSortingMode) !reverseOrder else false
+//        currentSortingMode = newSortingMode
     }
 
     override fun listCurrentPath(): List<FSItem> {
@@ -53,7 +54,7 @@ abstract class BasicFileExplorer<SortingModeType> (
         val rawDirList = fileLister.listDir(
             path = currentPath,
             sortingMode = currentSortingMode,
-            reverseOrder = reverseOrder,
+            sortingOrder = currentSortingOrder,
             foldersFirst = foldersFirst,
             dirMode = isDirMode,
             offset = offset,
@@ -93,11 +94,11 @@ abstract class BasicFileExplorer<SortingModeType> (
     }
 
     override fun setReverseOrder(b: Boolean) {
-        reverseOrder = b
+        currentSortingOrder = b
     }
 
     override fun getReverseOrder(): Boolean {
-        return reverseOrder
+        return currentSortingOrder
     }
 
     override fun setFoldersFirst(b: Boolean) {

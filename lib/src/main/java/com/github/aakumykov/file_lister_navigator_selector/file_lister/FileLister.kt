@@ -41,7 +41,7 @@ interface FileLister<SortingModeType> {
     fun listDir(
         path: String,
         sortingMode: SortingModeType,
-        reverseOrder: Boolean,
+        sortingOrder: Boolean,
         foldersFirst: Boolean,
         dirMode: Boolean,
         offset: Int = defaultListingOffset,

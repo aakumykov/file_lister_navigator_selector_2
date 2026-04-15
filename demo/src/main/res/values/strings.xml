@@ -13,5 +13,14 @@
     <string name="yandex_deauth">Выйти из Яндекс</string>
     <string name="auth_cancelled">Авторизация отменена</string>
     <string name="auth_required">Нужна авторизация</string>
+    <string name="sorting_mode_label">Сортировка:</string>
+    <string name="sort_by_name">Имя</string>
+    <string name="sort_by_size">Размер</string>
+    <string name="sort_by_created">Создано</string>
+    <string name="sort_by_modified">Изменено</string>
+    <string name="sort_folders_first_yes">Сначала каталоги</string>
+    <string name="sort_folders_first_no">Файлы и каталоги вперемешку</string>
+    <string name="sort_order_direct">Прямой порядок</string>
+    <string name="sort_order_reverse">Обратный порядок</string>
 
 </resources>

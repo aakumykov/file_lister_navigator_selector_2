@@ -69,6 +69,8 @@ dependencies {
     api libs.extensible.sorting.comparator
 
     implementation libs.list.holding.list.adapter
+
+    implementation "androidx.preference:preference-ktx:1.2.1"
 }
 
 publishing {

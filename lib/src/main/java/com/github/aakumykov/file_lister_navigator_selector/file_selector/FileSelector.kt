@@ -59,7 +59,7 @@ abstract class FileSelector<SortingModeType> :
     private val viewModel: FileSelectorViewModel<SortingModeType> by viewModels {
         FileSelectorViewModel.Factory(
             createFileExplorer(),
-            isMultipleSelectionMode(),
+            isMultipleSelectionMode,
         )
     }
 
@@ -79,10 +79,10 @@ abstract class FileSelector<SortingModeType> :
     protected abstract fun getDefaultMultipleSelectionMode(): Boolean
 
     @Deprecated("Оцени обоснованность этого метода")
-    protected abstract fun defaultSortingMode(): SortingModeType
+    protected abstract val defaultSortingMode: SortingModeType
 
     @Deprecated("Оцени обоснованность этого метода")
-    protected abstract fun defaultReverseMode(): Boolean
+    protected abstract val defaultDirectSortingOrder: Boolean
 
 
     // Методы, создающие новый экземпляр, имеют приставку "create".
@@ -321,9 +321,9 @@ abstract class FileSelector<SortingModeType> :
             .setSingleChoiceItems(
                 createSortingModeTranslator().sortingModeNames(viewModel.currentSortingMode, viewModel.isReverseOrder),
                 createSortingModeTranslator().sortingModeToPosition(viewModel.currentSortingMode)
-            ) { dialog, position ->
+            ) { _, position ->
                 onSortingModeChanged(createSortingModeTranslator().positionToSortingMode(position))
-                dialog.dismiss()
+//                dialog.dismiss()
             }
             .create()
 
@@ -381,18 +381,43 @@ abstract class FileSelector<SortingModeType> :
     }
 
 
-    protected fun initialPath(): String {
+    protected val initialPath: String get() {
         return arguments?.getString(INITIAL_PATH) ?: getDefaultInitialPath()
     }
 
-    protected fun isDirMode(): Boolean {
+    protected val isDirMode: Boolean get() {
         return arguments?.getBoolean(DIR_SELECTION_MODE) ?: getDefaultDirSelectionMode()
     }
 
-    private fun isMultipleSelectionMode(): Boolean {
+    private val isMultipleSelectionMode: Boolean get() {
         return arguments?.getBoolean(MULTIPLE_SELECTION_MODE) ?: getDefaultMultipleSelectionMode()
     }
 
+    protected val initialSortingMode: SortingModeType get() {
+        return arguments?.getString(INITIAL_SORTING_MODE)?.let {
+            string2sortingMode(it)
+        } ?: defaultSortingMode
+    }
+
+    protected val initialSortingOrder: Boolean get() {
+        return arguments?.getBoolean(INITIAL_SORTING_ORDER)
+            ?: defaultDirectSortingOrder
+    }
+
+    protected abstract fun string2sortingMode(value: String): SortingModeType
+
+    override fun onFragmentResult(requestKey: String, result: Bundle) {
+        when(requestKey) {
+            StorageSelectingDialog.STORAGE_SELECTION_RESULT -> processStorageSelectionResult(result)
+        }
+    }
+
+    private fun processStorageSelectionResult(result: Bundle) {
+        result.getParcelable<StorageDirectory>(StorageSelectingDialog.SELECTED_STORAGE)?.also { selectedStorage ->
+            Log.d(TAG, selectedStorage.name)
+            viewModel.onStorageChanged(selectedStorage)
+        }
+    }
 
     companion object {
         val TAG: String = FileSelector::class.java.simpleName
@@ -411,6 +436,9 @@ abstract class FileSelector<SortingModeType> :
         const val DIR_SELECTION_MODE = "DIR_SELECTION_MODE"
         const val MULTIPLE_SELECTION_MODE = "MULTIPLE_SELECTION_MODE"
 
+        const val INITIAL_SORTING_MODE = "INITIAL_SORTING_MODE"
+        const val INITIAL_SORTING_ORDER = "INITIAL_SORTING_ORDER"
+
         fun extractSelectionResult(result: Bundle): List<FSItem>? {
             val gson = Gson()
             return result.getStringArrayList(SELECTED_ITEMS_LIST)
@@ -425,29 +453,6 @@ abstract class FileSelector<SortingModeType> :
                 dialogFragment.bindTo(parentFragment, callbacks)
             }
         }
-    }
-
-    override fun onFragmentResult(requestKey: String, result: Bundle) {
-        when(requestKey) {
-            StorageSelectingDialog.STORAGE_SELECTION_RESULT -> processStorageSelectionResult(result)
-        }
-    }
-
-    private fun processStorageSelectionResult(result: Bundle) {
-        result.getParcelable<StorageDirectory>(StorageSelectingDialog.SELECTED_STORAGE)?.also { selectedStorage ->
-            Log.d(TAG, selectedStorage.name)
-            viewModel.onStorageChanged(selectedStorage)
-        }
-        /*result.getParcelable<com.github.aakumykov.storage_selector.StorageWithIcon>(StorageSelectingDialog.SELECTED_STORAGE)
-            ?.also { selectedStorage: com.github.aakumykov.storage_selector.StorageWithIcon ->
-                *//*viewModel.changeSelectedStorage(
-                    Storage(
-                        name = selectedStorage.name,
-                        path = selectedStorage.path,
-                        icon = selectedStorage.icon
-                    )
-                )*//*
-            }*/
     }
 
     interface Callbacks {
