@@ -13,7 +13,6 @@ import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSor
 import com.github.aakumykov.file_lister_navigator_selector.file_selector.FileSelector
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
 import com.github.aakumykov.file_lister_navigator_selector.sorting_dialog.SimpleSortingDialog
-import com.github.aakumykov.file_lister_navigator_selector.sorting_dialog.SortingDialog
 import com.github.aakumykov.file_lister_navigator_selector_2_demo.databinding.FragmentSimpleDemoBinding
 import com.github.aakumykov.file_lister_navigator_selector_2_demo.enums.WorkMode
 import com.github.aakumykov.file_lister_navigator_selector_2_demo.extensions.eraseStringFromPreferences
@@ -25,12 +24,13 @@ import com.github.aakumykov.local_file_lister_navigator_selector.local_file_sele
 import com.github.aakumykov.storage_access_helper.StorageAccessHelper
 import com.github.aakumykov.yandex_authenticator.YandexAuthenticator
 import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_file_selector.YandexDiskFileSelector
-
+import com.github.aakumykov.file_lister_navigator_selector.sorting_dialog.SortingDialog
 
 class SimpleDemoFragment():
     Fragment(R.layout.fragment_simple_demo),
     FileSelector.Callbacks,
-        CloudAuthenticator.Callbacks
+    CloudAuthenticator.Callbacks,
+    SortingDialog.Callbacks<SimpleSortingMode>
 {
     private val multipleSelectionMode: Boolean get() = binding.multipleSelectionMode.isChecked
     private val directoriesOnlyMode: Boolean get() = binding.directoriesOnly.isChecked
@@ -165,12 +165,25 @@ class SimpleDemoFragment():
     }
 
     fun onTestButtonClicked() {
-        SimpleSortingDialog.create().display(childFragmentManager)
+        SimpleSortingDialog
+            .create()
+            .setCallbacks(this)
+            .display(childFragmentManager)
     }
 
     override fun onResume() {
         super.onResume()
         FileSelector.restoreConnection(this, this)
+    }
+
+    override fun onSortingModeChanged(
+        newMode: SimpleSortingMode,
+        isDirectOrder: Boolean,
+        foldersFirst: Boolean
+    ) {
+        Log.d(TAG, "onSortingModeChanged(" +
+                "newMode: ${newMode}, " +
+                "isDirectOrder: $isDirectOrder, foldersFirst: $foldersFirst)")
     }
 
     private fun onYandexAuthButtonClicked() {

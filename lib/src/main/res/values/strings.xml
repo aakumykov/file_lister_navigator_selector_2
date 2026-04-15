@@ -39,7 +39,6 @@
     <string name="description_next_page_button">Next page</string>
 
     <string name="sorting_dialog_title">Sorting mode</string>
-    <string name="dialog_button_cancel">Cancel</string>
     <string name="dialog_button_apply">Apply</string>
 </resources>
 

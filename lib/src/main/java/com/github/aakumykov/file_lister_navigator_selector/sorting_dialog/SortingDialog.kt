@@ -3,16 +3,12 @@ package com.github.aakumykov.file_lister_navigator_selector.sorting_dialog
 import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.view.ViewGroup
-import android.widget.RadioButton
-import android.widget.RadioGroup
+import androidx.annotation.IdRes
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.marginStart
-import androidx.core.view.setMargins
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.github.aakumykov.file_lister_navigator_selector.R
+import com.github.aakumykov.file_lister_navigator_selector.databinding.DialogSortingBinding
 import com.github.aakumykov.file_lister_navigator_selector.extensions.errorMsg
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
 
@@ -23,60 +19,96 @@ abstract class SortingDialog<SortingModeType> : DialogFragment() {
     abstract val defaultFoldersFirst: Boolean
 
     abstract fun string2sortingMode(s: String): SortingModeType
+    abstract fun viewId2sortingMode(id: Int): SortingModeType
     abstract val sortingModesMap: Map<Int, SortingModeType>
+    
+    private var _binding: DialogSortingBinding? = null
+    private val binding: DialogSortingBinding get() = _binding!!
+    
+    private var callbacks: Callbacks<SortingModeType>? = null
+    
+    
+    private val currentSortingMode: SortingModeType 
+        get() = viewId2sortingMode(binding.sortingModeSelector.checkedRadioButtonId)
+    
+    private val currentIsDirectOrder: Boolean
+        get() = !binding.reverseOrderCheckbox.isChecked
+    
+    private val currentFoldersFirst: Boolean 
+        get() = binding.foldersFirstCheckbox.isChecked
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-
-        val view: View = prepareView()
-
-        return AlertDialog.Builder(requireContext())
-            .setView(view)
-            .setTitle(R.string.sorting_dialog_title)
-            .setPositiveButton(R.string.dialog_button_apply) { _,_ -> onApplyClicked() }
-            .setNegativeButton(R.string.dialog_button_cancel) { _,_ -> }
-            .create()
+    
+    interface Callbacks<SortingModeType> {
+        fun onSortingModeChanged(newMode: SortingModeType, 
+                                 isDirectOrder: Boolean, foldersFirst: Boolean)
     }
-
-    private fun prepareView(): View {
-        val layout = layoutInflater.inflate(R.layout.dialog_sorting, null)
-        val rootView = layout.findViewById<ViewGroup>(R.id.sortingDialogRootView)
-        generateSortingModes(rootView)
-        return layout
-    }
-
-    private fun generateSortingModes(viewGroup: ViewGroup)/*: View*/ {
-        RadioGroup(viewGroup.context).apply {
-            val radioGroup = this
-            layoutParams = RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT)
-                .apply {
-                    val marginH = resources.getInteger(R.integer.sorting_dialog_content_horizontal_margin)
-                    val marginV = resources.getInteger(R.integer.sorting_dialog_content_vertical_margin)
-                    setMargins(
-                        marginH,
-                        marginV,
-                        marginH,
-                        marginV,
-                    )
-                }
-
-            sortingModesMap.forEach { nameRes, sortingMode ->
-                val radioButton = RadioButton(viewGroup.context).apply {
-                    layoutParams = ViewGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT)
-                    setText(nameRes)
-                    isChecked = sortingMode == initialSortingMode
-                }
-                radioGroup.addView(radioButton)
-            }
-            viewGroup.addView(radioGroup)
-        }
+    
+    fun setCallbacks(callbacks: Callbacks<SortingModeType>): SortingDialog<SortingModeType> {
+        this.callbacks = callbacks
+        return this
     }
 
     fun display(fragmentManager: FragmentManager) {
         show(fragmentManager, TAG)
     }
+    
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+
+        _binding = DialogSortingBinding.inflate(layoutInflater)
+        
+        applyInitialModesToView()
+        configButtons()
+
+        return AlertDialog.Builder(requireContext())
+            .setView(binding.root)
+            .setTitle(R.string.sorting_dialog_title)
+            .create()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun configButtons() {
+        view.apply {
+            binding.sortingModeSelector.setOnCheckedChangeListener { _, id -> onSortingModeChanged(id) }
+            binding.reverseOrderCheckbox.setOnCheckedChangeListener { _, isChecked -> onReverseOrderChanged(isChecked) }
+            binding.foldersFirstCheckbox.setOnCheckedChangeListener { _, isChecked -> onFoldersFirstChanged(isChecked) }
+            binding.applyButton.setOnClickListener { onApplyClicked() }
+        }
+    }
+
+    private fun onSortingModeChanged(@IdRes variantId: Int) {
+//        storeStringInPreferences(INITIAL_SORTING_MODE, viewId2sortingModeName(variantId))
+    }
+
+    private fun onReverseOrderChanged(isChecked: Boolean) {
+//        storeBooleanInPreferences(IS_DIRECT_ORDER, !isDirectOrder)
+    }
+
+    private fun onFoldersFirstChanged(isChecked: Boolean) {
+//        storeBooleanInPreferences(FOLDERS_FIRST, isChecked)
+    }
+
+    private fun applyInitialModesToView() {
+        view.apply {
+            binding.sortingModeSelector.check(sortingMode2viewId(initialSortingMode))
+            binding.reverseOrderCheckbox.isChecked = !initialDirectOrder
+            binding.foldersFirstCheckbox.isChecked = initialFoldersFirst
+        }
+    }
+
+    @IdRes
+    protected abstract fun sortingMode2viewId(sortingModeType: SortingModeType): Int
 
     private fun onApplyClicked() {
-
+        callbacks?.onSortingModeChanged(
+            currentSortingMode,
+            currentIsDirectOrder,
+            currentFoldersFirst
+        )
+        dismiss()
     }
 
     private val initialSortingMode: SortingModeType get() {
@@ -85,12 +117,12 @@ abstract class SortingDialog<SortingModeType> : DialogFragment() {
         } ?: defaultSortingMode
     }
 
-    private val isDirectOrder: Boolean get() {
+    private val initialDirectOrder: Boolean get() {
         return arguments?.getBoolean(IS_DIRECT_ORDER)
             ?: defaultIsDirectOrder
     }
 
-    private val foldersFirst: Boolean get() {
+    private val initialFoldersFirst: Boolean get() {
         return arguments?.getBoolean(FOLDERS_FIRST)
             ?: defaultFoldersFirst
     }
@@ -115,6 +147,22 @@ class SimpleSortingDialog(
         catch (t: Throwable) {
             Log.e(TAG, t.errorMsg, t)
             defaultSortingMode
+        }
+    }
+
+    override fun viewId2sortingMode(id: Int): SimpleSortingMode = when(id) {
+        R.id.sortingModeBySize -> SimpleSortingMode.SIZE
+        R.id.sortingModeByCTime -> SimpleSortingMode.C_TIME
+        R.id.sortingModeByMTime -> SimpleSortingMode.M_TIME
+        else -> SimpleSortingMode.NAME
+    }
+
+    override fun sortingMode2viewId(sortingModeType: SimpleSortingMode): Int {
+        return when(sortingModeType) {
+            SimpleSortingMode.SIZE -> R.id.sortingModeBySize
+            SimpleSortingMode.C_TIME -> R.id.sortingModeByCTime
+            SimpleSortingMode.M_TIME -> R.id.sortingModeByMTime
+            else -> R.id.sortingModeByName
         }
     }
 
