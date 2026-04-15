@@ -15,7 +15,6 @@ import com.github.aakumykov.file_lister_navigator_selector.extensions.storeStrin
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
 import com.github.aakumykov.file_lister_navigator_selector.file_selector.FileSelector
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
-import com.github.aakumykov.file_lister_navigator_selector.sorting_dialog.SimpleSortingDialog
 import com.github.aakumykov.file_lister_navigator_selector_2_demo.databinding.FragmentSimpleDemoBinding
 import com.github.aakumykov.file_lister_navigator_selector_2_demo.enums.WorkMode
 import com.github.aakumykov.file_lister_navigator_selector_2_demo.extensions.eraseStringFromPreferences

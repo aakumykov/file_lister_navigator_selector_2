@@ -45,6 +45,28 @@ class SimpleSortingModeTranslator(
         return SimpleSortingMode.entries[position]
     }
 
+    override fun viewId2sortingMode(viewId: Int): SimpleSortingMode {
+        return when(viewId) {
+            R.id.sortingModeBySize -> SimpleSortingMode.SIZE
+            R.id.sortingModeByCTime -> SimpleSortingMode.C_TIME
+            R.id.sortingModeByMTime -> SimpleSortingMode.M_TIME
+            else -> SimpleSortingMode.NAME
+        }
+    }
+
+    override fun sortingMode2viewId(sortingMode: SimpleSortingMode): Int {
+        return when(sortingMode) {
+            SimpleSortingMode.SIZE -> R.id.sortingModeBySize
+            SimpleSortingMode.C_TIME -> R.id.sortingModeByCTime
+            SimpleSortingMode.M_TIME -> R.id.sortingModeByMTime
+            else -> R.id.sortingModeByName
+        }
+    }
+
+    override fun string2sortingMode(s: String): SimpleSortingMode {
+        return SimpleSortingMode.valueOf(s)
+    }
+
     private fun s(@StringRes strRes: Int): String {
         return resources.getString(strRes)
     }
