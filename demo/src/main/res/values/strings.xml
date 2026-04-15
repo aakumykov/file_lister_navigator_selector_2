@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">file_lister_navigator_selector_demo</string>
+
+    <string name="work_mode_local">Локальный</string>
+    <string name="work_mode_yandex">Яндекс.Диск</string>
+    <string name="unknown">Неизвестная ошибка</string>
+    <string name="multiple_selection_mode_off">Единичный выбор</string>
+    <string name="multiple_selection_mode_on">Множественный выбор</string>
+    <string name="directories_only_off">Файлы и каталоги</string>
+    <string name="directories_only_on">Только каталоги</string>
+    <string name="select_file">Выбрать файл</string>
+    <string name="yandex_auth">Авторизоваться в Яндекс</string>
+    <string name="yandex_deauth">Выйти из Яндекс</string>
+    <string name="auth_cancelled">Авторизация отменена</string>
+    <string name="auth_required">Нужна авторизация</string>
+
+</resources>

@@ -19,7 +19,24 @@ import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_di
 
 // TODO: внедрять зависимости
 
-class YandexDiskFileSelector : FileSelector<SimpleSortingMode>() {
+class YandexDiskFileSelector : FileSelector<SimpleSortingMode>()
+{
+    fun prepare(
+        authToken: String,
+        initialPath: String? = "/",
+        isDirSelectionMode: Boolean = false,
+        isMultipleSelectionMode: Boolean = false
+    )
+    : YandexDiskFileSelector
+    {
+        arguments = bundleOf(
+            AUTH_TOKEN to authToken,
+            INITIAL_PATH to initialPath,
+            DIR_SELECTION_MODE to isDirSelectionMode,
+            MULTIPLE_SELECTION_MODE to isMultipleSelectionMode
+        )
+        return this
+    }
 
     private var _fileExplorer: FileExplorer<SimpleSortingMode>? = null
 
@@ -84,25 +101,4 @@ class YandexDiskFileSelector : FileSelector<SimpleSortingMode>() {
 
 
     private fun authToken(): String? = arguments?.getString(AUTH_TOKEN)
-
-
-    companion object {
-        fun create(
-            fragmentResultKey: String,
-            authToken: String,
-            initialPath: String? = "/",
-            isDirSelectionMode: Boolean = false,
-            isMultipleSelectionMode: Boolean = false
-        ) : YandexDiskFileSelector {
-            return YandexDiskFileSelector().apply {
-                arguments = bundleOf(
-                    FRAGMENT_RESULT_KEY to fragmentResultKey,
-                    AUTH_TOKEN to authToken,
-                    INITIAL_PATH to initialPath,
-                    DIR_SELECTION_MODE to isDirSelectionMode,
-                    MULTIPLE_SELECTION_MODE to isMultipleSelectionMode
-                )
-            }
-        }
-    }
 }

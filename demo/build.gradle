@@ -1,0 +1,63 @@
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.jetbrains.kotlin.android)
+}
+
+android {
+    namespace 'com.github.aakumykov.file_lister_navigator_selector_2_demo'
+    compileSdk {
+        version = release(36)
+    }
+
+    defaultConfig {
+        applicationId "com.github.aakumykov.file_lister_navigator_selector_2_demo"
+        minSdk 24
+        targetSdk 36
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        manifestPlaceholders = [
+                YANDEX_CLIENT_ID: "1a0edef06a60424aad2e78c5011b2eb0"
+        ]
+    }
+    buildFeatures {
+        viewBinding true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+}
+
+dependencies {
+    implementation libs.androidx.core.ktx
+    implementation libs.androidx.appcompat
+
+    testImplementation libs.junit
+    androidTestImplementation libs.androidx.junit
+    androidTestImplementation libs.androidx.espresso.core
+
+    implementation project(':yandex_disk')
+    implementation project(':local')
+
+    implementation libs.storage.access.helper
+
+    implementation libs.androidx.preference.ktx
+
+    androidTestImplementation libs.kaspresso
+    androidTestUtil libs.androidx.orchestrator
+    debugImplementation libs.leakcanary.android
+
+    implementation libs.yandex.authenticator
+}

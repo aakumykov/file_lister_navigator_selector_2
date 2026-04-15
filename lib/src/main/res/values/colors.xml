@@ -7,4 +7,9 @@
     <color name="text_on_white">#525252</color>
     <color name="selected_item_bg">#CECECE</color>
     <color name="black">#000</color>
+
+    <color name="default_button_bg">@color/design_default_color_primary</color>
+    <color name="default_button_fg">@color/design_default_color_on_primary</color>
+
+    <!--<color name="default_day_night_text_color">@android:color/tab_indicator_text</color>-->
 </resources>
