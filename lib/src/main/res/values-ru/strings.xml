@@ -37,6 +37,10 @@
 
     <string name="description_previous_page_button">Предыдущая страница</string>
     <string name="description_next_page_button">Следующая страница</string>
+
+    <string name="sorting_dialog_title">Сортировка</string>
+    <string name="dialog_button_cancel">Отмена</string>
+    <string name="dialog_button_apply">Применить</string>
 </resources>
 
     <!-- «» -->

@@ -12,6 +12,8 @@ import com.github.aakumykov.cloud_authenticator.CloudAuthenticator
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
 import com.github.aakumykov.file_lister_navigator_selector.file_selector.FileSelector
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
+import com.github.aakumykov.file_lister_navigator_selector.sorting_dialog.SimpleSortingDialog
+import com.github.aakumykov.file_lister_navigator_selector.sorting_dialog.SortingDialog
 import com.github.aakumykov.file_lister_navigator_selector_2_demo.databinding.FragmentSimpleDemoBinding
 import com.github.aakumykov.file_lister_navigator_selector_2_demo.enums.WorkMode
 import com.github.aakumykov.file_lister_navigator_selector_2_demo.extensions.eraseStringFromPreferences
@@ -147,6 +149,7 @@ class SimpleDemoFragment():
 
         binding.selectFileButton.setOnClickListener { onSelectFileClicked() }
         binding.yandexAuthButton.setOnClickListener { onYandexAuthButtonClicked() }
+        binding.testButton.setOnClickListener { onTestButtonClicked() }
 
         storageAccessHelper.prepareForReadAccess()
 
@@ -159,6 +162,10 @@ class SimpleDemoFragment():
 
         displayWorkMode()
         displayAuthState()
+    }
+
+    fun onTestButtonClicked() {
+        SimpleSortingDialog.create().display(childFragmentManager)
     }
 
     override fun onResume() {

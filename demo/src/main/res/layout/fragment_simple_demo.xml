@@ -147,4 +147,15 @@
         android:layout_marginTop="8dp"
         android:text="@string/yandex_auth" />
 
+    <Button
+        android:id="@+id/testButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/yandexAuthButton"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#00BCD4"
+        android:text="Проба" />
+
 </RelativeLayout>

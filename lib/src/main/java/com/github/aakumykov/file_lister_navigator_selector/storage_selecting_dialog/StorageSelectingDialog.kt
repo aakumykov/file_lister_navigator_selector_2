@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentResultListener
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.LifecycleOwner
+import com.github.aakumykov.storage_lister.R
 import com.github.aakumykov.storage_lister.StorageDirectory
 
 class StorageSelectingDialog : DialogFragment() {
@@ -31,8 +32,8 @@ class StorageSelectingDialog : DialogFragment() {
                     SELECTED_STORAGE to storageListAdapter.getItem(position)
                 ))
             }
-            .setTitle("Выбор хранилища")
-            .setNegativeButton("Отмена") { _,_ -> }
+            .setTitle(R.string.storage_selector_title)
+            .setNegativeButton(R.string.cancel) { _,_ -> }
             .create()
     }
 
