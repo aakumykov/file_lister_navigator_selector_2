@@ -9,6 +9,9 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.github.aakumykov.cloud_authenticator.CloudAuthenticator
+import com.github.aakumykov.file_lister_navigator_selector.extensions.getBooleanFromPreferences
+import com.github.aakumykov.file_lister_navigator_selector.extensions.storeBooleanInPreferences
+import com.github.aakumykov.file_lister_navigator_selector.extensions.storeStringInPreferences
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
 import com.github.aakumykov.file_lister_navigator_selector.file_selector.FileSelector
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
@@ -149,7 +152,7 @@ class SimpleDemoFragment():
 
         binding.selectFileButton.setOnClickListener { onSelectFileClicked() }
         binding.yandexAuthButton.setOnClickListener { onYandexAuthButtonClicked() }
-        binding.testButton.setOnClickListener { onTestButtonClicked() }
+        binding.probeButton.setOnClickListener { onProbeButtonClicked() }
 
         storageAccessHelper.prepareForReadAccess()
 
@@ -164,16 +167,28 @@ class SimpleDemoFragment():
         displayAuthState()
     }
 
-    fun onTestButtonClicked() {
+    private var savedSortingMode: SimpleSortingMode?
+        get() = getStringFromPreferences(SortingDialog.INITIAL_SORTING_MODE)?.let { SimpleSortingMode.valueOf(it) }
+        set(value) = storeStringInPreferences(SortingDialog.INITIAL_SORTING_MODE, value?.name)
+
+    private var savedIsDirectOrder: Boolean
+        get() = getBooleanFromPreferences(SortingDialog.IS_DIRECT_ORDER, true)
+        set(value) = storeBooleanInPreferences(SortingDialog.IS_DIRECT_ORDER, value)
+
+    private var savedFoldersFirst: Boolean
+        get() = getBooleanFromPreferences(SortingDialog.FOLDERS_FIRST, true)
+        set(value) = storeBooleanInPreferences(SortingDialog.FOLDERS_FIRST, value)
+
+
+    fun onProbeButtonClicked() {
         SimpleSortingDialog
-            .create()
+            .create(
+                initialSortingMode = savedSortingMode,
+                isDirectOrder = savedIsDirectOrder,
+                foldersFirst = savedFoldersFirst,
+            )
             .setCallbacks(this)
             .display(childFragmentManager)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        FileSelector.restoreConnection(this, this)
     }
 
     override fun onSortingModeChanged(
@@ -181,9 +196,18 @@ class SimpleDemoFragment():
         isDirectOrder: Boolean,
         foldersFirst: Boolean
     ) {
+        savedSortingMode = newMode
+        savedFoldersFirst = foldersFirst
+        savedIsDirectOrder = isDirectOrder
+
         Log.d(TAG, "onSortingModeChanged(" +
                 "newMode: ${newMode}, " +
                 "isDirectOrder: $isDirectOrder, foldersFirst: $foldersFirst)")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        FileSelector.restoreConnection(this, this)
     }
 
     private fun onYandexAuthButtonClicked() {

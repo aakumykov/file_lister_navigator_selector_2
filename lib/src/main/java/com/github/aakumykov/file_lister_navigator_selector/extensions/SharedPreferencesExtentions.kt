@@ -1,6 +1,5 @@
 package com.github.aakumykov.file_lister_navigator_selector.extensions
 
-import android.R.attr.value
 import android.annotation.SuppressLint
 import android.app.Activity
 import androidx.core.content.edit
@@ -52,7 +51,7 @@ fun Fragment.storeBooleanInPreferences(key: String, value: Boolean) {
     }
 }
 
-fun Fragment.getBooleanInPreferences(key: String, defaultValue: Boolean) {
-    PreferenceManager.getDefaultSharedPreferences(requireContext())
+fun Fragment.getBooleanFromPreferences(key: String, defaultValue: Boolean): Boolean {
+    return PreferenceManager.getDefaultSharedPreferences(requireContext())
         .getBoolean(key,defaultValue)
 }

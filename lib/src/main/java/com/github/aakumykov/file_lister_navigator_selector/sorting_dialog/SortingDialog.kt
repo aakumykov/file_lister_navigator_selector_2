@@ -5,12 +5,14 @@ import android.os.Bundle
 import android.util.Log
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AlertDialog
+import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.github.aakumykov.file_lister_navigator_selector.R
 import com.github.aakumykov.file_lister_navigator_selector.databinding.DialogSortingBinding
 import com.github.aakumykov.file_lister_navigator_selector.extensions.errorMsg
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
+import com.github.aakumykov.file_lister_navigator_selector.sorting_dialog.SortingDialog.Companion.IS_DIRECT_ORDER
 
 abstract class SortingDialog<SortingModeType> : DialogFragment() {
 
@@ -114,7 +116,9 @@ abstract class SortingDialog<SortingModeType> : DialogFragment() {
     private val initialSortingMode: SortingModeType get() {
         return arguments?.getString(INITIAL_SORTING_MODE)?.let {
             string2sortingMode(it)
-        } ?: defaultSortingMode
+        } ?: run {
+            defaultSortingMode
+        }
     }
 
     private val initialDirectOrder: Boolean get() {
@@ -158,7 +162,7 @@ class SimpleSortingDialog(
     }
 
     override fun sortingMode2viewId(sortingModeType: SimpleSortingMode): Int {
-        return when(sortingModeType) {
+         return when(sortingModeType) {
             SimpleSortingMode.SIZE -> R.id.sortingModeBySize
             SimpleSortingMode.C_TIME -> R.id.sortingModeByCTime
             SimpleSortingMode.M_TIME -> R.id.sortingModeByMTime
@@ -178,14 +182,16 @@ class SimpleSortingDialog(
         val TAG: String = SimpleSortingDialog::class.java.simpleName
 
         fun create(
-            initialSortingMode: SimpleSortingMode = SimpleSortingMode.NAME,
-            isDirectOrder: Boolean = true,
-            foldersFirst: Boolean = true
+            initialSortingMode: SimpleSortingMode? = SimpleSortingMode.NAME,
+            isDirectOrder: Boolean? = true,
+            foldersFirst: Boolean? = true
         ): SimpleSortingDialog {
             return SimpleSortingDialog().apply {
-                INITIAL_SORTING_MODE to initialSortingMode
-                IS_DIRECT_ORDER to isDirectOrder
-                FOLDERS_FIRST to foldersFirst
+                arguments = bundleOf(
+                INITIAL_SORTING_MODE to initialSortingMode?.name,
+                    IS_DIRECT_ORDER to isDirectOrder,
+                    FOLDERS_FIRST to foldersFirst,
+                )
             }
         }
     }
