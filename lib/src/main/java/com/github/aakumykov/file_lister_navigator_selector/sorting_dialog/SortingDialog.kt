@@ -18,6 +18,7 @@ abstract class SortingDialog<SortingModeType> : DialogFragment() {
 
     abstract fun string2sortingMode(s: String): SortingModeType
     abstract fun viewId2sortingMode(id: Int): SortingModeType
+    abstract val sortingModesMap: Map<Int, SortingModeType>
     
     private var _binding: DialogSortingBinding? = null
     private val binding: DialogSortingBinding get() = _binding!!
