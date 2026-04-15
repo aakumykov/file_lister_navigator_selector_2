@@ -84,7 +84,7 @@ class YandexDiskFileSelector : FileSelector<SimpleSortingMode>()
             _fileExplorer = YandexDiskFileExplorer(
                     yandexDiskFileLister = YandexDiskFileLister(authToken),
                     yandexDiskDirCreator = YandexDiskDirCreator(yandexDiskCloudWriter),
-                    initialPath = "/",
+                    initialPath = initialPath(),
                     isDirMode = isDirMode(),
             )
         }
