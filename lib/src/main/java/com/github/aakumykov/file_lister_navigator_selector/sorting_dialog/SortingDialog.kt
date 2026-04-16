@@ -2,6 +2,7 @@ package com.github.aakumykov.file_lister_navigator_selector.sorting_dialog
 
 import android.app.Dialog
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
@@ -22,7 +23,7 @@ class SortingDialog<SortingModeType> : DialogFragment() {
     private var callbacks: Callbacks<SortingModeType>? = null
 
     private var _sortingModeTranslator: SortingModeTranslator<SortingModeType>? = null
-    private var sortingModeTranslator: SortingModeTranslator<SortingModeType> = _sortingModeTranslator!!
+    private val sortingModeTranslator: SortingModeTranslator<SortingModeType> get() = _sortingModeTranslator!!
 
     private val currentSortingMode: SortingModeType 
         get() = sortingModeTranslator.viewId2sortingMode(binding.sortingModeSelector.checkedRadioButtonId)
@@ -39,17 +40,28 @@ class SortingDialog<SortingModeType> : DialogFragment() {
         fun onSortingModeChanged(newMode: SortingModeType, 
                                  isDirectOrder: Boolean, foldersFirst: Boolean)
     }
-    
-    fun setCallbacks(callbacks: Callbacks<SortingModeType>): SortingDialog<SortingModeType> {
+
+    fun init(
+        callbacks: Callbacks<SortingModeType>,
+        translator: SortingModeTranslator<SortingModeType>
+    ): SortingDialog<SortingModeType>
+    {
+        setCallbacks(callbacks)
+        setSortingModeTranslator(translator)
+        applyInitialModesToView()
+        return this
+    }
+
+    private fun setCallbacks(callbacks: Callbacks<SortingModeType>): SortingDialog<SortingModeType> {
         this.callbacks = callbacks
         return this
     }
 
-    fun setSortingModeTranslator(translator: SortingModeTranslator<SortingModeType>) {
+    private fun setSortingModeTranslator(translator: SortingModeTranslator<SortingModeType>) {
         _sortingModeTranslator = translator
     }
 
-    fun setDefaultModes(defaultSortingMode: SortingModeType,
+    private fun setDefaultModes(defaultSortingMode: SortingModeType,
                         defaultIsDirectOrder: Boolean,
                         defaultFoldersFirst: Boolean) {
         this.defaultSortingMode = defaultSortingMode
@@ -57,21 +69,31 @@ class SortingDialog<SortingModeType> : DialogFragment() {
         this.defaultFoldersFirst = defaultFoldersFirst
     }
 
-    fun display(fragmentManager: FragmentManager) {
+    fun display(
+        fragmentManager: FragmentManager,
+        callbacks: Callbacks<SortingModeType>,
+        translator: SortingModeTranslator<SortingModeType>
+    ) {
+        this.callbacks = callbacks
+        _sortingModeTranslator = translator
         show(fragmentManager, TAG)
     }
     
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
         _binding = DialogSortingBinding.inflate(layoutInflater)
-        
-        applyInitialModesToView()
+
         configButtons()
 
         return AlertDialog.Builder(requireContext())
             .setView(binding.root)
             .setTitle(R.string.sorting_dialog_title)
             .create()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        init(callbacks!!, sortingModeTranslator)
     }
 
     override fun onDestroyView() {
@@ -123,38 +145,53 @@ class SortingDialog<SortingModeType> : DialogFragment() {
         const val IS_DIRECT_ORDER = "IS_DIRECT_ORDER"
         const val FOLDERS_FIRST = "FOLDERS_FIRST"
 
-        fun <SortingModeType> reconnectToDialog(
-            fragmentManager: FragmentManager,
-            callbacks: Callbacks<SortingModeType>
-        ) {
-            fragmentManager.findFragmentByTag(TAG)?.also {
-                (it as SortingDialog<SortingModeType>).setCallbacks(callbacks)
-            }
-
-        }
-
         fun <SortingModeType> create(
             sortingMode: SortingModeType,
             isDirectOrder: Boolean = true,
             foldersFirst: Boolean = true,
             callbacks: Callbacks<SortingModeType>,
-            sortingModeTranslator: SortingModeTranslator<SortingModeType>
+            translator: SortingModeTranslator<SortingModeType>
         )
         : SortingDialog<SortingModeType>
         {
             return SortingDialog<SortingModeType>().apply {
-                setCallbacks(callbacks)
-                setSortingModeTranslator(sortingModeTranslator)
+
                 setDefaultModes(
                     defaultSortingMode = sortingMode,
                     defaultIsDirectOrder = isDirectOrder,
                     defaultFoldersFirst = foldersFirst
                 )
+
+                this.callbacks = callbacks
+                _sortingModeTranslator = translator
+
                 arguments = bundleOf(
                     INITIAL_SORTING_MODE to sortingMode,
                     IS_DIRECT_ORDER to isDirectOrder,
                     FOLDERS_FIRST to foldersFirst,
                 )
+            }
+        }
+
+        fun <SortingModeType> reconnectToDialog(
+            fragmentManager: FragmentManager,
+            callbacks: Callbacks<SortingModeType>,
+            translator: SortingModeTranslator<SortingModeType>,
+            defaultSortingMode: SortingModeType,
+            defaultIsDirectOrder: Boolean,
+            defaultFoldersFirst: Boolean
+        )
+            : SortingDialog<SortingModeType>?
+        {
+            return fragmentManager.findFragmentByTag(TAG)?.let {
+                (it as SortingDialog<SortingModeType>).apply {
+                    setDefaultModes(
+                        defaultSortingMode,
+                        defaultIsDirectOrder,
+                        defaultFoldersFirst
+                    )
+                    init(callbacks, translator)
+                }
             }
         }
     }

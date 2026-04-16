@@ -165,7 +165,7 @@ class SimpleDemoFragment():
         displayWorkMode()
         displayAuthState()
 
-        SimpleSortingDialog.reconnectToDialog(childFragmentManager, this)
+//        SimpleSortingDialog.reconnectToDialog(childFragmentManager, this)
     }
 
     private var savedSortingMode: SimpleSortingMode?
@@ -182,14 +182,14 @@ class SimpleDemoFragment():
 
 
     fun onProbeButtonClicked() {
-        SimpleSortingDialog
+        /*SimpleSortingDialog
             .create(
                 initialSortingMode = savedSortingMode,
                 isDirectOrder = savedIsDirectOrder,
                 foldersFirst = savedFoldersFirst,
                 callbacks = this,
             )
-            .display(childFragmentManager)
+            .display(childFragmentManager)*/
     }
 
     override fun onSortingModeChanged(

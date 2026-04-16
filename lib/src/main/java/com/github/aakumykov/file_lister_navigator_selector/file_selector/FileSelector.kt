@@ -24,8 +24,11 @@ import com.github.aakumykov.file_lister_navigator_selector.extensions.invisible
 import com.github.aakumykov.file_lister_navigator_selector.extensions.listenForFragmentResult
 import com.github.aakumykov.file_lister_navigator_selector.extensions.visible
 import com.github.aakumykov.file_lister_navigator_selector.file_explorer.FileExplorer
+import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.SimpleFSItem
+import com.github.aakumykov.file_lister_navigator_selector.sorting_dialog.SortingDialog
+import com.github.aakumykov.file_lister_navigator_selector.sorting_dialog.SortingDialog.Callbacks
 import com.github.aakumykov.file_lister_navigator_selector.sorting_info_supplier.SortingInfoSupplier
 import com.github.aakumykov.file_lister_navigator_selector.sorting_mode_translator.SortingModeTranslator
 import com.github.aakumykov.file_lister_navigator_selector.storage_selecting_dialog.StorageSelectingDialog
@@ -38,7 +41,8 @@ abstract class FileSelector<SortingModeType> :
     DialogFragment(R.layout.dialog_file_selector),
     AdapterView.OnItemClickListener,
     AdapterView.OnItemLongClickListener,
-    FragmentResultListener
+    FragmentResultListener,
+    SortingDialog.Callbacks<SortingModeType>
 {
     private var callbacks: Callbacks? = null
 
@@ -115,6 +119,19 @@ abstract class FileSelector<SortingModeType> :
         isFirstRun = (null == savedInstanceState)
 
         if (isFirstRun) viewModel.startWork()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        SortingDialog
+            .reconnectToDialog(
+                childFragmentManager,
+                this,
+                createSortingModeTranslator(),
+                initialSortingMode,
+                initialSortingOrder,
+                true
+            )
     }
 
     override fun onDestroyView() {
@@ -303,31 +320,20 @@ abstract class FileSelector<SortingModeType> :
     }
 
     private fun showSortingDialog() {
+        SortingDialog.create(
+            sortingMode = defaultSortingMode,
+            callbacks = this,
+            translator = createSortingModeTranslator()
+        )
+            .display(childFragmentManager,this, createSortingModeTranslator())
+    }
 
-        val sortingFlagsView = layoutInflater.inflate(R.layout.sorting_flags_dialog_view, null)
-            .apply {
-                findViewById<CheckBox>(R.id.foldersFirstCheckbox).apply {
-                    isChecked = viewModel.isFoldersFirst
-                    setOnCheckedChangeListener { dialog, isChecked ->
-                        onFoldersFirstChanged(isChecked)
-                        sortingDialog?.dismiss()
-                    }
-                }
-            }
+    override fun onSortingModeChanged(
+        newMode: SortingModeType,
+        isDirectOrder: Boolean,
+        foldersFirst: Boolean
+    ) {
 
-        sortingDialog = AlertDialog.Builder(requireContext())
-            .setTitle(R.string.SORTING_MODE_DIALOG_title)
-            .setView(sortingFlagsView)
-            .setSingleChoiceItems(
-                createSortingModeTranslator().sortingModeNames(viewModel.currentSortingMode, viewModel.isReverseOrder),
-                createSortingModeTranslator().sortingModeToPosition(viewModel.currentSortingMode)
-            ) { _, position ->
-                onSortingModeChanged(createSortingModeTranslator().positionToSortingMode(position))
-//                dialog.dismiss()
-            }
-            .create()
-
-        sortingDialog?.show()
     }
 
     private fun onFoldersFirstChanged(isFoldersFirst: Boolean) {
