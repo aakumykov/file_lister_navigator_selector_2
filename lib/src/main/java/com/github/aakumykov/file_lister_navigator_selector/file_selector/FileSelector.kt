@@ -86,7 +86,9 @@ abstract class FileSelector<SortingModeType> :
     protected abstract fun defaultSortingMode(): SortingModeType
 
     @Deprecated("Оцени обоснованность этого метода")
-    protected abstract fun defaultReverseMode(): Boolean
+    protected abstract fun defaultReverseOrder(): Boolean
+
+    protected abstract fun defaultFoldersFirst(): Boolean
 
 
     // Методы, создающие новый экземпляр, имеют приставку "create".
@@ -118,7 +120,14 @@ abstract class FileSelector<SortingModeType> :
 
         isFirstRun = (null == savedInstanceState)
 
-        if (isFirstRun) viewModel.startWork()
+        if (isFirstRun)
+            viewModel
+                .setSortingSettings(
+                    initialSortingMode,
+                    initialReverseOrder,
+                    initialFoldersFirst
+                )
+                .startWork()
     }
 
     override fun onDestroyView() {
@@ -388,6 +397,30 @@ abstract class FileSelector<SortingModeType> :
     }
 
 
+    protected abstract fun string2sortingModeType(s: String): SortingModeType
+
+    private val initialSortingMode: SortingModeType get() {
+
+        val sortingModeArgument = arguments?.getString(SORTING_MODE)
+
+        val sm = sortingModeArgument
+            ?.let { string2sortingModeType(sortingModeArgument) }
+            ?: defaultSortingMode()
+
+        return sm
+    }
+
+    private val initialReverseOrder: Boolean get() {
+        return arguments?.getBoolean(REVERSE_ORDER, defaultReverseOrder())
+            ?: defaultReverseOrder()
+    }
+
+    private val initialFoldersFirst: Boolean get() {
+        return arguments?.getBoolean(FOLDERS_FIRST, defaultFoldersFirst())
+            ?: defaultFoldersFirst()
+    }
+
+
     companion object {
         val TAG: String = FileSelector::class.java.simpleName
 
@@ -406,6 +439,10 @@ abstract class FileSelector<SortingModeType> :
         const val INITIAL_PATH = "INITIAL_PATH"
         const val DIR_SELECTION_MODE = "DIR_SELECTION_MODE"
         const val MULTIPLE_SELECTION_MODE = "MULTIPLE_SELECTION_MODE"
+
+        const val SORTING_MODE = "SORTING_MODE"
+        const val REVERSE_ORDER = "REVERSE_ORDER"
+        const val FOLDERS_FIRST = "FOLDERS_FIRST"
 
         fun extractSelectionResult(result: Bundle): List<FSItem>? {
             val gson = Gson()
