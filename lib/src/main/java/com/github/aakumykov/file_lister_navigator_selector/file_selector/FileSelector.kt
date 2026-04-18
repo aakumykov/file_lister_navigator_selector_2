@@ -4,9 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
-import android.widget.CheckBox
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -19,9 +17,11 @@ import com.github.aakumykov.file_lister_navigator_selector.databinding.DialogFil
 import com.github.aakumykov.file_lister_navigator_selector.dir_creator_dialog.DirCreatorDialog
 import com.github.aakumykov.file_lister_navigator_selector.extensions.colorize
 import com.github.aakumykov.file_lister_navigator_selector.extensions.errorMsg
+import com.github.aakumykov.file_lister_navigator_selector.extensions.getStringFromPreferences
 import com.github.aakumykov.file_lister_navigator_selector.extensions.hide
 import com.github.aakumykov.file_lister_navigator_selector.extensions.invisible
 import com.github.aakumykov.file_lister_navigator_selector.extensions.listenForFragmentResult
+import com.github.aakumykov.file_lister_navigator_selector.extensions.storeStringInPreferences
 import com.github.aakumykov.file_lister_navigator_selector.extensions.visible
 import com.github.aakumykov.file_lister_navigator_selector.file_explorer.FileExplorer
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
@@ -29,6 +29,8 @@ import com.github.aakumykov.file_lister_navigator_selector.fs_item.SimpleFSItem
 import com.github.aakumykov.file_lister_navigator_selector.sorting_info_supplier.SortingInfoSupplier
 import com.github.aakumykov.file_lister_navigator_selector.sorting_mode_translator.SortingModeTranslator
 import com.github.aakumykov.file_lister_navigator_selector.storage_selecting_dialog.StorageSelectingDialog
+import com.github.aakumykov.simple_sorting_dialog.SimpleSortingDialog
+import com.github.aakumykov.simple_sorting_dialog.SortingSettings
 import com.github.aakumykov.storage_lister.DummyStorageDirectory
 import com.github.aakumykov.storage_lister.StorageDirectory
 import com.github.aakumykov.storage_lister.StorageLister
@@ -38,7 +40,8 @@ abstract class FileSelector<SortingModeType> :
     DialogFragment(R.layout.dialog_file_selector),
     AdapterView.OnItemClickListener,
     AdapterView.OnItemLongClickListener,
-    FragmentResultListener
+    FragmentResultListener,
+    SimpleSortingDialog.Callbacks
 {
     private var callbacks: Callbacks? = null
 
@@ -49,8 +52,6 @@ abstract class FileSelector<SortingModeType> :
 
     private var _binding: DialogFileSelectorBinding? = null
     private val binding get() = _binding!!
-
-    private var sortingDialog: AlertDialog? = null
 
     private lateinit var filesListAdapter: FileListAdapter<SortingModeType>
 
@@ -67,6 +68,9 @@ abstract class FileSelector<SortingModeType> :
 
     
     private val gson by lazy { Gson() }
+
+    protected abstract fun convertToDialogSortingMode(mode: SortingModeType): SimpleSortingDialog.SortingMode
+    protected abstract fun convertFromDialogSortingMode(mode: SimpleSortingDialog.SortingMode): SortingModeType
 
     /**
      * Если не нужна, возвращать [DummyStorageDirectory]
@@ -297,46 +301,36 @@ abstract class FileSelector<SortingModeType> :
         )
     }
 
+    private val currentSortingSettings: SortingSettings? get() {
+        return getStringFromPreferences(SORTING_SETTINGS)?.let {
+            gson.fromJson(it, SortingSettings::class.java)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        SimpleSortingDialog
+            .find(parentFragmentManager)
+            ?.setCallbacks(this)
+    }
 
     private fun onSortButtonClicked() {
-        showSortingDialog()
+        SimpleSortingDialog
+            .createAndShow(parentFragmentManager, currentSortingSettings)
+            .setCallbacks(this)
     }
 
-    private fun showSortingDialog() {
+    override fun onSortingApplied(sortingSettings: SortingSettings) {
+        storeStringInPreferences(SORTING_SETTINGS, gson.toJson(sortingSettings))
+        viewModel.apply {
+            changeFoldersFist(sortingSettings.foldersFirst)
+            changeReverseOrder(sortingSettings.reverseOrder)
 
-        val sortingFlagsView = layoutInflater.inflate(R.layout.sorting_flags_dialog_view, null)
-            .apply {
-                findViewById<CheckBox>(R.id.foldersFirstCheckbox).apply {
-                    isChecked = viewModel.isFoldersFirst
-                    setOnCheckedChangeListener { dialog, isChecked ->
-                        onFoldersFirstChanged(isChecked)
-                        sortingDialog?.dismiss()
-                    }
-                }
-            }
-
-        sortingDialog = AlertDialog.Builder(requireContext())
-            .setTitle(R.string.SORTING_MODE_DIALOG_title)
-            .setView(sortingFlagsView)
-            .setSingleChoiceItems(
-                createSortingModeTranslator().sortingModeNames(viewModel.currentSortingMode, viewModel.isReverseOrder),
-                createSortingModeTranslator().sortingModeToPosition(viewModel.currentSortingMode)
-            ) { dialog, position ->
-                onSortingModeChanged(createSortingModeTranslator().positionToSortingMode(position))
-                dialog.dismiss()
-            }
-            .create()
-
-        sortingDialog?.show()
-    }
-
-    private fun onFoldersFirstChanged(isFoldersFirst: Boolean) {
-        viewModel.changeFoldersFist(isFoldersFirst)
-    }
-
-    private fun onSortingModeChanged(sortingMode: SortingModeType) {
-        viewModel.changeSortingMode(sortingMode)
-        filesListAdapter.changeSortingMode(sortingMode)
+            val newSortingMode = convertFromDialogSortingMode(sortingSettings.sortingMode)
+            changeSortingMode(newSortingMode)
+            // FIXME: должно бы подписываться на режим вортировки из ViewModel и передавать его адаптеру...
+            filesListAdapter.changeSortingMode(newSortingMode)
+        }
     }
 
     private fun onConfirmSelectionClicked() {
@@ -396,6 +390,8 @@ abstract class FileSelector<SortingModeType> :
 
     companion object {
         val TAG: String = FileSelector::class.java.simpleName
+
+        const val SORTING_SETTINGS = "SORTING_SETTINGS"
 
         //
         // Ключ для передачи фрагменту ключа же, по которому он вернёт результат (через FragmentResultAPI).

@@ -9,6 +9,7 @@ import com.github.aakumykov.file_lister_navigator_selector.sorting_info_supplier
 import com.github.aakumykov.file_lister_navigator_selector.sorting_info_supplier.SortingInfoSupplier
 import com.github.aakumykov.file_lister_navigator_selector.sorting_mode_translator.SimpleSortingModeTranslator
 import com.github.aakumykov.file_lister_navigator_selector.sorting_mode_translator.SortingModeTranslator
+import com.github.aakumykov.simple_sorting_dialog.SimpleSortingDialog
 import com.github.aakumykov.storage_lister.DummyStorageDirectory
 import com.github.aakumykov.storage_lister.StorageDirectory
 import com.github.aakumykov.yandex_disk_cloud_writer.YandexDiskCloudWriter
@@ -58,6 +59,24 @@ class YandexDiskFileSelector : FileSelector<SimpleSortingMode>()
     }
 
     override fun defaultReverseMode(): Boolean = false
+
+    override fun convertFromDialogSortingMode(mode: SimpleSortingDialog.SortingMode): SimpleSortingMode {
+        return when(mode) {
+            SimpleSortingDialog.SortingMode.NAME -> SimpleSortingMode.NAME
+            SimpleSortingDialog.SortingMode.SIZE -> SimpleSortingMode.SIZE
+            SimpleSortingDialog.SortingMode.M_TIME -> SimpleSortingMode.M_TIME
+        }
+    }
+
+    override fun convertToDialogSortingMode(mode: SimpleSortingMode): SimpleSortingDialog.SortingMode {
+        return when(mode) {
+            SimpleSortingMode.NAME -> SimpleSortingDialog.SortingMode.NAME
+            SimpleSortingMode.SIZE -> SimpleSortingDialog.SortingMode.SIZE
+            // FIXME: а вот это проблема: виды сортировки могут не совпадать(!)
+            SimpleSortingMode.M_TIME -> SimpleSortingDialog.SortingMode.M_TIME
+            else -> SimpleSortingDialog.SortingMode.M_TIME
+        }
+    }
 
     override fun initialStorageDirectory(): StorageDirectory {
         return DummyStorageDirectory()

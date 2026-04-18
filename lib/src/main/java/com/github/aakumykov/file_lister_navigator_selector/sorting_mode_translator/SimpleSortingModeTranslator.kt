@@ -31,7 +31,6 @@ class SimpleSortingModeTranslator(
         return when(sortingModeName) {
             s(R.string.sorting_mode_name) -> SimpleSortingMode.NAME
             s(R.string.sorting_mode_size) -> SimpleSortingMode.SIZE
-            s(R.string.sorting_mode_c_time) -> SimpleSortingMode.C_TIME
             s(R.string.sorting_mode_m_time) -> SimpleSortingMode.M_TIME
             else -> null
         }

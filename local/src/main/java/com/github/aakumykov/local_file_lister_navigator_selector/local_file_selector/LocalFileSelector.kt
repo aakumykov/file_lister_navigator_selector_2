@@ -16,12 +16,31 @@ import com.github.aakumykov.local_file_lister_navigator_selector.local_dir_creat
 import com.github.aakumykov.local_file_lister_navigator_selector.local_dir_creator_dialog.LocalDirCreatorDialog
 import com.github.aakumykov.local_file_lister_navigator_selector.local_file_lister.LocalFileLister
 import com.github.aakumykov.local_file_lister_navigator_selector.local_fs_navigator.LocalFileExplorer
+import com.github.aakumykov.simple_sorting_dialog.SimpleSortingDialog
 import com.github.aakumykov.storage_access_helper.StorageAccessHelper
 import com.github.aakumykov.storage_lister.InternalStorageDirectory
 import com.github.aakumykov.storage_lister.StorageDirectory
 
 class LocalFileSelector: FileSelector<SimpleSortingMode>()
 {
+    override fun convertFromDialogSortingMode(mode: SimpleSortingDialog.SortingMode): SimpleSortingMode {
+        return when(mode) {
+            SimpleSortingDialog.SortingMode.NAME -> SimpleSortingMode.NAME
+            SimpleSortingDialog.SortingMode.SIZE -> SimpleSortingMode.SIZE
+            SimpleSortingDialog.SortingMode.M_TIME -> SimpleSortingMode.M_TIME
+        }
+    }
+
+    override fun convertToDialogSortingMode(mode: SimpleSortingMode): SimpleSortingDialog.SortingMode {
+        return when(mode) {
+            SimpleSortingMode.NAME -> SimpleSortingDialog.SortingMode.NAME
+            SimpleSortingMode.SIZE -> SimpleSortingDialog.SortingMode.SIZE
+            // FIXME: а вот это проблема: виды сортировки могут не совпадать(!)
+            SimpleSortingMode.M_TIME -> SimpleSortingDialog.SortingMode.M_TIME
+            else -> SimpleSortingDialog.SortingMode.M_TIME
+        }
+    }
+
     fun prepare(
         initialPath: String = Environment.getExternalStorageDirectory().absolutePath,
         isDirSelectionMode: Boolean = false,

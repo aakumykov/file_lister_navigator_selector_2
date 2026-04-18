@@ -1,0 +1,3 @@
+[submodule "simple_sorting_dialog"]
+	path = simple_sorting_dialog
+	url = git@github.com:aakumykov/simple_sorting_dialog_module

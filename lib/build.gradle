@@ -69,6 +69,10 @@ dependencies {
     api libs.extensible.sorting.comparator
 
     implementation libs.list.holding.list.adapter
+
+    implementation libs.androidx.preference.ktx
+
+    api project(':simple_sorting_dialog')
 }
 
 publishing {
