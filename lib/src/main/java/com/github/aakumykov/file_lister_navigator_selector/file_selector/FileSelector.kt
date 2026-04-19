@@ -24,6 +24,7 @@ import com.github.aakumykov.file_lister_navigator_selector.extensions.listenForF
 import com.github.aakumykov.file_lister_navigator_selector.extensions.storeStringInPreferences
 import com.github.aakumykov.file_lister_navigator_selector.extensions.visible
 import com.github.aakumykov.file_lister_navigator_selector.file_explorer.FileExplorer
+import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.SimpleFSItem
 import com.github.aakumykov.file_lister_navigator_selector.sorting_info_supplier.SortingInfoSupplier
@@ -36,13 +37,24 @@ import com.github.aakumykov.storage_lister.StorageDirectory
 import com.github.aakumykov.storage_lister.StorageLister
 import com.google.gson.Gson
 
-abstract class FileSelector<SortingModeType> :
+abstract class FileSelector<SortingModeType>(
+    open val initialPath: String,
+    open val initialSortingMode: SortingModeType,
+    open val initialReverseOrder: Boolean = false,
+    open val initialFoldersFirst: Boolean = true,
+    open val isDirSelectionMode: Boolean = false,
+    open val isMultipleSelectionMode: Boolean = false,
+) :
     DialogFragment(R.layout.dialog_file_selector),
     AdapterView.OnItemClickListener,
     AdapterView.OnItemLongClickListener,
     FragmentResultListener,
     SimpleSortingDialog.Callbacks
 {
+    init {
+        println()
+    }
+
     private var callbacks: Callbacks? = null
 
     fun display(parentFragment: Fragment, callbacks: Callbacks) {
@@ -60,7 +72,10 @@ abstract class FileSelector<SortingModeType> :
     private val viewModel: FileSelectorViewModel<SortingModeType> by viewModels {
         FileSelectorViewModel.Factory(
             createFileExplorer(),
-            isMultipleSelectionMode(),
+            isMultipleSelectionMode,
+            initialSortingMode,
+            initialReverseOrder,
+            initialFoldersFirst
         )
     }
 
@@ -323,11 +338,11 @@ abstract class FileSelector<SortingModeType> :
     override fun onSortingApplied(sortingSettings: SortingSettings) {
         storeStringInPreferences(SORTING_SETTINGS, gson.toJson(sortingSettings))
         viewModel.apply {
-            changeFoldersFist(sortingSettings.foldersFirst)
-            changeReverseOrder(sortingSettings.reverseOrder)
+            setFoldersFist(sortingSettings.foldersFirst)
+            setReverseOrder(sortingSettings.reverseOrder)
 
             val newSortingMode = convertFromDialogSortingMode(sortingSettings.sortingMode)
-            changeSortingMode(newSortingMode)
+            setSortingMode(newSortingMode)
             // FIXME: должно бы подписываться на режим вортировки из ViewModel и передавать его адаптеру...
             filesListAdapter.changeSortingMode(newSortingMode)
         }
@@ -374,18 +389,6 @@ abstract class FileSelector<SortingModeType> :
         viewModel.reopenCurrentDir()
     }
 
-
-    protected fun initialPath(): String {
-        return arguments?.getString(INITIAL_PATH) ?: getDefaultInitialPath()
-    }
-
-    protected fun isDirMode(): Boolean {
-        return arguments?.getBoolean(DIR_SELECTION_MODE) ?: getDefaultDirSelectionMode()
-    }
-
-    private fun isMultipleSelectionMode(): Boolean {
-        return arguments?.getBoolean(MULTIPLE_SELECTION_MODE) ?: getDefaultMultipleSelectionMode()
-    }
 
 
     companion object {

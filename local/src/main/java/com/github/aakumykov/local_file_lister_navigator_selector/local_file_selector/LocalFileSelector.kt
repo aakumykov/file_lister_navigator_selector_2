@@ -21,8 +21,26 @@ import com.github.aakumykov.storage_access_helper.StorageAccessHelper
 import com.github.aakumykov.storage_lister.InternalStorageDirectory
 import com.github.aakumykov.storage_lister.StorageDirectory
 
-class LocalFileSelector: FileSelector<SimpleSortingMode>()
-{
+class LocalFileSelector(
+    override val initialPath: String = Environment.getExternalStorageDirectory().absolutePath,
+    override val initialSortingMode: SimpleSortingMode = SimpleSortingMode.NAME,
+    override val initialReverseOrder: Boolean = false,
+    override val initialFoldersFirst: Boolean = true,
+    override val isDirSelectionMode: Boolean = false,
+    override val isMultipleSelectionMode: Boolean = false,
+)
+    : FileSelector<SimpleSortingMode>(
+        initialPath = initialPath,
+        initialSortingMode = initialSortingMode,
+        initialReverseOrder = initialReverseOrder,
+        initialFoldersFirst = initialFoldersFirst,
+        isDirSelectionMode = isDirSelectionMode,
+        isMultipleSelectionMode = isMultipleSelectionMode,
+) {
+    fun prepare(): LocalFileSelector {
+        return this
+    }
+
     override fun convertFromDialogSortingMode(mode: SimpleSortingDialog.SortingMode): SimpleSortingMode {
         return when(mode) {
             SimpleSortingDialog.SortingMode.NAME -> SimpleSortingMode.NAME
@@ -39,21 +57,6 @@ class LocalFileSelector: FileSelector<SimpleSortingMode>()
             SimpleSortingMode.M_TIME -> SimpleSortingDialog.SortingMode.M_TIME
             else -> SimpleSortingDialog.SortingMode.M_TIME
         }
-    }
-
-    fun prepare(
-        initialPath: String = Environment.getExternalStorageDirectory().absolutePath,
-        isDirSelectionMode: Boolean = false,
-        isMultipleSelectionMode: Boolean = false
-    )
-        : LocalFileSelector
-    {
-        arguments = bundleOf(
-            INITIAL_PATH to initialPath,
-            DIR_SELECTION_MODE to isDirSelectionMode,
-            MULTIPLE_SELECTION_MODE to isMultipleSelectionMode
-        )
-        return this
     }
 
     // FIXME: удалить StorageAccessHelper
@@ -77,8 +80,8 @@ class LocalFileSelector: FileSelector<SimpleSortingMode>()
         return LocalFileExplorer(
             localFileLister = LocalFileLister(),
             localDirCreator = LocalDirCreator(),
-            initialPath = initialPath(),
-            isDirMode = isDirMode(),
+            initialPath = initialPath,
+            isDirMode = isDirSelectionMode,
             defaultSortingMode = defaultSortingMode()
         )
     }

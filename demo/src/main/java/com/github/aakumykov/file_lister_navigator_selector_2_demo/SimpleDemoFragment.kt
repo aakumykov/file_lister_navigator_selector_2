@@ -30,8 +30,8 @@ class SimpleDemoFragment():
     FileSelector.Callbacks,
         CloudAuthenticator.Callbacks
 {
-    private val multipleSelectionMode: Boolean get() = binding.multipleSelectionMode.isChecked
-    private val directoriesOnlyMode: Boolean get() = binding.directoriesOnly.isChecked
+    private val isMultipleSelectionMode: Boolean get() = binding.multipleSelectionMode.isChecked
+    private val isDirectoriesOnlyMode: Boolean get() = binding.directoriesOnly.isChecked
 
     private val authToken: String? get() = getStringFromPreferences(YANDEX_AUTH_TOKEN)
     private val hasAuth: Boolean get() = null != authToken
@@ -109,20 +109,20 @@ class SimpleDemoFragment():
         }
     }
 
+    private val isReverseOrder: Boolean get() = binding.reverseOrder.isChecked
+    private val isFoldersFirst: Boolean get() = binding.foldersFirst.isChecked
+
     private fun createAndPrepareLocalSelector(): FileSelector<SimpleSortingMode> {
-        return LocalFileSelector().prepare(
-            isDirSelectionMode = directoriesOnlyMode,
-            isMultipleSelectionMode = multipleSelectionMode,
-        )
+        return LocalFileSelector(
+            initialReverseOrder = isReverseOrder,
+            initialFoldersFirst = isFoldersFirst,
+            isDirSelectionMode = isDirectoriesOnlyMode,
+            isMultipleSelectionMode = isMultipleSelectionMode
+        ).prepare()
     }
 
     private fun createAndPrepareYandexSelector(): FileSelector<SimpleSortingMode> {
-        return YandexDiskFileSelector().prepare(
-            authToken = authToken!!,
-            initialPath = "/",
-            isDirSelectionMode = directoriesOnlyMode,
-            isMultipleSelectionMode = multipleSelectionMode,
-        )
+        return YandexDiskFileSelector().prepare(authToken = authToken!!)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

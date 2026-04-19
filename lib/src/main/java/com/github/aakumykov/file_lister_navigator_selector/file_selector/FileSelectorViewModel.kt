@@ -13,14 +13,24 @@ import com.github.aakumykov.storage_lister.StorageDirectory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.math.sign
 
 class FileSelectorViewModel<SortingModeType> (
-    val fileExplorer: FileExplorer<SortingModeType>,
+    internal val fileExplorer: FileExplorer<SortingModeType>,
     private var isMultipleSelectionMode: Boolean,
+    private val initialSortingMode: SortingModeType,
+    private val initialReverseOrder: Boolean,
+    private val initialFoldersFirst: Boolean,
 )
     : ViewModel()
 {
+    init {
+        fileExplorer.apply {
+            setSortingMode(initialSortingMode)
+            setReverseOrder(initialReverseOrder)
+            setFoldersFirst(initialFoldersFirst)
+        }
+    }
+
     private val _selectedStorage: MutableLiveData<StorageDirectory> = MutableLiveData()
     private val _currentPath: MutableLiveData<String> = MutableLiveData()
     private val _currentList: MutableLiveData<List<FSItem>> = MutableLiveData(emptyList())
@@ -175,21 +185,37 @@ class FileSelectorViewModel<SortingModeType> (
         }
     }
 
-    fun changeSortingMode(sortingMode: SortingModeType) {
+    /**
+     * Устанавливает новый тип сортировки, сопровождается
+     * перечитыванием открытого каталога.
+     */
+    fun setSortingMode(sortingMode: SortingModeType) {
         fileExplorer.setSortingMode(sortingMode)
         listCurrentPath()
     }
 
-    fun changeReverseOrder(isReverseOrder: Boolean) {
+    /**
+     * Устанавливает флаг "обратный порядок", сопровождается
+     * перечитыванием открытого каталога.
+     */
+    fun setReverseOrder(isReverseOrder: Boolean) {
         fileExplorer.setReverseOrder(isReverseOrder)
         listCurrentPath()
     }
 
-    fun changeFoldersFist(foldersFirst: Boolean) {
+    /**
+     * Устанавливает флаг "вначале каталоги", сопровождается
+     * перечитыванием открытого каталога.
+     */
+    fun setFoldersFist(foldersFirst: Boolean) {
         fileExplorer.setFoldersFirst(foldersFirst)
         listCurrentPath()
     }
 
+    /**
+     * Вызывается при смене хранилища.
+     * Сопровождается (естественно) перечитыванием (нового) каталога.
+     */
     fun onStorageChanged(storageDirectory: StorageDirectory) {
         _selectedStorage.value = storageDirectory
         fileExplorer.changeDir(DirItem.fromPath(storageDirectory.path))
@@ -200,6 +226,9 @@ class FileSelectorViewModel<SortingModeType> (
     class Factory<SortingModeType>(
         private val fileExplorer: FileExplorer<SortingModeType>,
         private val isMultipleSelectionMode: Boolean,
+        private val initialSortingMode: SortingModeType,
+        private val initialReverseOrder: Boolean,
+        private val initialFoldersFirst: Boolean,
     )
         : ViewModelProvider.Factory
     {
@@ -208,6 +237,9 @@ class FileSelectorViewModel<SortingModeType> (
             return FileSelectorViewModel(
                 fileExplorer,
                 isMultipleSelectionMode,
+                initialSortingMode,
+                initialReverseOrder,
+                initialFoldersFirst
             ) as T
         }
     }

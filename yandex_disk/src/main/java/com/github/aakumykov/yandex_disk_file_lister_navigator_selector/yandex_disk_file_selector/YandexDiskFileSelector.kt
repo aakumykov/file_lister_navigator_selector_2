@@ -5,6 +5,10 @@ import com.github.aakumykov.file_lister_navigator_selector.dir_creator_dialog.Di
 import com.github.aakumykov.file_lister_navigator_selector.file_explorer.FileExplorer
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
 import com.github.aakumykov.file_lister_navigator_selector.file_selector.FileSelector
+import com.github.aakumykov.file_lister_navigator_selector.file_selector.FileSelector.Companion.AUTH_TOKEN
+import com.github.aakumykov.file_lister_navigator_selector.file_selector.FileSelector.Companion.DIR_SELECTION_MODE
+import com.github.aakumykov.file_lister_navigator_selector.file_selector.FileSelector.Companion.INITIAL_PATH
+import com.github.aakumykov.file_lister_navigator_selector.file_selector.FileSelector.Companion.MULTIPLE_SELECTION_MODE
 import com.github.aakumykov.file_lister_navigator_selector.sorting_info_supplier.SimpleSortingInfoSupplier
 import com.github.aakumykov.file_lister_navigator_selector.sorting_info_supplier.SortingInfoSupplier
 import com.github.aakumykov.file_lister_navigator_selector.sorting_mode_translator.SimpleSortingModeTranslator
@@ -20,21 +24,23 @@ import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_di
 
 // TODO: внедрять зависимости
 
-class YandexDiskFileSelector : FileSelector<SimpleSortingMode>()
-{
+class YandexDiskFileSelector : FileSelector<SimpleSortingMode>(
+    initialPath = "/",
+    initialSortingMode = SimpleSortingMode.NAME,
+    initialReverseOrder = false,
+    initialFoldersFirst = true,
+    isDirSelectionMode = false,
+    isMultipleSelectionMode = false,
+) {
+    // Первоначальные параметры передаются во ViewModel и хранятся в ней,
+    // поэтому через arguments их можно не передавать...
     fun prepare(
         authToken: String,
-        initialPath: String? = "/",
-        isDirSelectionMode: Boolean = false,
-        isMultipleSelectionMode: Boolean = false
     )
     : YandexDiskFileSelector
     {
         arguments = bundleOf(
             AUTH_TOKEN to authToken,
-            INITIAL_PATH to initialPath,
-            DIR_SELECTION_MODE to isDirSelectionMode,
-            MULTIPLE_SELECTION_MODE to isMultipleSelectionMode
         )
         return this
     }
@@ -104,7 +110,7 @@ class YandexDiskFileSelector : FileSelector<SimpleSortingMode>()
                     yandexDiskFileLister = YandexDiskFileLister(authToken),
                     yandexDiskDirCreator = YandexDiskDirCreator(yandexDiskCloudWriter),
                     initialPath = "/",
-                    isDirMode = isDirMode(),
+                    isDirMode = isDirSelectionMode,
             )
         }
 

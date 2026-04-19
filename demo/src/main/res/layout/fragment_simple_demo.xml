@@ -47,13 +47,32 @@
         android:textOff="@string/directories_only_off"
         android:textOn="@string/directories_only_on"/>
 
+    <ToggleButton
+        android:id="@+id/reverseOrder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/directoriesOnly"
+        android:textOff="@string/reverse_order_off"
+        android:textOn="@string/reverse_order_on" />
+
+    <ToggleButton
+        android:id="@+id/foldersFirst"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/workModeSelector"
+        android:textOff="@string/folders_first_off"
+        android:textOn="@string/folders_first_on"
+        android:checked="true"/>
+
     <Button
         android:id="@+id/selectFileButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_below="@id/directoriesOnly"
+        android:layout_below="@id/foldersFirst"
         android:layout_marginTop="18dp"
         android:text="@string/select_file" />
 
