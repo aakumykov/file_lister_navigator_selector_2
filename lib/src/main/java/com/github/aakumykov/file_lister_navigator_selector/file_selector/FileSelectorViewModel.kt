@@ -176,7 +176,7 @@ class FileSelectorViewModel<SortingModeType> (
     }
 
     fun changeSortingMode(sortingMode: SortingModeType) {
-        fileExplorer.changeSortingMode(sortingMode)
+        fileExplorer.setSortingMode(sortingMode)
         listCurrentPath()
     }
 

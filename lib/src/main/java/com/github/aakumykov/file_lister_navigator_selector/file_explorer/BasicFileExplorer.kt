@@ -39,11 +39,6 @@ abstract class BasicFileExplorer<SortingModeType> (
 
     override fun getSortingMode(): SortingModeType = currentSortingMode
 
-    override fun changeSortingMode(newSortingMode: SortingModeType) {
-        reverseOrder = if (currentSortingMode == newSortingMode) !reverseOrder else false
-        currentSortingMode = newSortingMode
-    }
-
     override fun listCurrentPath(): List<FSItem> {
         return listCurrentPath(fileLister.defaultListingOffset, fileLister.defaultListingLimit)
     }
