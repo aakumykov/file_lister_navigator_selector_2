@@ -66,14 +66,43 @@
         android:textOn="@string/folders_first_on"
         android:checked="true"/>
 
+    <RadioGroup
+        android:id="@+id/sortingModeSelector"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/foldersFirst"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:orientation="horizontal">
+        <RadioButton
+            android:id="@+id/sortingModeByName"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/sorting_mode_name"
+            android:checked="true"/>
+        <RadioButton
+            android:id="@+id/sortingModeBySize"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/sorting_mode_size"/>
+        <RadioButton
+            android:id="@+id/sortingModeByMTime"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/sorting_mode_m_time"/>
+    </RadioGroup>
+
     <Button
         android:id="@+id/selectFileButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_below="@id/foldersFirst"
-        android:layout_marginTop="18dp"
+        android:layout_below="@id/sortingModeSelector"
+
         android:text="@string/select_file" />
 
     <TextView

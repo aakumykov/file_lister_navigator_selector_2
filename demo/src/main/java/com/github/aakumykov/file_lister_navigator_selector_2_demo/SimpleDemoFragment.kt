@@ -30,6 +30,13 @@ class SimpleDemoFragment():
     FileSelector.Callbacks,
         CloudAuthenticator.Callbacks
 {
+    private val sortingMode: SimpleSortingMode get() {
+        return when(binding.sortingModeSelector.checkedRadioButtonId) {
+            R.id.sortingModeBySize -> SimpleSortingMode.SIZE
+            R.id.sortingModeByMTime -> SimpleSortingMode.M_TIME
+            else -> SimpleSortingMode.NAME
+        }
+    }
     private val isMultipleSelectionMode: Boolean get() = binding.multipleSelectionMode.isChecked
     private val isDirectoriesOnlyMode: Boolean get() = binding.directoriesOnly.isChecked
 
@@ -114,6 +121,7 @@ class SimpleDemoFragment():
 
     private fun createAndPrepareLocalSelector(): FileSelector<SimpleSortingMode> {
         return LocalFileSelector(
+            initialSortingMode = sortingMode,
             initialReverseOrder = isReverseOrder,
             initialFoldersFirst = isFoldersFirst,
             isDirSelectionMode = isDirectoriesOnlyMode,
