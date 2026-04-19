@@ -9,7 +9,6 @@ import com.github.aakumykov.file_lister_navigator_selector.file_explorer.FileExp
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.DirItem
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.ParentDirItem
-import com.github.aakumykov.simple_sorting_dialog.SimpleSortingDialog
 import com.github.aakumykov.storage_lister.StorageDirectory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -195,19 +194,6 @@ class FileSelectorViewModel<SortingModeType> (
         _selectedStorage.value = storageDirectory
         fileExplorer.changeDir(DirItem.fromPath(storageDirectory.path))
         listCurrentPath()
-    }
-
-    fun setSortingSettings(
-        initialSortingMode: SortingModeType,
-        initialReverseOrder: Boolean,
-        initialFoldersFirst: Boolean
-    )
-    : FileSelectorViewModel<SortingModeType>
-    {
-        changeSortingMode(initialSortingMode)
-        changeReverseOrder(initialReverseOrder)
-        changeFoldersFist(initialFoldersFirst)
-        return this
     }
 
 

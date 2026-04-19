@@ -44,20 +44,14 @@ class LocalFileSelector: FileSelector<SimpleSortingMode>()
     fun prepare(
         initialPath: String = Environment.getExternalStorageDirectory().absolutePath,
         isDirSelectionMode: Boolean = false,
-        isMultipleSelectionMode: Boolean = false,
-        sortingMode: SimpleSortingMode = SimpleSortingMode.NAME,
-        reverseOrder: Boolean = false,
-        foldersFirst: Boolean = true,
+        isMultipleSelectionMode: Boolean = false
     )
         : LocalFileSelector
     {
         arguments = bundleOf(
             INITIAL_PATH to initialPath,
             DIR_SELECTION_MODE to isDirSelectionMode,
-            MULTIPLE_SELECTION_MODE to isMultipleSelectionMode,
-            SORTING_MODE to sortingMode,
-            REVERSE_ORDER to reverseOrder,
-            FOLDERS_FIRST to foldersFirst,
+            MULTIPLE_SELECTION_MODE to isMultipleSelectionMode
         )
         return this
     }
@@ -76,14 +70,8 @@ class LocalFileSelector: FileSelector<SimpleSortingMode>()
 
     override fun defaultSortingMode(): SimpleSortingMode = SimpleSortingMode.NAME
 
-    override fun defaultReverseOrder(): Boolean = false
+    override fun defaultReverseMode(): Boolean = false
 
-    override fun defaultFoldersFirst(): Boolean = false
-
-    override fun string2sortingModeType(s: String): SimpleSortingMode {
-        return try { SimpleSortingMode.valueOf(s) }
-        catch (_: Throwable) { defaultSortingMode() }
-    }
 
     override fun createFileExplorer(): FileExplorer<SimpleSortingMode> {
         return LocalFileExplorer(
