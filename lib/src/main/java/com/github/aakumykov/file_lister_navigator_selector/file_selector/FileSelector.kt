@@ -38,12 +38,7 @@ import com.github.aakumykov.storage_lister.StorageLister
 import com.google.gson.Gson
 
 abstract class FileSelector<SortingModeType>(
-    open val initialPath: String,
-    open val initialSortingMode: SortingModeType,
-    open val initialReverseOrder: Boolean = false,
-    open val initialFoldersFirst: Boolean = true,
-    open val isDirSelectionMode: Boolean = false,
-    open val isMultipleSelectionMode: Boolean = false,
+    private val fileExplorer: FileExplorer<SortingModeType>
 ) :
     DialogFragment(R.layout.dialog_file_selector),
     AdapterView.OnItemClickListener,
@@ -53,6 +48,20 @@ abstract class FileSelector<SortingModeType>(
 {
     init {
         println()
+    }
+
+    fun prepare(
+        initialSortingMode: SortingModeType,
+        reverseOrder: Boolean,
+        foldersFist: Boolean,
+//        isMultipleSelectionMode: Boolean,
+//        onlyDirs: Boolean
+    ) {
+        viewModel.apply {
+            setSortingMode(initialSortingMode)
+            setReverseOrder(reverseOrder)
+            setFoldersFist(foldersFist)
+        }
     }
 
     private var callbacks: Callbacks? = null
@@ -72,10 +81,6 @@ abstract class FileSelector<SortingModeType>(
     private val viewModel: FileSelectorViewModel<SortingModeType> by viewModels {
         FileSelectorViewModel.Factory(
             createFileExplorer(),
-            isMultipleSelectionMode,
-            initialSortingMode,
-            initialReverseOrder,
-            initialFoldersFirst
         )
     }
 
@@ -105,7 +110,7 @@ abstract class FileSelector<SortingModeType>(
 
 
     // Методы, создающие новый экземпляр, имеют приставку "create".
-    protected abstract fun createFileExplorer(): FileExplorer<SortingModeType>
+//    protected abstract fun createFileExplorer(): FileExplorer<SortingModeType>
     protected abstract fun createDirCreatorDialog(basePath: String): DirCreatorDialog
     protected abstract fun createSortingModeTranslator(): SortingModeTranslator<SortingModeType>
     protected abstract fun createSortingInfoSupplier(): SortingInfoSupplier<SortingModeType>

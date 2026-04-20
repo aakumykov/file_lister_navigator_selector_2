@@ -22,25 +22,10 @@ import com.github.aakumykov.storage_lister.InternalStorageDirectory
 import com.github.aakumykov.storage_lister.StorageDirectory
 
 class LocalFileSelector(
-    override val initialPath: String = Environment.getExternalStorageDirectory().absolutePath,
-    override val initialSortingMode: SimpleSortingMode = SimpleSortingMode.NAME,
-    override val initialReverseOrder: Boolean = false,
-    override val initialFoldersFirst: Boolean = true,
-    override val isDirSelectionMode: Boolean = false,
-    override val isMultipleSelectionMode: Boolean = false,
+    private val fileExplorer: FileExplorer<SimpleSortingMode>
 )
-    : FileSelector<SimpleSortingMode>(
-        initialPath = initialPath,
-        initialSortingMode = initialSortingMode,
-        initialReverseOrder = initialReverseOrder,
-        initialFoldersFirst = initialFoldersFirst,
-        isDirSelectionMode = isDirSelectionMode,
-        isMultipleSelectionMode = isMultipleSelectionMode,
-) {
-    fun prepare(): LocalFileSelector {
-        return this
-    }
-
+    : FileSelector<SimpleSortingMode>(fileExplorer)
+{
     override fun convertFromDialogSortingMode(mode: SimpleSortingDialog.SortingMode): SimpleSortingMode {
         return when(mode) {
             SimpleSortingDialog.SortingMode.NAME -> SimpleSortingMode.NAME
@@ -76,7 +61,7 @@ class LocalFileSelector(
     override fun defaultReverseMode(): Boolean = false
 
 
-    override fun createFileExplorer(): FileExplorer<SimpleSortingMode> {
+    /*override fun createFileExplorer(): FileExplorer<SimpleSortingMode> {
         return LocalFileExplorer(
             localFileLister = LocalFileLister(),
             localDirCreator = LocalDirCreator(),
@@ -84,7 +69,7 @@ class LocalFileSelector(
             isDirMode = isDirSelectionMode,
             defaultSortingMode = defaultSortingMode()
         )
-    }
+    }*/
 
     override fun getDefaultInitialPath(): String = Environment.getExternalStorageDirectory().absolutePath
 

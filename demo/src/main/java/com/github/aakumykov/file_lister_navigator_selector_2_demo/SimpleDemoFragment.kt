@@ -3,6 +3,7 @@ package com.github.aakumykov.file_lister_navigator_selector_2_demo
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
@@ -19,7 +20,10 @@ import com.github.aakumykov.file_lister_navigator_selector_2_demo.extensions.err
 import com.github.aakumykov.file_lister_navigator_selector_2_demo.extensions.getStringFromPreferences
 import com.github.aakumykov.file_lister_navigator_selector_2_demo.extensions.showToast
 import com.github.aakumykov.file_lister_navigator_selector_2_demo.extensions.storeStringInPreferences
+import com.github.aakumykov.local_file_lister_navigator_selector.local_dir_creator.LocalDirCreator
+import com.github.aakumykov.local_file_lister_navigator_selector.local_file_lister.LocalFileLister
 import com.github.aakumykov.local_file_lister_navigator_selector.local_file_selector.LocalFileSelector
+import com.github.aakumykov.local_file_lister_navigator_selector.local_fs_navigator.LocalFileExplorer
 import com.github.aakumykov.storage_access_helper.StorageAccessHelper
 import com.github.aakumykov.yandex_authenticator.YandexAuthenticator
 import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_file_selector.YandexDiskFileSelector
@@ -30,7 +34,7 @@ class SimpleDemoFragment():
     FileSelector.Callbacks,
         CloudAuthenticator.Callbacks
 {
-    private val sortingMode: SimpleSortingMode get() {
+    private val initialSortingMode: SimpleSortingMode get() {
         return when(binding.sortingModeSelector.checkedRadioButtonId) {
             R.id.sortingModeBySize -> SimpleSortingMode.SIZE
             R.id.sortingModeByMTime -> SimpleSortingMode.M_TIME
@@ -39,15 +43,18 @@ class SimpleDemoFragment():
     }
     private val isMultipleSelectionMode: Boolean get() = binding.multipleSelectionMode.isChecked
     private val isDirectoriesOnlyMode: Boolean get() = binding.directoriesOnly.isChecked
+    private val isReverseOrder: Boolean get() = binding.reverseOrder.isChecked
+    private val isFoldersFirst: Boolean get() = binding.foldersFirst.isChecked
+    private val useInitialSettings: Boolean get() = binding.useInitialSettings.isChecked
+
 
     private val authToken: String? get() = getStringFromPreferences(YANDEX_AUTH_TOKEN)
     private val hasAuth: Boolean get() = null != authToken
 
-    private val storageAccessHelper: StorageAccessHelper by lazy {
-        StorageAccessHelper.create(this)
-    }
-
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
+
+    private val storageAccessHelper: StorageAccessHelper by lazy {
+        StorageAccessHelper.create(this) }
 
     private val yandexAuthenticator: CloudAuthenticator by lazy {
         YandexAuthenticator(this)
@@ -113,20 +120,33 @@ class SimpleDemoFragment():
         return when(workMode) {
             WorkMode.YANDEX -> createAndPrepareYandexSelector()
             else -> createAndPrepareLocalSelector()
-        }
+        }/*.apply {
+            if (useInitialSettings) {
+                prepare(
+                    initialPath = Environment.getExternalStorageDirectory().absolutePath,
+                    initialSortingMode = initialSortingMode,
+                    reverseOrder = isReverseOrder,
+                    foldersFist = isFoldersFirst,
+                )
+            }
+        }*/
     }
 
-    private val isReverseOrder: Boolean get() = binding.reverseOrder.isChecked
-    private val isFoldersFirst: Boolean get() = binding.foldersFirst.isChecked
-
     private fun createAndPrepareLocalSelector(): FileSelector<SimpleSortingMode> {
-        return LocalFileSelector(
-            initialSortingMode = sortingMode,
-            initialReverseOrder = isReverseOrder,
-            initialFoldersFirst = isFoldersFirst,
-            isDirSelectionMode = isDirectoriesOnlyMode,
-            isMultipleSelectionMode = isMultipleSelectionMode
-        ).prepare()
+
+        val localFileLister = LocalFileLister()
+
+        val localDirCreator = LocalDirCreator()
+
+        val localFileExplorer = LocalFileExplorer(
+            localFileLister = localFileLister,
+            localDirCreator = localDirCreator,
+            initialPath = Environment.getExternalStorageDirectory().absolutePath,
+            isDirMode = isDirectoriesOnlyMode,
+            defaultSortingMode = initialSortingMode
+        )
+
+        return LocalFileSelector(localFileExplorer)
     }
 
     private fun createAndPrepareYandexSelector(): FileSelector<SimpleSortingMode> {
