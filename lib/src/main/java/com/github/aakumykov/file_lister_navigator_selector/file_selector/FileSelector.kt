@@ -331,7 +331,12 @@ abstract class FileSelector<SortingModeType>(
 
     private fun onSortButtonClicked() {
         SimpleSortingDialog
-            .createAndShow(parentFragmentManager, currentSortingSettings)
+            .createAndShow(
+                parentFragmentManager,
+                initialSortingMode = convertToDialogSortingMode(initialSortingMode),
+                initialReverseOrder = initialReverseOrder,
+                initialFoldersFirst = initialFoldersFirst
+            )
             .setCallbacks(this)
     }
 
@@ -343,7 +348,9 @@ abstract class FileSelector<SortingModeType>(
 
             val newSortingMode = convertFromDialogSortingMode(sortingSettings.sortingMode)
             setSortingMode(newSortingMode)
-            // FIXME: должно бы подписываться на режим вортировки из ViewModel и передавать его адаптеру...
+
+            // FIXME: должно бы подписываться на режим сортировки из ViewModel
+            //  и передавать его адаптеру...
             filesListAdapter.changeSortingMode(newSortingMode)
         }
     }
