@@ -16,19 +16,19 @@ import kotlinx.coroutines.withContext
 
 class FileSelectorViewModel<SortingModeType> (
     internal val fileExplorer: FileExplorer<SortingModeType>,
-    /*private var isMultipleSelectionMode: Boolean,
+    private var isMultipleSelectionMode: Boolean,
     private val initialSortingMode: SortingModeType,
     private val initialReverseOrder: Boolean,
-    private val initialFoldersFirst: Boolean,*/
+    private val initialFoldersFirst: Boolean,
 )
     : ViewModel()
 {
     init {
-        /*fileExplorer.apply {
+        fileExplorer.apply {
             setSortingMode(initialSortingMode)
             setReverseOrder(initialReverseOrder)
             setFoldersFirst(initialFoldersFirst)
-        }*/
+        }
     }
 
     private val _selectedStorage: MutableLiveData<StorageDirectory> = MutableLiveData()
@@ -225,10 +225,10 @@ class FileSelectorViewModel<SortingModeType> (
 
     class Factory<SortingModeType>(
         private val fileExplorer: FileExplorer<SortingModeType>,
-        /*private val isMultipleSelectionMode: Boolean,
+        private val isMultipleSelectionMode: Boolean,
         private val initialSortingMode: SortingModeType,
         private val initialReverseOrder: Boolean,
-        private val initialFoldersFirst: Boolean,*/
+        private val initialFoldersFirst: Boolean,
     )
         : ViewModelProvider.Factory
     {
@@ -236,10 +236,10 @@ class FileSelectorViewModel<SortingModeType> (
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return FileSelectorViewModel(
                 fileExplorer,
-                /*isMultipleSelectionMode,
+                isMultipleSelectionMode,
                 initialSortingMode,
                 initialReverseOrder,
-                initialFoldersFirst*/
+                initialFoldersFirst
             ) as T
         }
     }

@@ -17,7 +17,5 @@
     <string name="reverse_order_on">Обратный порядок</string>
     <string name="folders_first_off">Вперемежку</string>
     <string name="folders_first_on">Каталоги вначале</string>
-    <string name="use_initial_settings_on">Использовать преднастройки</string>
-    <string name="use_initial_settings_off">Не использовать преднастройки</string>
 
 </resources>
