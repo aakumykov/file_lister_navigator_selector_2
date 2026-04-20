@@ -23,13 +23,13 @@ class FileSelectorViewModel<SortingModeType> (
 )
     : ViewModel()
 {
-    init {
+    /*init {
         fileExplorer.apply {
             setSortingMode(initialSortingMode)
             setReverseOrder(initialReverseOrder)
             setFoldersFirst(initialFoldersFirst)
         }
-    }
+    }*/
 
     private val _selectedStorage: MutableLiveData<StorageDirectory> = MutableLiveData()
     private val _currentPath: MutableLiveData<String> = MutableLiveData()

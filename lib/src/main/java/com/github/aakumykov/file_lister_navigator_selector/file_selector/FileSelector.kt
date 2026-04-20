@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentResultListener
 import androidx.fragment.app.clearFragmentResultListener
 import androidx.fragment.app.viewModels
+import androidx.preference.PreferenceManager
 import com.github.aakumykov.file_lister_navigator_selector.FileListAdapter
 import com.github.aakumykov.file_lister_navigator_selector.R
 import com.github.aakumykov.file_lister_navigator_selector.databinding.DialogFileSelectorBinding
@@ -66,8 +67,6 @@ abstract class FileSelector<SortingModeType>(
     private val binding get() = _binding!!
 
     private lateinit var filesListAdapter: FileListAdapter<SortingModeType>
-
-    private var isFirstRun: Boolean = true
 
     private val viewModel: FileSelectorViewModel<SortingModeType> by viewModels {
         FileSelectorViewModel.Factory(
@@ -131,9 +130,18 @@ abstract class FileSelector<SortingModeType>(
         subscribeToViewModel()
         subscribeToStorageSelectingResult()
 
-        isFirstRun = (null == savedInstanceState)
+        restoreSortingSettings()
 
-        if (isFirstRun) viewModel.startWork()
+        if (null == savedInstanceState)
+            viewModel.startWork()
+    }
+
+    private fun restoreSortingSettings() {
+        viewModel.apply {
+            setSortingMode(convertFromDialogSortingMode(currentSortingSettings.sortingMode))
+            setReverseOrder(currentSortingSettings.reverseOrder)
+            setFoldersFist(currentSortingSettings.foldersFirst)
+        }
     }
 
     override fun onDestroyView() {
@@ -316,11 +324,9 @@ abstract class FileSelector<SortingModeType>(
         )
     }
 
-    private val currentSortingSettings: SortingSettings? get() {
-        return getStringFromPreferences(SORTING_SETTINGS)?.let {
-            gson.fromJson(it, SortingSettings::class.java)
-        }
-    }
+    private val currentSortingSettings: SortingSettings
+        get() = SimpleSortingDialog.getLastSortingSettings(requireContext())
+
 
     override fun onResume() {
         super.onResume()
@@ -341,7 +347,6 @@ abstract class FileSelector<SortingModeType>(
     }
 
     override fun onSortingApplied(sortingSettings: SortingSettings) {
-        storeStringInPreferences(SORTING_SETTINGS, gson.toJson(sortingSettings))
         viewModel.apply {
             setFoldersFist(sortingSettings.foldersFirst)
             setReverseOrder(sortingSettings.reverseOrder)
@@ -400,8 +405,6 @@ abstract class FileSelector<SortingModeType>(
 
     companion object {
         val TAG: String = FileSelector::class.java.simpleName
-
-        const val SORTING_SETTINGS = "SORTING_SETTINGS"
 
         //
         // Ключ для передачи фрагменту ключа же, по которому он вернёт результат (через FragmentResultAPI).
