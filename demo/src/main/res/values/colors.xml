@@ -11,4 +11,5 @@
     <color name="error">#C2185B</color>
     <color name="auth_yes">#29B6F6</color>
     <color name="auth_no">#929292</color>
+    <color name="blue">#2196F3</color>
 </resources>
