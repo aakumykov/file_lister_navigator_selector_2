@@ -1,13 +1,12 @@
 package com.github.aakumykov.file_lister_navigator_selector.file_selector
 
-import android.R.attr.fragment
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.CheckBox
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.ActivityResult
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
@@ -43,16 +42,24 @@ abstract class FileSelector<SortingModeType> :
     AdapterView.OnItemLongClickListener,
     FragmentResultListener
 {
-    private var callbacks: Callbacks? = null
+    private var _callbacks: Callbacks? = null
 
     fun display(parentFragment: Fragment, callbacks: Callbacks) {
         bindTo(parentFragment, callbacks)
         show(parentFragment.childFragmentManager, TAG)
     }
 
-    fun display(fragmentActivity: FragmentActivity, callbacks: Callbacks) {
+    fun display(
+        fragmentActivity: FragmentActivity,
+        callbacks: Callbacks
+    ) {
         bindTo(fragmentActivity, callbacks)
         show(fragmentActivity.supportFragmentManager, TAG)
+    }
+
+    fun processActivityResult(activityResult: ActivityResult) {
+        val list = extractSelectionResult(activityResult.data?.extras)
+        _callbacks?.onFileSelected(list ?: emptyList())
     }
 
     private var _binding: DialogFileSelectorBinding? = null
@@ -126,6 +133,9 @@ abstract class FileSelector<SortingModeType> :
     }
 
     override fun onDestroyView() {
+        _binding = null
+        _callbacks = null
+
         super.onDestroyView()
 
         // Для защиты от утечки памяти.
@@ -134,7 +144,7 @@ abstract class FileSelector<SortingModeType> :
 
     private fun bindTo(fragment: Fragment, callbacks: Callbacks) {
 
-        this.callbacks = callbacks
+        _callbacks = callbacks
 
         /*
         Ожиданием результата занимается родительский фрагмент,
@@ -143,22 +153,24 @@ abstract class FileSelector<SortingModeType> :
         2) при возвращении результата от уничтожается.
          */
         fragment.listenForFragmentResult(FRAGMENT_RESULT_KEY) { _, bundle ->
-            this.callbacks?.onFileSelected(
+            this._callbacks?.onFileSelected(
                 extractSelectionResult(bundle) ?: emptyList()
             )
         }
     }
 
-    private fun bindTo(fragmentActivity: FragmentActivity, callbacks: Callbacks) {
-        this.callbacks = callbacks
+    private fun bindTo(fragmentActivity: FragmentActivity,
+                       callbacks: Callbacks) {
 
-        fragmentActivity.registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { activityResult ->
-            this.callbacks?.onFileSelected(
-                extractSelectionResult(activityResult.data?.extras) ?: emptyList()
-            )
-        }
+        _callbacks = callbacks
+
+        fragmentActivity
+            .supportFragmentManager
+            .setFragmentResultListener(FRAGMENT_RESULT_KEY, fragmentActivity) { _, bundle ->
+                this._callbacks?.onFileSelected(
+                    extractSelectionResult(bundle) ?: emptyList()
+                )
+            }
     }
 
     private fun subscribeToStorageSelectingResult() {
