@@ -1,15 +1,18 @@
 package com.github.aakumykov.file_lister_navigator_selector.file_selector
 
+import android.R.attr.fragment
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.CheckBox
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentResultListener
 import androidx.fragment.app.clearFragmentResultListener
 import androidx.fragment.app.viewModels
@@ -45,6 +48,11 @@ abstract class FileSelector<SortingModeType> :
     fun display(parentFragment: Fragment, callbacks: Callbacks) {
         bindTo(parentFragment, callbacks)
         show(parentFragment.childFragmentManager, TAG)
+    }
+
+    fun display(fragmentActivity: FragmentActivity, callbacks: Callbacks) {
+        bindTo(fragmentActivity, callbacks)
+        show(fragmentActivity.supportFragmentManager, TAG)
     }
 
     private var _binding: DialogFileSelectorBinding? = null
@@ -137,6 +145,18 @@ abstract class FileSelector<SortingModeType> :
         fragment.listenForFragmentResult(FRAGMENT_RESULT_KEY) { _, bundle ->
             this.callbacks?.onFileSelected(
                 extractSelectionResult(bundle) ?: emptyList()
+            )
+        }
+    }
+
+    private fun bindTo(fragmentActivity: FragmentActivity, callbacks: Callbacks) {
+        this.callbacks = callbacks
+
+        fragmentActivity.registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { activityResult ->
+            this.callbacks?.onFileSelected(
+                extractSelectionResult(activityResult.data?.extras) ?: emptyList()
             )
         }
     }
@@ -411,12 +431,16 @@ abstract class FileSelector<SortingModeType> :
         const val DIR_SELECTION_MODE = "DIR_SELECTION_MODE"
         const val MULTIPLE_SELECTION_MODE = "MULTIPLE_SELECTION_MODE"
 
-        fun extractSelectionResult(result: Bundle): List<FSItem>? {
-            val gson = Gson()
-            return result.getStringArrayList(SELECTED_ITEMS_LIST)
-                ?.map { json ->
-                    gson.fromJson(json, SimpleFSItem::class.java)
-                }
+        fun extractSelectionResult(result: Bundle?): List<FSItem>? {
+            return if (null != result) {
+                result.getStringArrayList(SELECTED_ITEMS_LIST)
+                    ?.map { json ->
+                        // FIXME: внедрять Gson
+                        Gson().fromJson(json, SimpleFSItem::class.java)
+                    }
+            } else {
+                null
+            }
         }
 
         fun restoreConnection(parentFragment: Fragment, callbacks: Callbacks) {
