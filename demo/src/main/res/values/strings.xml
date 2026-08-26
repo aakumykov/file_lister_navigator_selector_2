@@ -14,5 +14,6 @@
     <string name="yandex_deauth">Deauth from Yandex</string>
     <string name="auth_cancelled">Auth cancelled</string>
     <string name="auth_required">Auth required</string>
+    <string name="request_storage_permission">Request storage permission</string>
 
 </resources>

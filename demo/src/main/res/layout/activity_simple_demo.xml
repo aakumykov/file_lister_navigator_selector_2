@@ -15,6 +15,15 @@
         android:layout_weight="1">
 
         <Button
+            android:id="@+id/requestPermissionButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:backgroundTint="#9E9D24"
+            android:text="@string/request_storage_permission" />
+
+        <Button
             android:id="@+id/selectFileButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
