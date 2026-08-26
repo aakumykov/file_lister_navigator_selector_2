@@ -60,4 +60,6 @@ dependencies {
     debugImplementation libs.leakcanary.android
 
     implementation libs.yandex.authenticator
+
+    implementation libs.permissions.dispatcher
 }
