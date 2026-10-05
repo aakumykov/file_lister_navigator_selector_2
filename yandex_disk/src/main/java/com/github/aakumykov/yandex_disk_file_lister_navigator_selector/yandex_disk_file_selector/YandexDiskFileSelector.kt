@@ -19,7 +19,10 @@ import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_di
 
 // TODO: внедрять зависимости
 
-class YandexDiskFileSelector : FileSelector<SimpleSortingMode>()
+class YandexDiskFileSelector(
+    private val yandexDiskFileExplorer: YandexDiskFileExplorer
+)
+    : FileSelector<SimpleSortingMode>()
 {
     fun prepare(
         authToken: String,
@@ -78,15 +81,7 @@ class YandexDiskFileSelector : FileSelector<SimpleSortingMode>()
             if (authToken.isNullOrEmpty())
                 throw IllegalArgumentException("Auth token is null or empty")
 
-            // FIXME: передавать классы через конструктор!
-            val yandexDiskCloudWriter = YandexDiskCloudWriter(authToken)
-
-            _fileExplorer = YandexDiskFileExplorer(
-                    yandexDiskFileLister = YandexDiskFileLister(authToken),
-                    yandexDiskDirCreator = YandexDiskDirCreator(yandexDiskCloudWriter),
-                    initialPath = "/",
-                    isDirMode = isDirMode(),
-            )
+            _fileExplorer = yandexDiskFileExplorer
         }
 
         return _fileExplorer!!

@@ -13,7 +13,11 @@ import com.github.aakumykov.file_lister_navigator_selector_demo.databinding.Acti
 import com.github.aakumykov.file_lister_navigator_selector_demo.ext.getStringFromPreferences
 import com.github.aakumykov.file_lister_navigator_selector_demo.ext.storeStringInPreferences
 import com.github.aakumykov.yandex_authenticator.YandexAuthenticator
+import com.github.aakumykov.yandex_disk_cloud_writer.YandexDiskCloudWriter
+import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_dir_creator.YandexDiskDirCreator
+import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_file_lister.YandexDiskFileLister
 import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_file_selector.YandexDiskFileSelector
+import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_fs_navigator.YandexDiskFileExplorer
 
 class MainActivity : AppCompatActivity(), CloudAuthenticator.Callbacks, FileSelector.Callbacks {
 
@@ -72,9 +76,19 @@ class MainActivity : AppCompatActivity(), CloudAuthenticator.Callbacks, FileSele
         }
     }
 
+    private val yandexDiskCloudWriter get() = YandexDiskCloudWriter(authToken!!)
+    private val yandexDiskFileExplorer: YandexDiskFileExplorer get() {
+        return YandexDiskFileExplorer(
+            yandexDiskFileLister = YandexDiskFileLister(authToken!!),
+            yandexDiskDirCreator = YandexDiskDirCreator(yandexDiskCloudWriter),
+            initialPath = "/",
+            isDirMode = false,
+        )
+    }
+
     private fun onSelectButtonClocked() {
         authToken?.also {
-            YandexDiskFileSelector()
+            YandexDiskFileSelector(yandexDiskFileExplorer)
                 .prepare(it)
                 .startSelecting(this, this)
         } ?: run {
