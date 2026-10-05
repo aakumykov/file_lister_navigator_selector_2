@@ -40,12 +40,23 @@ class MainActivity : AppCompatActivity(), CloudAuthenticator.Callbacks, FileSele
     override fun onCloudAuthSuccess(authToken: String) {
         super.onCloudAuthSuccess(authToken)
         this.authToken = authToken
-        showInfo(authToken)
+        restoreViewState()
+    }
+
+    private fun showViewStateAuthYes() {
+        binding.authButton.text = "Забыть авторизацию"
+        showInfo(authToken!!)
+    }
+
+    private fun showViewStateAuthNo() {
+        binding.authButton.text = "Авторизоваться"
+        hideInfo()
     }
 
     override fun onCloudAuthFailed(throwable: Throwable) {
         super.onCloudAuthFailed(throwable)
         showError(throwable)
+        showViewStateAuthNo()
     }
 
     override fun onFileSelected(list: List<FSItem>) {
@@ -55,8 +66,7 @@ class MainActivity : AppCompatActivity(), CloudAuthenticator.Callbacks, FileSele
     private fun onAuthButtonClicked() {
         if (null != authToken) {
             authToken = null
-            binding.authButton.text = "Авторизоваться"
-            resetView()
+            hideInfo()
         } else {
             yandexAuthenticator.startAuth(this)
         }
@@ -97,8 +107,9 @@ class MainActivity : AppCompatActivity(), CloudAuthenticator.Callbacks, FileSele
 
     private fun restoreViewState() {
         if (null != authToken) {
-            showInfo(authToken!!)
-            binding.authButton.text = "Забыть авторизацию"
+            showViewStateAuthYes()
+        } else {
+            showViewStateAuthNo()
         }
     }
 
