@@ -168,7 +168,7 @@ class SimpleDemoFragment():
     }
 
     private fun startSelectingFile() {
-        fileSelector.display(this, this)
+        fileSelector.startSelecting(this, this)
     }
 
     private fun displayWorkMode() {

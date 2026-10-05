@@ -44,12 +44,12 @@ abstract class FileSelector<SortingModeType> :
 {
     private var _callbacks: Callbacks? = null
 
-    fun display(parentFragment: Fragment, callbacks: Callbacks) {
+    fun startSelecting(parentFragment: Fragment, callbacks: Callbacks) {
         bindTo(parentFragment, callbacks)
         show(parentFragment.childFragmentManager, TAG)
     }
 
-    fun display(
+    fun startSelecting(
         fragmentActivity: FragmentActivity,
         callbacks: Callbacks
     ) {

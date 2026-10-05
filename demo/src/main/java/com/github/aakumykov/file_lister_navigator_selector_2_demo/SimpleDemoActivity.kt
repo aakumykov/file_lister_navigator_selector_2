@@ -5,7 +5,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
 import com.github.aakumykov.file_lister_navigator_selector.file_selector.FileSelector
 import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
 import com.github.aakumykov.file_lister_navigator_selector_2_demo.databinding.ActivitySimpleDemoBinding
@@ -45,7 +44,7 @@ class SimpleDemoActivity : AppCompatActivity(), FileSelector.Callbacks {
         LocalFileSelector()
             .prepare(
                 isMultipleSelectionMode = isMultipleSelectionMode
-            ).display(this, this)
+            ).startSelecting(this, this)
     }
 
     override fun onFileSelected(list: List<FSItem>) {
