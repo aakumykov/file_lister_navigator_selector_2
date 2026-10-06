@@ -441,9 +441,6 @@ abstract class FileSelector<SortingModeType> :
 
         const val SELECTED_ITEMS_LIST = "SELECTED_ITEMS_LIST"
 
-        @Deprecated("Перенести в реализацию для Яндекс")
-        const val AUTH_TOKEN = "AUTH_TOKEN"
-
         const val INITIAL_PATH = "INITIAL_PATH"
         const val DIR_SELECTION_MODE = "DIR_SELECTION_MODE"
         const val MULTIPLE_SELECTION_MODE = "MULTIPLE_SELECTION_MODE"
