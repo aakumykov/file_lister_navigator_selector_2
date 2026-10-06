@@ -77,8 +77,8 @@ class MainActivity : AppCompatActivity(), CloudAuthenticator.Callbacks, FileSele
 
     private fun onSelectFileLocalClicked() {
         storageAccessHelper.requestReadAccess {
-            LocalFileSelector.create()
-                .startSelecting(KEY_LOCAL_SELECTION, this, this)
+            LocalFileSelector.create(key = KEY_LOCAL_SELECTION)
+                .startSelecting(this, this)
         }
     }
 
@@ -104,8 +104,8 @@ class MainActivity : AppCompatActivity(), CloudAuthenticator.Callbacks, FileSele
     private fun onSelectButtonClocked() {
         authToken?.also {
             YandexDiskFileSelector
-                .create(authToken = authToken!!)
-                .startSelecting(KEY_CLOUD_SELECTION, this, this)
+                .create(key = KEY_CLOUD_SELECTION, authToken = authToken!!)
+                .startSelecting(this, this)
         } ?: run {
             showError("Нет авторизации")
         }

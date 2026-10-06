@@ -34,7 +34,7 @@ class SimpleDemoActivity : AppCompatActivity(), FileSelector.Callbacks {
         if (null == savedInstanceState) {
             supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.fragmentContainerView, SimpleDemoFragment.Companion.create(), SimpleDemoFragment.Companion.TAG)
+                .replace(R.id.fragmentContainerView, SimpleDemoFragment.create(), SimpleDemoFragment.Companion.TAG)
                 .commit()
         }
     }
@@ -42,8 +42,11 @@ class SimpleDemoActivity : AppCompatActivity(), FileSelector.Callbacks {
 
     fun onSelectFileClicked() {
         LocalFileSelector
-            .create(isMultipleSelectionMode = isMultipleSelectionMode)
-            .startSelecting(KEY_LOCAL_SELECTION, this, this)
+            .create(
+                key = KEY_LOCAL_SELECTION,
+                isMultipleSelectionMode = isMultipleSelectionMode
+            )
+            .startSelecting(this, this)
     }
 
     override fun onFileSelected(key: String, list: List<FSItem>) {

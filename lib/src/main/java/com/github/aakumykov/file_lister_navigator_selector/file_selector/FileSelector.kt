@@ -43,21 +43,14 @@ abstract class FileSelector<SortingModeType> :
     FragmentResultListener
 {
     private var _callbacks: Callbacks? = null
-    private var _key: String? = null
-    private val key: String get() = _key!!
+    private val key: String get() = arguments?.getString(SELECTOR_TYPE_KEY)!!
 
-    fun startSelecting(key: String, parentFragment: Fragment, callbacks: Callbacks) {
-        _key = key
+    fun startSelecting(parentFragment: Fragment, callbacks: Callbacks) {
         bindTo(parentFragment, callbacks)
         show(parentFragment.childFragmentManager, TAG)
     }
 
-    fun startSelecting(
-        key: String,
-        fragmentActivity: FragmentActivity,
-        callbacks: Callbacks
-    ) {
-        _key = key
+    fun startSelecting(fragmentActivity: FragmentActivity, callbacks: Callbacks) {
         bindTo(fragmentActivity, callbacks)
         show(fragmentActivity.supportFragmentManager, TAG)
     }
@@ -438,6 +431,7 @@ abstract class FileSelector<SortingModeType> :
 
         const val SELECTED_ITEMS_LIST = "SELECTED_ITEMS_LIST"
 
+        const val SELECTOR_TYPE_KEY = "SELECTOR_TYPE"
         const val INITIAL_PATH = "INITIAL_PATH"
         const val DIR_SELECTION_MODE = "DIR_SELECTION_MODE"
         const val MULTIPLE_SELECTION_MODE = "MULTIPLE_SELECTION_MODE"

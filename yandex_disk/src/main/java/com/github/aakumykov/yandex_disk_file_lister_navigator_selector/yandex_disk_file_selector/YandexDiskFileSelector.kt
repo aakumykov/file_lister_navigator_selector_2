@@ -24,6 +24,7 @@ class YandexDiskFileSelector : FileSelector<SimpleSortingMode>()
         const val AUTH_TOKEN = "AUTH_TOKEN"
 
         fun create(
+            key: String,
             authToken: String,
             initialPath: String = FSItem.ROOT_PATH,
             isDirSelectionMode: Boolean = false,
@@ -33,6 +34,7 @@ class YandexDiskFileSelector : FileSelector<SimpleSortingMode>()
         {
             return YandexDiskFileSelector().apply {
                 arguments = bundleOf(
+                    SELECTOR_TYPE_KEY to key,
                     AUTH_TOKEN to authToken,
                     INITIAL_PATH to initialPath,
                     DIR_SELECTION_MODE to isDirSelectionMode,

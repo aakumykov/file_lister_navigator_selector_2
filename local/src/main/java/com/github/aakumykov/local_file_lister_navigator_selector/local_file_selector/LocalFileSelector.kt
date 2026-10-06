@@ -26,6 +26,7 @@ class LocalFileSelector: FileSelector<SimpleSortingMode>()
         val TAG: String = LocalFileSelector::class.java.simpleName
 
         fun create(
+            key: String,
             initialPath: String = Environment.getExternalStorageDirectory().absolutePath,
             isDirSelectionMode: Boolean = false,
             isMultipleSelectionMode: Boolean = false
@@ -34,6 +35,7 @@ class LocalFileSelector: FileSelector<SimpleSortingMode>()
         {
             return LocalFileSelector().apply {
                 arguments = bundleOf(
+                    SELECTOR_TYPE_KEY to key,
                     INITIAL_PATH to initialPath,
                     DIR_SELECTION_MODE to isDirSelectionMode,
                     MULTIPLE_SELECTION_MODE to isMultipleSelectionMode

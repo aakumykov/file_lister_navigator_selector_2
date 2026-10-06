@@ -111,6 +111,7 @@ class SimpleDemoFragment:
 
     private fun createAndPrepareLocalSelector(): FileSelector<SimpleSortingMode> {
         return LocalFileSelector.create(
+                key = KEY_LOCAL_SELECTION,
                 isDirSelectionMode = directoriesOnlyMode,
                 isMultipleSelectionMode = multipleSelectionMode,
             )
@@ -118,6 +119,7 @@ class SimpleDemoFragment:
 
     private fun createAndPrepareYandexSelector(): FileSelector<SimpleSortingMode> {
         return YandexDiskFileSelector.create(
+            key = KEY_LOCAL_SELECTION,
                 authToken = authToken!!,
                 isDirSelectionMode = directoriesOnlyMode,
                 isMultipleSelectionMode = multipleSelectionMode,
@@ -167,7 +169,7 @@ class SimpleDemoFragment:
     }
 
     private fun startSelectingFile(key: String) {
-        fileSelector.startSelecting(key, this, this)
+        fileSelector.startSelecting(this, this)
     }
 
     private fun displayWorkMode() {
