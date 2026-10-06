@@ -110,18 +110,18 @@ class SimpleDemoFragment:
     }
 
     private fun createAndPrepareLocalSelector(): FileSelector<SimpleSortingMode> {
-        return LocalFileSelector.createDefault().prepare(
-            isDirSelectionMode = directoriesOnlyMode,
-            isMultipleSelectionMode = multipleSelectionMode,
-        )
+        return LocalFileSelector.create(
+                isDirSelectionMode = directoriesOnlyMode,
+                isMultipleSelectionMode = multipleSelectionMode,
+            )
     }
 
     private fun createAndPrepareYandexSelector(): FileSelector<SimpleSortingMode> {
-        return YandexDiskFileSelector.createDefault(authToken!!).prepare(
-            authToken = authToken!!,
-            isDirSelectionMode = directoriesOnlyMode,
-            isMultipleSelectionMode = multipleSelectionMode,
-        )
+        return YandexDiskFileSelector.create(
+                authToken = authToken!!,
+                isDirSelectionMode = directoriesOnlyMode,
+                isMultipleSelectionMode = multipleSelectionMode,
+            )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

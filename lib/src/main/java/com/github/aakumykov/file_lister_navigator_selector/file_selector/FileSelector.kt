@@ -79,7 +79,7 @@ abstract class FileSelector<SortingModeType> :
     private val viewModel: FileSelectorViewModel<SortingModeType> by viewModels {
         FileSelectorViewModel.Factory(
             createFileExplorer(),
-            isMultipleSelectionMode(),
+            isMultipleSelectionMode,
         )
     }
 
@@ -418,17 +418,14 @@ abstract class FileSelector<SortingModeType> :
     }
 
 
-    protected fun initialPath(): String {
-        return arguments?.getString(INITIAL_PATH) ?: getDefaultInitialPath()
-    }
+    protected val initialPath: String
+        get() = arguments?.getString(INITIAL_PATH) ?: getDefaultInitialPath()
 
-    protected fun isDirMode(): Boolean {
-        return arguments?.getBoolean(DIR_SELECTION_MODE) ?: getDefaultDirSelectionMode()
-    }
+    protected val isDirMode: Boolean
+        get() = arguments?.getBoolean(DIR_SELECTION_MODE) ?: getDefaultDirSelectionMode()
 
-    private fun isMultipleSelectionMode(): Boolean {
-        return arguments?.getBoolean(MULTIPLE_SELECTION_MODE) ?: getDefaultMultipleSelectionMode()
-    }
+    private val isMultipleSelectionMode: Boolean
+        get() = arguments?.getBoolean(MULTIPLE_SELECTION_MODE) ?: getDefaultMultipleSelectionMode()
 
 
     companion object {
@@ -440,9 +437,6 @@ abstract class FileSelector<SortingModeType> :
         const val FRAGMENT_RESULT_KEY = "FRAGMENT_RESULT_KEY"
 
         const val SELECTED_ITEMS_LIST = "SELECTED_ITEMS_LIST"
-
-        @Deprecated("Перенести в реализацию для Яндекс")
-        const val AUTH_TOKEN = "AUTH_TOKEN"
 
         const val INITIAL_PATH = "INITIAL_PATH"
         const val DIR_SELECTION_MODE = "DIR_SELECTION_MODE"

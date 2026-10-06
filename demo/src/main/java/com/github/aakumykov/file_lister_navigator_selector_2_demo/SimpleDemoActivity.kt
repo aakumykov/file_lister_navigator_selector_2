@@ -41,10 +41,9 @@ class SimpleDemoActivity : AppCompatActivity(), FileSelector.Callbacks {
 
 
     fun onSelectFileClicked() {
-        LocalFileSelector()
-            .prepare(
-                isMultipleSelectionMode = isMultipleSelectionMode
-            ).startSelecting(KEY_LOCAL_SELECTION, this, this)
+        LocalFileSelector
+            .create(isMultipleSelectionMode = isMultipleSelectionMode)
+            .startSelecting(KEY_LOCAL_SELECTION, this, this)
     }
 
     override fun onFileSelected(key: String, list: List<FSItem>) {

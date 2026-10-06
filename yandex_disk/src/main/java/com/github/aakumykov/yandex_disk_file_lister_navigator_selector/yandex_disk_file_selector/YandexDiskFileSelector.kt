@@ -17,49 +17,36 @@ import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_di
 import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_dir_creator_dialog.YandexDiskDirCreatorDialog
 import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_file_lister.YandexDiskFileLister
 import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_fs_navigator.YandexDiskFileExplorer
-import kotlin.String
 
-class YandexDiskFileSelector(
-    private val yandexDiskFileExplorer: YandexDiskFileExplorer,
-    private val initialPath: String
-) : FileSelector<SimpleSortingMode>()
+class YandexDiskFileSelector : FileSelector<SimpleSortingMode>()
 {
     companion object {
-        fun createDefault(
-            authToken: String,
-            initialPath: String = FSItem.ROOT_PATH
-        ): YandexDiskFileSelector {
-            val cloudWriter = YandexDiskCloudWriter(authToken)
-            val explorer = YandexDiskFileExplorer(
-                YandexDiskFileLister(authToken),
-                YandexDiskDirCreator(cloudWriter),
-                initialPath
-            )
-            return YandexDiskFileSelector(explorer, initialPath)
-        }
-    }
+        const val AUTH_TOKEN = "AUTH_TOKEN"
 
-    fun prepare(
-        authToken: String,
-        isDirSelectionMode: Boolean = false,
-        isMultipleSelectionMode: Boolean = false
-    )
-    : YandexDiskFileSelector
-    {
-        arguments = bundleOf(
-            AUTH_TOKEN to authToken,
-            INITIAL_PATH to initialPath,
-            DIR_SELECTION_MODE to isDirSelectionMode,
-            MULTIPLE_SELECTION_MODE to isMultipleSelectionMode
+        fun create(
+            authToken: String,
+            initialPath: String = FSItem.ROOT_PATH,
+            isDirSelectionMode: Boolean = false,
+            isMultipleSelectionMode: Boolean = false
         )
-        return this
+                : YandexDiskFileSelector
+        {
+            return YandexDiskFileSelector().apply {
+                arguments = bundleOf(
+                    AUTH_TOKEN to authToken,
+                    INITIAL_PATH to initialPath,
+                    DIR_SELECTION_MODE to isDirSelectionMode,
+                    MULTIPLE_SELECTION_MODE to isMultipleSelectionMode
+                )
+            }
+        }
     }
 
     private var _fileExplorer: FileExplorer<SimpleSortingMode>? = null
 
     override fun createDirCreatorDialog(basePath: String): DirCreatorDialog {
         // TODO: как быть с "!!" ?
-        return YandexDiskDirCreatorDialog.create(basePath, authToken()!!)
+        return YandexDiskDirCreatorDialog.create(basePath, authToken)
     }
 
     override fun createSortingInfoSupplier(): SortingInfoSupplier<SimpleSortingMode> {
@@ -90,12 +77,15 @@ class YandexDiskFileSelector(
     override fun createFileExplorer(): FileExplorer<SimpleSortingMode> {
         if (null == _fileExplorer) {
 
-            val authToken = authToken()
+            val cloudWriter = YandexDiskCloudWriter(authToken)
+            val lister = YandexDiskFileLister(authToken)
+            val dirCreator = YandexDiskDirCreator(cloudWriter)
 
-            if (authToken.isNullOrEmpty())
-                throw IllegalArgumentException("Auth token is null or empty")
-
-            _fileExplorer = yandexDiskFileExplorer
+            _fileExplorer = YandexDiskFileExplorer(
+                initialPath = initialPath,
+                yandexDiskFileLister = lister,
+                yandexDiskDirCreator = dirCreator
+            )
         }
 
         return _fileExplorer!!
@@ -109,5 +99,5 @@ class YandexDiskFileSelector(
     }
 
 
-    private fun authToken(): String? = arguments?.getString(AUTH_TOKEN)
+    private val authToken: String get() = arguments?.getString(AUTH_TOKEN)!!
 }

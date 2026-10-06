@@ -20,30 +20,26 @@ import com.github.aakumykov.storage_access_helper.StorageAccessHelper
 import com.github.aakumykov.storage_lister.InternalStorageDirectory
 import com.github.aakumykov.storage_lister.StorageDirectory
 
-class LocalFileSelector(
-    private val initialPath: String
-): FileSelector<SimpleSortingMode>()
+class LocalFileSelector: FileSelector<SimpleSortingMode>()
 {
     companion object {
         val TAG: String = LocalFileSelector::class.java.simpleName
 
-        fun createDefault(
-            initialPath: String = Environment.getExternalStorageDirectory().absolutePath
-        ): LocalFileSelector = LocalFileSelector(initialPath)
-    }
-
-    fun prepare(
-        isDirSelectionMode: Boolean = false,
-        isMultipleSelectionMode: Boolean = false
-    )
-        : LocalFileSelector
-    {
-        arguments = bundleOf(
-            INITIAL_PATH to initialPath,
-            DIR_SELECTION_MODE to isDirSelectionMode,
-            MULTIPLE_SELECTION_MODE to isMultipleSelectionMode
+        fun create(
+            initialPath: String = Environment.getExternalStorageDirectory().absolutePath,
+            isDirSelectionMode: Boolean = false,
+            isMultipleSelectionMode: Boolean = false
         )
-        return this
+                : LocalFileSelector
+        {
+            return LocalFileSelector().apply {
+                arguments = bundleOf(
+                    INITIAL_PATH to initialPath,
+                    DIR_SELECTION_MODE to isDirSelectionMode,
+                    MULTIPLE_SELECTION_MODE to isMultipleSelectionMode
+                )
+            }
+        }
     }
 
     // FIXME: удалить StorageAccessHelper
@@ -67,8 +63,8 @@ class LocalFileSelector(
         return LocalFileExplorer(
             localFileLister = LocalFileLister(),
             localDirCreator = LocalDirCreator(),
-            initialPath = initialPath(),
-            isDirMode = isDirMode(),
+            initialPath = initialPath,
+            isDirMode = isDirMode,
             defaultSortingMode = defaultSortingMode()
         )
     }
