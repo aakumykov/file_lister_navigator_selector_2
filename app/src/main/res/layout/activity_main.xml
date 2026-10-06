@@ -9,6 +9,13 @@
     tools:context=".MainActivity">
 
     <Button
+        android:id="@+id/selectFileLocallyButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#aaa"
+        android:text="Выбрать локально" />
+
+    <Button
         android:id="@+id/authButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,7 +25,8 @@
         android:id="@+id/selectFileButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Выбрать файл" />
+        android:backgroundTint="#3cf"
+        android:text="Выбрать в облаке" />
 
     <TextView
         android:id="@+id/infoView"

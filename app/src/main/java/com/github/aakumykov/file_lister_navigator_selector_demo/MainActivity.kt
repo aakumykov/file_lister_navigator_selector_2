@@ -12,6 +12,8 @@ import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
 import com.github.aakumykov.file_lister_navigator_selector_demo.databinding.ActivityMainBinding
 import com.github.aakumykov.file_lister_navigator_selector_demo.ext.getStringFromPreferences
 import com.github.aakumykov.file_lister_navigator_selector_demo.ext.storeStringInPreferences
+import com.github.aakumykov.local_file_lister_navigator_selector.local_file_selector.LocalFileSelector
+import com.github.aakumykov.storage_access_helper.StorageAccessHelper
 import com.github.aakumykov.yandex_authenticator.YandexAuthenticator
 import com.github.aakumykov.yandex_disk_cloud_writer.YandexDiskCloudWriter
 import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_dir_creator.YandexDiskDirCreator
@@ -22,9 +24,11 @@ import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_di
 class MainActivity : AppCompatActivity(), CloudAuthenticator.Callbacks, FileSelector.Callbacks {
 
     private lateinit var binding: ActivityMainBinding
+    private val storageAccessHelper: StorageAccessHelper by lazy { StorageAccessHelper.create(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -33,6 +37,10 @@ class MainActivity : AppCompatActivity(), CloudAuthenticator.Callbacks, FileSele
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        storageAccessHelper.prepareForReadAccess()
+
+        binding.selectFileLocallyButton.setOnClickListener { onSelectFileLocalClicked() }
         binding.authButton.setOnClickListener { onAuthButtonClicked() }
         binding.selectFileButton.setOnClickListener { onSelectButtonClocked() }
 
@@ -65,6 +73,14 @@ class MainActivity : AppCompatActivity(), CloudAuthenticator.Callbacks, FileSele
 
     override fun onFileSelected(list: List<FSItem>) {
         showInfo(list.toString())
+    }
+
+    private fun onSelectFileLocalClicked() {
+        storageAccessHelper.requestReadAccess {
+            LocalFileSelector()
+                .prepare()
+                .startSelecting(this, this)
+        }
     }
 
     private fun onAuthButtonClicked() {

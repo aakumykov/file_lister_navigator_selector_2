@@ -51,4 +51,6 @@ dependencies {
 
     implementation 'com.github.aakumykov.cloud_authenticator:cloud_authenticator:0.0.12-alpha'
     implementation 'com.github.aakumykov.cloud_authenticator:yandex_authenticator:0.0.12-alpha'
+
+    implementation 'com.github.aakumykov:storage_access_helper:3.0.0-alpha'
 }
