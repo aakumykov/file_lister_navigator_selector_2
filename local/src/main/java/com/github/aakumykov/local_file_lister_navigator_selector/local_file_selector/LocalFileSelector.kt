@@ -20,10 +20,19 @@ import com.github.aakumykov.storage_access_helper.StorageAccessHelper
 import com.github.aakumykov.storage_lister.InternalStorageDirectory
 import com.github.aakumykov.storage_lister.StorageDirectory
 
-class LocalFileSelector: FileSelector<SimpleSortingMode>()
+class LocalFileSelector(
+    private val initialPath: String
+): FileSelector<SimpleSortingMode>()
 {
+    companion object {
+        val TAG: String = LocalFileSelector::class.java.simpleName
+
+        fun createDefault(
+            initialPath: String = Environment.getExternalStorageDirectory().absolutePath
+        ): LocalFileSelector = LocalFileSelector(initialPath)
+    }
+
     fun prepare(
-        initialPath: String = Environment.getExternalStorageDirectory().absolutePath,
         isDirSelectionMode: Boolean = false,
         isMultipleSelectionMode: Boolean = false
     )
@@ -100,10 +109,5 @@ class LocalFileSelector: FileSelector<SimpleSortingMode>()
                 path = it.absolutePath,
             )
         }
-    }
-
-    companion object {
-        val TAG: String = LocalFileSelector::class.java.simpleName
-        fun createDefault(): LocalFileSelector = LocalFileSelector()
     }
 }

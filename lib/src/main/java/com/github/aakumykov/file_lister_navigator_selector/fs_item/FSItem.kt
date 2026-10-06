@@ -10,6 +10,7 @@ interface FSItem {
     val size: Long
 
     companion object {
+        const val ROOT_PATH = "/"
         const val DS: String = "/"
         const val PARENT_DIR_NAME: String = ".."
         const val PARENT_DIR_PATH: String = ".."

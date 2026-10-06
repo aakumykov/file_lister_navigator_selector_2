@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity(), CloudAuthenticator.Callbacks, FileSele
 
     private fun onSelectFileLocalClicked() {
         storageAccessHelper.requestReadAccess {
-            LocalFileSelector()
+            LocalFileSelector.createDefault()
                 .prepare()
                 .startSelecting(KEY_LOCAL_SELECTION, this, this)
         }

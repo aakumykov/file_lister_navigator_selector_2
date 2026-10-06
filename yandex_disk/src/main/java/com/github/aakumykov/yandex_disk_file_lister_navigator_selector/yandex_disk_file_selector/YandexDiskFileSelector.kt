@@ -5,6 +5,7 @@ import com.github.aakumykov.file_lister_navigator_selector.dir_creator_dialog.Di
 import com.github.aakumykov.file_lister_navigator_selector.file_explorer.FileExplorer
 import com.github.aakumykov.file_lister_navigator_selector.file_lister.SimpleSortingMode
 import com.github.aakumykov.file_lister_navigator_selector.file_selector.FileSelector
+import com.github.aakumykov.file_lister_navigator_selector.fs_item.FSItem
 import com.github.aakumykov.file_lister_navigator_selector.sorting_info_supplier.SimpleSortingInfoSupplier
 import com.github.aakumykov.file_lister_navigator_selector.sorting_info_supplier.SortingInfoSupplier
 import com.github.aakumykov.file_lister_navigator_selector.sorting_mode_translator.SimpleSortingModeTranslator
@@ -16,15 +17,30 @@ import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_di
 import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_dir_creator_dialog.YandexDiskDirCreatorDialog
 import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_file_lister.YandexDiskFileLister
 import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_fs_navigator.YandexDiskFileExplorer
+import kotlin.String
 
 class YandexDiskFileSelector(
-    private val yandexDiskFileExplorer: YandexDiskFileExplorer
-)
-    : FileSelector<SimpleSortingMode>()
+    private val yandexDiskFileExplorer: YandexDiskFileExplorer,
+    private val initialPath: String
+) : FileSelector<SimpleSortingMode>()
 {
+    companion object {
+        fun createDefault(
+            authToken: String,
+            initialPath: String = FSItem.ROOT_PATH
+        ): YandexDiskFileSelector {
+            val cloudWriter = YandexDiskCloudWriter(authToken)
+            val explorer = YandexDiskFileExplorer(
+                YandexDiskFileLister(authToken),
+                YandexDiskDirCreator(cloudWriter),
+                initialPath
+            )
+            return YandexDiskFileSelector(explorer, initialPath)
+        }
+    }
+
     fun prepare(
         authToken: String,
-        initialPath: String? = "/",
         isDirSelectionMode: Boolean = false,
         isMultipleSelectionMode: Boolean = false
     )
@@ -64,7 +80,7 @@ class YandexDiskFileSelector(
         return DummyStorageDirectory()
     }
 
-    override fun getDefaultInitialPath(): String = "/"
+    override fun getDefaultInitialPath(): String = FSItem.ROOT_PATH
 
     override fun getDefaultDirSelectionMode(): Boolean = false
 
@@ -94,17 +110,4 @@ class YandexDiskFileSelector(
 
 
     private fun authToken(): String? = arguments?.getString(AUTH_TOKEN)
-
-
-    companion object {
-        fun createDefault(authToken: String, initialPath: String): YandexDiskFileSelector {
-            val cloudWriter = YandexDiskCloudWriter(authToken)
-            val explorer = YandexDiskFileExplorer(
-                YandexDiskFileLister(authToken),
-                YandexDiskDirCreator(cloudWriter),
-                initialPath
-            )
-            return YandexDiskFileSelector(explorer)
-        }
-    }
 }

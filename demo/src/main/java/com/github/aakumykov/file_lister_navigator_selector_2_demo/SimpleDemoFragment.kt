@@ -25,7 +25,7 @@ import com.github.aakumykov.yandex_authenticator.YandexAuthenticator
 import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_file_selector.YandexDiskFileSelector
 
 
-class SimpleDemoFragment():
+class SimpleDemoFragment:
     Fragment(R.layout.fragment_simple_demo),
     FileSelector.Callbacks,
         CloudAuthenticator.Callbacks
@@ -68,7 +68,7 @@ class SimpleDemoFragment():
     }
 
     override fun onFileSelected(key: String, list: List<FSItem>) {
-        showInfo(list.joinToString { it.name + "\n" })
+        showInfo("key:$key, list:${list.joinToString { it.name + "\n" }}")
     }
 
     private fun showInfo(text: String) {
@@ -110,16 +110,15 @@ class SimpleDemoFragment():
     }
 
     private fun createAndPrepareLocalSelector(): FileSelector<SimpleSortingMode> {
-        return LocalFileSelector().prepare(
+        return LocalFileSelector.createDefault().prepare(
             isDirSelectionMode = directoriesOnlyMode,
             isMultipleSelectionMode = multipleSelectionMode,
         )
     }
 
     private fun createAndPrepareYandexSelector(): FileSelector<SimpleSortingMode> {
-        return YandexDiskFileSelector().prepare(
+        return YandexDiskFileSelector.createDefault(authToken!!).prepare(
             authToken = authToken!!,
-            initialPath = "/",
             isDirSelectionMode = directoriesOnlyMode,
             isMultipleSelectionMode = multipleSelectionMode,
         )
@@ -160,15 +159,15 @@ class SimpleDemoFragment():
 
     private fun onSelectFileClicked() {
         if (WorkMode.LOCAL == workMode) {
-            storageAccessHelper.requestReadAccess { startSelectingFile() }
+            storageAccessHelper.requestReadAccess { startSelectingFile(KEY_LOCAL_SELECTION) }
         } else {
-            if (hasAuth) startSelectingFile()
+            if (hasAuth) startSelectingFile(KEY_CLOUD_SELECTION)
             else showToast(R.string.auth_required)
         }
     }
 
-    private fun startSelectingFile() {
-        fileSelector.startSelecting(, this, this)
+    private fun startSelectingFile(key: String) {
+        fileSelector.startSelecting(key, this, this)
     }
 
     private fun displayWorkMode() {
@@ -210,7 +209,12 @@ class SimpleDemoFragment():
 
     companion object {
         val TAG: String = SimpleDemoFragment::class.java.simpleName
+
         const val YANDEX_AUTH_TOKEN = "YANDEX_AUTH_TOKEN"
+
+        const val KEY_LOCAL_SELECTION = "LOCAL_SELECTION"
+        const val KEY_CLOUD_SELECTION = "CLOUD_SELECTION"
+
         fun create(): SimpleDemoFragment {
             return SimpleDemoFragment()
         }
