@@ -44,10 +44,14 @@ class SimpleDemoActivity : AppCompatActivity(), FileSelector.Callbacks {
         LocalFileSelector()
             .prepare(
                 isMultipleSelectionMode = isMultipleSelectionMode
-            ).startSelecting(this, this)
+            ).startSelecting(KEY_LOCAL_SELECTION, this, this)
     }
 
-    override fun onFileSelected(list: List<FSItem>) {
+    override fun onFileSelected(key: String, list: List<FSItem>) {
         binding.infoView.text = list.joinToString(",\n") { it.name }
+    }
+
+    companion object {
+        const val KEY_LOCAL_SELECTION = "LOCAL_SELECTION"
     }
 }

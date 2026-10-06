@@ -43,23 +43,28 @@ abstract class FileSelector<SortingModeType> :
     FragmentResultListener
 {
     private var _callbacks: Callbacks? = null
+    private var _key: String? = null
+    private val key: String get() = _key!!
 
-    fun startSelecting(parentFragment: Fragment, callbacks: Callbacks) {
+    fun startSelecting(key: String, parentFragment: Fragment, callbacks: Callbacks) {
+        _key = key
         bindTo(parentFragment, callbacks)
         show(parentFragment.childFragmentManager, TAG)
     }
 
     fun startSelecting(
+        key: String,
         fragmentActivity: FragmentActivity,
         callbacks: Callbacks
     ) {
+        _key = key
         bindTo(fragmentActivity, callbacks)
         show(fragmentActivity.supportFragmentManager, TAG)
     }
 
     fun processActivityResult(activityResult: ActivityResult) {
         val list = extractSelectionResult(activityResult.data?.extras)
-        _callbacks?.onFileSelected(list ?: emptyList())
+        _callbacks?.onFileSelected(key, list ?: emptyList())
     }
 
     private var _binding: DialogFileSelectorBinding? = null
@@ -154,7 +159,7 @@ abstract class FileSelector<SortingModeType> :
          */
         fragment.listenForFragmentResult(FRAGMENT_RESULT_KEY) { _, bundle ->
             this._callbacks?.onFileSelected(
-                extractSelectionResult(bundle) ?: emptyList()
+                key, extractSelectionResult(bundle) ?: emptyList()
             )
         }
     }
@@ -168,7 +173,7 @@ abstract class FileSelector<SortingModeType> :
             .supportFragmentManager
             .setFragmentResultListener(FRAGMENT_RESULT_KEY, fragmentActivity) { _, bundle ->
                 this._callbacks?.onFileSelected(
-                    extractSelectionResult(bundle) ?: emptyList()
+                    key, extractSelectionResult(bundle) ?: emptyList()
                 )
             }
     }
@@ -487,6 +492,6 @@ abstract class FileSelector<SortingModeType> :
     }
 
     interface Callbacks {
-        fun onFileSelected(list: List<FSItem>)
+        fun onFileSelected(key: String, list: List<FSItem>)
     }
 }

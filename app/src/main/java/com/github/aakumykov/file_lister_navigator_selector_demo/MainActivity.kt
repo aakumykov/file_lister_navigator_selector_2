@@ -71,15 +71,15 @@ class MainActivity : AppCompatActivity(), CloudAuthenticator.Callbacks, FileSele
         showViewStateAuthNo()
     }
 
-    override fun onFileSelected(list: List<FSItem>) {
-        showInfo(list.toString())
+    override fun onFileSelected(key: String, list: List<FSItem>) {
+        showInfo("key: $key,\nselected: $list")
     }
 
     private fun onSelectFileLocalClicked() {
         storageAccessHelper.requestReadAccess {
             LocalFileSelector()
                 .prepare()
-                .startSelecting(this, this)
+                .startSelecting(KEY_LOCAL_SELECTION, this, this)
         }
     }
 
@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity(), CloudAuthenticator.Callbacks, FileSele
         authToken?.also {
             YandexDiskFileSelector(yandexDiskFileExplorer)
                 .prepare(it)
-                .startSelecting(this, this)
+                .startSelecting(KEY_CLOUD_SELECTION, this, this)
         } ?: run {
             showError("Нет авторизации")
         }
@@ -154,5 +154,7 @@ class MainActivity : AppCompatActivity(), CloudAuthenticator.Callbacks, FileSele
     companion object {
         val TAG: String = MainActivity::class.java.simpleName
         const val AUTH_TOKEN = "AUTH_TOKEN"
+        const val KEY_LOCAL_SELECTION = "LOCAL_SELECTION"
+        const val KEY_CLOUD_SELECTION = "CLOUD_SELECTION"
     }
 }

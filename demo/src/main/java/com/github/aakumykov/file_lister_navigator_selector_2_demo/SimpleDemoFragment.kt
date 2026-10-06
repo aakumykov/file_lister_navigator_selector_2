@@ -67,7 +67,7 @@ class SimpleDemoFragment():
         showToast(R.string.auth_cancelled)
     }
 
-    override fun onFileSelected(list: List<FSItem>) {
+    override fun onFileSelected(key: String, list: List<FSItem>) {
         showInfo(list.joinToString { it.name + "\n" })
     }
 
@@ -168,7 +168,7 @@ class SimpleDemoFragment():
     }
 
     private fun startSelectingFile() {
-        fileSelector.startSelecting(this, this)
+        fileSelector.startSelecting(, this, this)
     }
 
     private fun displayWorkMode() {
