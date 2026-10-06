@@ -104,7 +104,7 @@ class MainActivity : AppCompatActivity(), CloudAuthenticator.Callbacks, FileSele
 
     private fun onSelectButtonClocked() {
         authToken?.also {
-            YandexDiskFileSelector(yandexDiskFileExplorer)
+            YandexDiskFileSelector.createDefault(it, "/")
                 .prepare(it)
                 .startSelecting(KEY_CLOUD_SELECTION, this, this)
         } ?: run {

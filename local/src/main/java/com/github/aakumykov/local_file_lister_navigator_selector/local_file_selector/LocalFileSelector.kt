@@ -93,10 +93,6 @@ class LocalFileSelector: FileSelector<SimpleSortingMode>()
         return SimpleSortingInfoSupplier()
     }
 
-    companion object {
-        val TAG: String = LocalFileSelector::class.java.simpleName
-    }
-
     override fun initialStorageDirectory(): StorageDirectory {
         return Environment.getExternalStorageDirectory().let {
             InternalStorageDirectory(
@@ -105,10 +101,9 @@ class LocalFileSelector: FileSelector<SimpleSortingMode>()
             )
         }
     }
+
+    companion object {
+        val TAG: String = LocalFileSelector::class.java.simpleName
+        fun createDefault(): LocalFileSelector = LocalFileSelector()
+    }
 }
-
-
-
-
-
-

@@ -17,8 +17,6 @@ import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_di
 import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_file_lister.YandexDiskFileLister
 import com.github.aakumykov.yandex_disk_file_lister_navigator_selector.yandex_disk_fs_navigator.YandexDiskFileExplorer
 
-// TODO: внедрять зависимости
-
 class YandexDiskFileSelector(
     private val yandexDiskFileExplorer: YandexDiskFileExplorer
 )
@@ -96,4 +94,17 @@ class YandexDiskFileSelector(
 
 
     private fun authToken(): String? = arguments?.getString(AUTH_TOKEN)
+
+
+    companion object {
+        fun createDefault(authToken: String, initialPath: String): YandexDiskFileSelector {
+            val cloudWriter = YandexDiskCloudWriter(authToken)
+            val explorer = YandexDiskFileExplorer(
+                YandexDiskFileLister(authToken),
+                YandexDiskDirCreator(cloudWriter),
+                initialPath
+            )
+            return YandexDiskFileSelector(explorer)
+        }
+    }
 }
