@@ -13,18 +13,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="#aaa"
+        app:icon="@drawable/ic_folder"
+        app:iconGravity="textStart"
+        android:layout_gravity="center"
         android:text="Выбрать локально" />
 
     <Button
         android:id="@+id/authButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:icon="@drawable/ic_auth"
+        app:iconGravity="textEnd"
+        android:layout_gravity="center"
         android:text="Авторизоваться" />
 
     <Button
         android:id="@+id/selectFileButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:icon="@drawable/ic_cloud"
+        app:iconGravity="textStart"
+        android:layout_gravity="center"
         android:backgroundTint="#3cf"
         android:text="Выбрать в облаке" />
 
